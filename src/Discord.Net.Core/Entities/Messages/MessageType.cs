@@ -106,5 +106,15 @@ namespace Discord
         ///     The message for a context menu command.
         /// </summary>
         ContextMenuCommand = 23,
+
+        /// <summary>
+        ///     The message for a auto moderation action.
+        /// </summary>
+        AutoModerationAction = 24,
+
+        /// <summary>
+        ///     The message for a role subscription purchase.
+        /// </summary>
+        RoleSubscriptionPurchase = 25,
     }
 }

@@ -98,6 +98,7 @@ namespace Discord
         MaximumStickersReached = 30039,
         MaximumPruneRequestReached = 30040,
         MaximumGuildWidgetsReached = 30042,
+        MaximumPremiumEmojiReached = 30056,
         #endregion
 
         #region General Request Errors (40XXX)
@@ -176,6 +177,8 @@ namespace Discord
         RequestBodyContainsInvalidJSON = 50109,
         OwnershipCannotBeTransferredToABotUser = 50132,
         FailedToResizeAssetBelowTheMaximumSize = 50138,
+        CannotMixSubscriptionAndNonSubscriptionRoles = 50144,
+        CannotConvertPremiumAndNormalEmoji = 50145,
         UploadedFileNotFound = 50146,
         MissingPermissionToSendThisSticker = 50600,
         #endregion

@@ -185,5 +185,15 @@ namespace Discord
         ///     The guild has been set as a support server on the App Directory.
         /// </summary>
         DeveloperSupportServer = 1L << 42,
+
+        /// <summary>
+        ///     The guild has enabled monetization.
+        /// </summary>
+        CreatorMonetizableProvisional = 1L << 43,
+
+        /// <summary>
+        ///     The guild has enabled the role subscription promo page.
+        /// </summary>
+        CreatorStorePage = 1L << 44,
     }
 }

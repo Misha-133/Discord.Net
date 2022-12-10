@@ -30,11 +30,29 @@ namespace Discord
         /// </returns>
         public bool IsPremiumSubscriberRole { get; }
 
-        internal RoleTags(ulong? botId, ulong? integrationId, bool isPremiumSubscriber)
+        /// <summary>
+        ///     Gets whether this role is available for purchase.
+        /// </summary>
+        /// <returns>
+        ///     <see langword="true"/> if this role is available for purchase; otherwise <see langword="false"/>.
+        /// </returns>
+        public bool IsAvailableForPurchase { get; }
+
+        /// <summary>
+        ///     Gets the id of this role's subscription sku and listing.
+        /// </summary>
+        /// /// <returns>
+        ///     A <see langword="ulong"/> if this role is linked to a subscription; otherwise <see langword="null"/>.
+        /// </returns>
+        public ulong? SubscriptionListingId { get; }
+
+        internal RoleTags(ulong? botId, ulong? integrationId, bool isPremiumSubscriber, bool isAvailableForPurchase, ulong? subscriptionListingId)
         {
             BotId = botId;
             IntegrationId = integrationId;
             IsPremiumSubscriberRole = isPremiumSubscriber;
+            IsAvailableForPurchase = isAvailableForPurchase;
+            SubscriptionListingId = subscriptionListingId;
         }
     }
 }
