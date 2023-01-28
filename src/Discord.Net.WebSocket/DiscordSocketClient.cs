@@ -2874,6 +2874,29 @@ namespace Discord.WebSocket
                                     var channel = State.GetChannel(data.ChannelId);
 
                                     await TimedInvokeAsync(_webhooksUpdated, nameof(WebhooksUpdated), guild, channel);
+                            #region Auto Moderation
+
+                            case "AUTO_MODERATION_RULE_CREATE":
+                                {
+
+                                }
+                                break;
+
+                            case "AUTO_MODERATION_RULE_UPDATE":
+                                {
+
+                                }
+                                break;
+
+                            case "AUTO_MODERATION_RULE_DELETE":
+                                {
+
+                                }
+                                break;
+
+                            case "AUTO_MODERATION_RULE_EXECUTE":
+                                {
+
                                 }
                                 break;
 
