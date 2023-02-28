@@ -821,10 +821,10 @@ namespace Discord.WebSocket
 
         #region ProcessMessageAsync
 
-        private Task HandleInvokedEventException(Task task)
+        private Task HandleInvokeException(Task task, GatewayOpCode? opCode = null, string type = null)
         {
             if(task.IsFaulted)
-                throw task.Exception!;
+                return _gatewayLogger.ErrorAsync($"Error handling {opCode}{(type != null ? $" ({type})" : "")}", task.Exception);
 
             return Task.CompletedTask;
         }
@@ -864,7 +864,7 @@ namespace Discord.WebSocket
                                 int before = Latency;
                                 Latency = latency;
 
-                                _ = TimedInvokeAsync(_latencyUpdatedEvent, nameof(LatencyUpdated), before, latency).ContinueWith(HandleInvokedEventException);
+                                _ = TimedInvokeAsync(_latencyUpdatedEvent, nameof(LatencyUpdated), before, latency).ContinueWith(t => HandleInvokeException(t, opCode, type));
                             }
                         }
                         break;
@@ -960,7 +960,7 @@ namespace Discord.WebSocket
                                             if (BaseConfig.AlwaysDownloadUsers)
                                                 _ = DownloadUsersAsync(Guilds.Where(x => x.IsAvailable && !x.HasAllMembers));
 
-                                            _ = TimedInvokeAsync(_readyEvent, nameof(Ready)).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_readyEvent, nameof(Ready)).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             await _gatewayLogger.InfoAsync("Ready");
                                         });
                                     _ = _connection.CompleteAsync();
@@ -1010,7 +1010,7 @@ namespace Discord.WebSocket
                                             if (guild.DownloadedMemberCount >= guild.MemberCount && !guild.DownloaderPromise.IsCompleted)
                                             {
                                                 guild.CompleteDownloadUsers();
-                                                _ = TimedInvokeAsync(_guildMembersDownloadedEvent, nameof(GuildMembersDownloaded), guild).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_guildMembersDownloadedEvent, nameof(GuildMembersDownloaded), guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             }
                                         }
                                         else
@@ -1026,7 +1026,7 @@ namespace Discord.WebSocket
                                         var guild = AddGuild(data, State);
                                         if (guild != null)
                                         {
-                                            _ = TimedInvokeAsync(_joinedGuildEvent, nameof(JoinedGuild), guild).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_joinedGuildEvent, nameof(JoinedGuild), guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             await GuildAvailableAsync(guild);
                                         }
                                         else
@@ -1047,7 +1047,7 @@ namespace Discord.WebSocket
                                     {
                                         var before = guild.Clone();
                                         guild.Update(State, data);
-                                        _ = TimedInvokeAsync(_guildUpdatedEvent, nameof(GuildUpdated), before, guild).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildUpdatedEvent, nameof(GuildUpdated), before, guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1066,7 +1066,7 @@ namespace Discord.WebSocket
                                     {
                                         var before = guild.Clone();
                                         guild.Update(State, data);
-                                        _ = TimedInvokeAsync(_guildUpdatedEvent, nameof(GuildUpdated), before, guild).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildUpdatedEvent, nameof(GuildUpdated), before, guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1126,7 +1126,7 @@ namespace Discord.WebSocket
                                         if (guild != null)
                                         {
                                             await GuildUnavailableAsync(guild);
-                                            _ = TimedInvokeAsync(_leftGuildEvent, nameof(LeftGuild), guild).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_leftGuildEvent, nameof(LeftGuild), guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             (guild as IDisposable).Dispose();
                                         }
                                         else
@@ -1173,12 +1173,12 @@ namespace Discord.WebSocket
                                     foreach (var model in newStickers)
                                     {
                                         var entity = guild.AddSticker(model);
-                                        _ = TimedInvokeAsync(_guildStickerCreated, nameof(GuildStickerCreated), entity).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildStickerCreated, nameof(GuildStickerCreated), entity).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     foreach (var sticker in deletedStickers)
                                     {
                                         var entity = guild.RemoveSticker(sticker.Id);
-                                        _ = TimedInvokeAsync(_guildStickerDeleted, nameof(GuildStickerDeleted), entity).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildStickerDeleted, nameof(GuildStickerDeleted), entity).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     foreach (var entityModelPair in updatedStickers)
                                     {
@@ -1186,7 +1186,7 @@ namespace Discord.WebSocket
 
                                         entityModelPair.Entity.Update(entityModelPair.Model);
 
-                                        _ = TimedInvokeAsync(_guildStickerUpdated, nameof(GuildStickerUpdated), before, entityModelPair.Entity).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildStickerUpdated, nameof(GuildStickerUpdated), before, entityModelPair.Entity).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                 }
                                 break;
@@ -1227,7 +1227,7 @@ namespace Discord.WebSocket
                                     }
 
                                     if (channel != null)
-                                        _ = TimedInvokeAsync(_channelCreatedEvent, nameof(ChannelCreated), channel).ContinueWith(HandleInvokedEventException);    
+                                        _ = TimedInvokeAsync(_channelCreatedEvent, nameof(ChannelCreated), channel).ContinueWith(t => HandleInvokeException(t, opCode, type));    
                                 }
                                 break;
                             case "CHANNEL_UPDATE":
@@ -1248,7 +1248,7 @@ namespace Discord.WebSocket
                                             return;
                                         }
 
-                                        _ = TimedInvokeAsync(_channelUpdatedEvent, nameof(ChannelUpdated), before, channel).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_channelUpdatedEvent, nameof(ChannelUpdated), before, channel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1286,7 +1286,7 @@ namespace Discord.WebSocket
                                         channel = RemovePrivateChannel(data.Id) as SocketChannel;
 
                                     if (channel != null)
-                                        _ = TimedInvokeAsync(_channelDestroyedEvent, nameof(ChannelDestroyed), channel).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_channelDestroyedEvent, nameof(ChannelDestroyed), channel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     else
                                     {
                                         await UnknownChannelAsync(type, data.Id, data.GuildId.GetValueOrDefault(0));
@@ -1314,7 +1314,7 @@ namespace Discord.WebSocket
                                             return;
                                         }
 
-                                        _ = TimedInvokeAsync(_userJoinedEvent, nameof(UserJoined), user).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_userJoinedEvent, nameof(UserJoined), user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1345,19 +1345,19 @@ namespace Discord.WebSocket
                                             if (user.GlobalUser.Update(State, data.User))
                                             {
                                                 //Global data was updated, trigger UserUpdated
-                                                _ = TimedInvokeAsync(_userUpdatedEvent, nameof(UserUpdated), before.GlobalUser, user).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_userUpdatedEvent, nameof(UserUpdated), before.GlobalUser, user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             }
 
                                             user.Update(State, data);
 
                                             var cacheableBefore = new Cacheable<SocketGuildUser, ulong>(before, user.Id, true, () => Task.FromResult<SocketGuildUser>(null));
-                                            _ = TimedInvokeAsync(_guildMemberUpdatedEvent, nameof(GuildMemberUpdated), cacheableBefore, user).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_guildMemberUpdatedEvent, nameof(GuildMemberUpdated), cacheableBefore, user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         }
                                         else
                                         {
                                             user = guild.AddOrUpdateUser(data);
                                             var cacheableBefore = new Cacheable<SocketGuildUser, ulong>(null, user.Id, false, () => Task.FromResult<SocketGuildUser>(null));
-                                            _ = TimedInvokeAsync(_guildMemberUpdatedEvent, nameof(GuildMemberUpdated), cacheableBefore, user).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_guildMemberUpdatedEvent, nameof(GuildMemberUpdated), cacheableBefore, user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             ;
                                         }
                                     }
@@ -1392,7 +1392,7 @@ namespace Discord.WebSocket
                                         else
                                             user = State.GetOrAddUser(data.User.Id, (x) => SocketGlobalUser.Create(this, State, data.User));
 
-                                        _ = TimedInvokeAsync(_userLeftEvent, nameof(UserLeft), guild, user).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_userLeftEvent, nameof(UserLeft), guild, user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1415,7 +1415,7 @@ namespace Discord.WebSocket
                                         if (guild.DownloadedMemberCount >= guild.MemberCount && !guild.DownloaderPromise.IsCompleted)
                                         {
                                             guild.CompleteDownloadUsers();
-                                            _ = TimedInvokeAsync(_guildMembersDownloadedEvent, nameof(GuildMembersDownloaded), guild).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_guildMembersDownloadedEvent, nameof(GuildMembersDownloaded), guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         }
                                     }
                                     else
@@ -1444,7 +1444,7 @@ namespace Discord.WebSocket
 
                                     var cacheableUser = new Cacheable<SocketGuildUser, ulong>(user, data.UserId, user != null, () => Task.FromResult((SocketGuildUser)null));
 
-                                    _ = TimedInvokeAsync(_guildJoinRequestDeletedEvent, nameof(GuildJoinRequestDeleted), cacheableUser, guild).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_guildJoinRequestDeletedEvent, nameof(GuildJoinRequestDeleted), cacheableUser, guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             #endregion
@@ -1459,7 +1459,7 @@ namespace Discord.WebSocket
                                     if (State.GetChannel(data.ChannelId) is SocketGroupChannel channel)
                                     {
                                         var user = channel.GetOrAddUser(data.User);
-                                        _ = TimedInvokeAsync(_recipientAddedEvent, nameof(RecipientAdded), user).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_recipientAddedEvent, nameof(RecipientAdded), user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1477,7 +1477,7 @@ namespace Discord.WebSocket
                                     {
                                         var user = channel.RemoveUser(data.User.Id);
                                         if (user != null)
-                                            _ = TimedInvokeAsync(_recipientRemovedEvent, nameof(RecipientRemoved), user).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_recipientRemovedEvent, nameof(RecipientRemoved), user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         else
                                         {
                                             await UnknownChannelUserAsync(type, data.User.Id, data.ChannelId);
@@ -1510,7 +1510,7 @@ namespace Discord.WebSocket
                                             await UnsyncedGuildAsync(type, guild.Id);
                                             return;
                                         }
-                                        _ = TimedInvokeAsync(_roleCreatedEvent, nameof(RoleCreated), role).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_roleCreatedEvent, nameof(RoleCreated), role).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1539,7 +1539,7 @@ namespace Discord.WebSocket
                                                 return;
                                             }
 
-                                            _ = TimedInvokeAsync(_roleUpdatedEvent, nameof(RoleUpdated), before, role).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_roleUpdatedEvent, nameof(RoleUpdated), before, role).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         }
                                         else
                                         {
@@ -1571,7 +1571,7 @@ namespace Discord.WebSocket
                                                 return;
                                             }
 
-                                            _ = TimedInvokeAsync(_roleDeletedEvent, nameof(RoleDeleted), role).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_roleDeletedEvent, nameof(RoleDeleted), role).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         }
                                         else
                                         {
@@ -1606,7 +1606,7 @@ namespace Discord.WebSocket
                                         SocketUser user = guild.GetUser(data.User.Id);
                                         if (user == null)
                                             user = SocketUnknownUser.Create(this, State, data.User);
-                                        _ = TimedInvokeAsync(_userBannedEvent, nameof(UserBanned), user, guild).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_userBannedEvent, nameof(UserBanned), user, guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1632,7 +1632,7 @@ namespace Discord.WebSocket
                                         SocketUser user = State.GetUser(data.User.Id);
                                         if (user == null)
                                             user = SocketUnknownUser.Create(this, State, data.User);
-                                        _ = TimedInvokeAsync(_userUnbannedEvent, nameof(UserUnbanned), user, guild).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_userUnbannedEvent, nameof(UserUnbanned), user, guild).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -1705,7 +1705,7 @@ namespace Discord.WebSocket
 
                                     var msg = SocketMessage.Create(this, State, author, channel, data);
                                     SocketChannelHelper.AddMessage(channel, this, msg);
-                                    _ = TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), msg).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), msg).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_UPDATE":
@@ -1791,7 +1791,7 @@ namespace Discord.WebSocket
                                     }
                                     var cacheableBefore = new Cacheable<IMessage, ulong>(before, data.Id, isCached, async () => await channel.GetMessageAsync(data.Id).ConfigureAwait(false));
 
-                                    _ = TimedInvokeAsync(_messageUpdatedEvent, nameof(MessageUpdated), cacheableBefore, after, channel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_messageUpdatedEvent, nameof(MessageUpdated), cacheableBefore, after, channel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_DELETE":
@@ -1814,7 +1814,7 @@ namespace Discord.WebSocket
                                     var cacheableMsg = new Cacheable<IMessage, ulong>(msg, data.Id, msg != null, () => Task.FromResult((IMessage)null));
                                     var cacheableChannel = new Cacheable<IMessageChannel, ulong>(channel, data.ChannelId, channel != null, async () => await GetChannelAsync(data.ChannelId).ConfigureAwait(false) as IMessageChannel);
 
-                                    _ = TimedInvokeAsync(_messageDeletedEvent, nameof(MessageDeleted), cacheableMsg, cacheableChannel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_messageDeletedEvent, nameof(MessageDeleted), cacheableMsg, cacheableChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_REACTION_ADD":
@@ -1858,7 +1858,7 @@ namespace Discord.WebSocket
 
                                     cachedMsg?.AddReaction(reaction);
 
-                                    _ = TimedInvokeAsync(_reactionAddedEvent, nameof(ReactionAdded), cacheableMsg, cacheableChannel, reaction).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_reactionAddedEvent, nameof(ReactionAdded), cacheableMsg, cacheableChannel, reaction).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_REACTION_REMOVE":
@@ -1894,7 +1894,7 @@ namespace Discord.WebSocket
 
                                     cachedMsg?.RemoveReaction(reaction);
 
-                                    _ = TimedInvokeAsync(_reactionRemovedEvent, nameof(ReactionRemoved), cacheableMsg, cacheableChannel, reaction).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_reactionRemovedEvent, nameof(ReactionRemoved), cacheableMsg, cacheableChannel, reaction).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_REACTION_REMOVE_ALL":
@@ -1915,7 +1915,7 @@ namespace Discord.WebSocket
 
                                     cachedMsg?.ClearReactions();
 
-                                    _ = TimedInvokeAsync(_reactionsClearedEvent, nameof(ReactionsCleared), cacheableMsg, cacheableChannel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_reactionsClearedEvent, nameof(ReactionsCleared), cacheableMsg, cacheableChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_REACTION_REMOVE_EMOJI":
@@ -1942,7 +1942,7 @@ namespace Discord.WebSocket
 
                                     cachedMsg?.RemoveReactionsForEmote(emote);
 
-                                    _ = TimedInvokeAsync(_reactionsRemovedForEmoteEvent, nameof(ReactionsRemovedForEmote), cacheableMsg, cacheableChannel, emote).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_reactionsRemovedForEmoteEvent, nameof(ReactionsRemovedForEmote), cacheableMsg, cacheableChannel, emote).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "MESSAGE_DELETE_BULK":
@@ -1971,7 +1971,7 @@ namespace Discord.WebSocket
                                         cacheableList.Add(cacheableMsg);
                                     }
 
-                                    _ = TimedInvokeAsync(_messagesBulkDeletedEvent, nameof(MessagesBulkDeleted), cacheableList, cacheableChannel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_messagesBulkDeletedEvent, nameof(MessagesBulkDeleted), cacheableList, cacheableChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             #endregion
@@ -2014,7 +2014,7 @@ namespace Discord.WebSocket
                                             if (user.GlobalUser.Update(State, data.User))
                                             {
                                                 //Global data was updated, trigger UserUpdated
-                                                _ = TimedInvokeAsync(_userUpdatedEvent, nameof(UserUpdated), globalBefore, user).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_userUpdatedEvent, nameof(UserUpdated), globalBefore, user).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             }
                                         }
                                     }
@@ -2031,7 +2031,7 @@ namespace Discord.WebSocket
                                     var before = user.Presence?.Clone();
                                     user.Update(State, data.User);
                                     user.Update(data);
-                                    _ = TimedInvokeAsync(_presenceUpdated, nameof(PresenceUpdated), user, before, user.Presence).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_presenceUpdated, nameof(PresenceUpdated), user, before, user.Presence).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "TYPING_START":
@@ -2058,7 +2058,7 @@ namespace Discord.WebSocket
                                     }
                                     var cacheableUser = new Cacheable<IUser, ulong>(user, data.UserId, user != null, async () => await GetUserAsync(data.UserId).ConfigureAwait(false));
 
-                                    _ = TimedInvokeAsync(_userIsTypingEvent, nameof(UserIsTyping), cacheableUser, cacheableChannel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_userIsTypingEvent, nameof(UserIsTyping), cacheableUser, cacheableChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             #endregion
@@ -2084,7 +2084,7 @@ namespace Discord.WebSocket
                                             return;
                                         }
 
-                                        _ = TimedInvokeAsync(_integrationCreated, nameof(IntegrationCreated), RestIntegration.Create(this, guild, data)).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_integrationCreated, nameof(IntegrationCreated), RestIntegration.Create(this, guild, data)).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -2113,7 +2113,7 @@ namespace Discord.WebSocket
                                             return;
                                         }
 
-                                        _ = TimedInvokeAsync(_integrationUpdated, nameof(IntegrationUpdated), RestIntegration.Create(this, guild, data)).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_integrationUpdated, nameof(IntegrationUpdated), RestIntegration.Create(this, guild, data)).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -2138,7 +2138,7 @@ namespace Discord.WebSocket
                                             return;
                                         }
 
-                                        _ = TimedInvokeAsync(_integrationDeleted, nameof(IntegrationDeleted), guild, data.Id, data.ApplicationID).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_integrationDeleted, nameof(IntegrationDeleted), guild, data.Id, data.ApplicationID).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -2159,7 +2159,7 @@ namespace Discord.WebSocket
                                     {
                                         var before = CurrentUser.Clone();
                                         CurrentUser.Update(State, data);
-                                        _ = TimedInvokeAsync(_selfUpdatedEvent, nameof(CurrentUserUpdated), before, CurrentUser).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_selfUpdatedEvent, nameof(CurrentUserUpdated), before, CurrentUser).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -2250,22 +2250,22 @@ namespace Discord.WebSocket
                                         {
                                             if (!before.RequestToSpeakTimestamp.HasValue && after.RequestToSpeakTimestamp.HasValue)
                                             {
-                                                _ = TimedInvokeAsync(_requestToSpeak, nameof(RequestToSpeak), stage, guildUser).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_requestToSpeak, nameof(RequestToSpeak), stage, guildUser).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                                 return;
                                             }
                                             if (before.IsSuppressed && !after.IsSuppressed)
                                             {
-                                                _ = TimedInvokeAsync(_speakerAdded, nameof(SpeakerAdded), stage, guildUser).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_speakerAdded, nameof(SpeakerAdded), stage, guildUser).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                                 return;
                                             }
                                             if (!before.IsSuppressed && after.IsSuppressed)
                                             {
-                                                _ = TimedInvokeAsync(_speakerRemoved, nameof(SpeakerRemoved), stage, guildUser).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_speakerRemoved, nameof(SpeakerRemoved), stage, guildUser).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             }
                                         }
                                     }
 
-                                    _ = TimedInvokeAsync(_userVoiceStateUpdatedEvent, nameof(UserVoiceStateUpdated), user, before, after).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_userVoiceStateUpdatedEvent, nameof(UserVoiceStateUpdated), user, before, after).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "VOICE_SERVER_UPDATE":
@@ -2279,7 +2279,7 @@ namespace Discord.WebSocket
                                         () => Task.FromResult(State.GetGuild(data.GuildId) as IGuild));
 
                                     var voiceServer = new SocketVoiceServer(cachedGuild, data.Endpoint, data.Token);
-                                    _ = TimedInvokeAsync(_voiceServerUpdatedEvent, nameof(UserVoiceStateUpdated), voiceServer).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_voiceServerUpdatedEvent, nameof(UserVoiceStateUpdated), voiceServer).ContinueWith(t => HandleInvokeException(t, opCode, type));
 
                                     if (isCached)
                                     {
@@ -2326,7 +2326,7 @@ namespace Discord.WebSocket
 
                                         var invite = SocketInvite.Create(this, guild, channel, inviter, target, data);
 
-                                        _ = TimedInvokeAsync(_inviteCreatedEvent, nameof(InviteCreated), invite).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_inviteCreatedEvent, nameof(InviteCreated), invite).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -2349,7 +2349,7 @@ namespace Discord.WebSocket
                                             return;
                                         }
 
-                                        _ = TimedInvokeAsync(_inviteDeletedEvent, nameof(InviteDeleted), channel, data.Code).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_inviteDeletedEvent, nameof(InviteDeleted), channel, data.Code).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
                                     {
@@ -2402,30 +2402,30 @@ namespace Discord.WebSocket
 
                                     var interaction = SocketInteraction.Create(this, data, channel as ISocketMessageChannel, user);
 
-                                    _ = TimedInvokeAsync(_interactionCreatedEvent, nameof(InteractionCreated), interaction).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_interactionCreatedEvent, nameof(InteractionCreated), interaction).ContinueWith(t => HandleInvokeException(t, opCode, type));
 
                                     switch (interaction)
                                     {
                                         case SocketSlashCommand slashCommand:
-                                            _ = TimedInvokeAsync(_slashCommandExecuted, nameof(SlashCommandExecuted), slashCommand).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_slashCommandExecuted, nameof(SlashCommandExecuted), slashCommand).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                         case SocketMessageComponent messageComponent:
                                             if (messageComponent.Data.Type.IsSelectType())
-                                                _ = TimedInvokeAsync(_selectMenuExecuted, nameof(SelectMenuExecuted), messageComponent).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_selectMenuExecuted, nameof(SelectMenuExecuted), messageComponent).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             if (messageComponent.Data.Type == ComponentType.Button)
-                                                _ = TimedInvokeAsync(_buttonExecuted, nameof(ButtonExecuted), messageComponent).ContinueWith(HandleInvokedEventException);
+                                                _ = TimedInvokeAsync(_buttonExecuted, nameof(ButtonExecuted), messageComponent).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                         case SocketUserCommand userCommand:
-                                            _ = TimedInvokeAsync(_userCommandExecuted, nameof(UserCommandExecuted), userCommand).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_userCommandExecuted, nameof(UserCommandExecuted), userCommand).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                         case SocketMessageCommand messageCommand:
-                                            _ = TimedInvokeAsync(_messageCommandExecuted, nameof(MessageCommandExecuted), messageCommand).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_messageCommandExecuted, nameof(MessageCommandExecuted), messageCommand).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                         case SocketAutocompleteInteraction autocomplete:
-                                            _ = TimedInvokeAsync(_autocompleteExecuted, nameof(AutocompleteExecuted), autocomplete).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_autocompleteExecuted, nameof(AutocompleteExecuted), autocomplete).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                         case SocketModal modal:
-                                            _ = TimedInvokeAsync(_modalSubmitted, nameof(ModalSubmitted), modal).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_modalSubmitted, nameof(ModalSubmitted), modal).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                     }
                                 }
@@ -2450,7 +2450,7 @@ namespace Discord.WebSocket
 
                                     State.AddCommand(applicationCommand);
 
-                                    _ = TimedInvokeAsync(_applicationCommandCreated, nameof(ApplicationCommandCreated), applicationCommand).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_applicationCommandCreated, nameof(ApplicationCommandCreated), applicationCommand).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "APPLICATION_COMMAND_UPDATE":
@@ -2473,7 +2473,7 @@ namespace Discord.WebSocket
 
                                     State.AddCommand(applicationCommand);
 
-                                    _ = TimedInvokeAsync(_applicationCommandUpdated, nameof(ApplicationCommandUpdated), applicationCommand).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_applicationCommandUpdated, nameof(ApplicationCommandUpdated), applicationCommand).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "APPLICATION_COMMAND_DELETE":
@@ -2496,7 +2496,7 @@ namespace Discord.WebSocket
 
                                     State.RemoveCommand(applicationCommand.Id);
 
-                                    _ = TimedInvokeAsync(_applicationCommandDeleted, nameof(ApplicationCommandDeleted), applicationCommand).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_applicationCommandDeleted, nameof(ApplicationCommandDeleted), applicationCommand).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             #endregion
@@ -2532,7 +2532,7 @@ namespace Discord.WebSocket
                                             threadChannel.AddOrUpdateThreadMember(data.ThreadMember.Value, guild.CurrentUser);
                                     }
 
-                                    _ = TimedInvokeAsync(_threadCreated, nameof(ThreadCreated), threadChannel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_threadCreated, nameof(ThreadCreated), threadChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
 
                                 break;
@@ -2574,7 +2574,7 @@ namespace Discord.WebSocket
                                         return;
                                     }
 
-                                    _ = TimedInvokeAsync(_threadUpdated, nameof(ThreadUpdated), before, threadChannel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_threadUpdated, nameof(ThreadUpdated), before, threadChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "THREAD_DELETE":
@@ -2595,7 +2595,7 @@ namespace Discord.WebSocket
 
                                     var cacheable = new Cacheable<SocketThreadChannel, ulong>(thread, data.Id, thread != null, null);
 
-                                    _ = TimedInvokeAsync(_threadDeleted, nameof(ThreadDeleted), cacheable).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_threadDeleted, nameof(ThreadDeleted), cacheable).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "THREAD_LIST_SYNC":
@@ -2708,7 +2708,7 @@ namespace Discord.WebSocket
                                     {
                                         foreach (var threadUser in leftUsers)
                                         {
-                                            _ = TimedInvokeAsync(_threadMemberLeft, nameof(ThreadMemberLeft), threadUser).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_threadMemberLeft, nameof(ThreadMemberLeft), threadUser).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         }
                                     }
 
@@ -2716,7 +2716,7 @@ namespace Discord.WebSocket
                                     {
                                         foreach (var threadUser in joinUsers)
                                         {
-                                            _ = TimedInvokeAsync(_threadMemberJoined, nameof(ThreadMemberJoined), threadUser).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_threadMemberJoined, nameof(ThreadMemberJoined), threadUser).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                         }
                                     }
                                 }
@@ -2754,13 +2754,13 @@ namespace Discord.WebSocket
                                     switch (type)
                                     {
                                         case "STAGE_INSTANCE_CREATE":
-                                            _ = TimedInvokeAsync(_stageStarted, nameof(StageStarted), stageChannel).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_stageStarted, nameof(StageStarted), stageChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             return;
                                         case "STAGE_INSTANCE_DELETE":
-                                            _ = TimedInvokeAsync(_stageEnded, nameof(StageEnded), stageChannel).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_stageEnded, nameof(StageEnded), stageChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             return;
                                         case "STAGE_INSTANCE_UPDATE":
-                                            _ = TimedInvokeAsync(_stageUpdated, nameof(StageUpdated), before, stageChannel).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_stageUpdated, nameof(StageUpdated), before, stageChannel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             return;
                                     }
                                 }
@@ -2784,7 +2784,7 @@ namespace Discord.WebSocket
 
                                     var newEvent = guild.AddOrUpdateEvent(data);
 
-                                    _ = TimedInvokeAsync(_guildScheduledEventCreated, nameof(GuildScheduledEventCreated), newEvent).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_guildScheduledEventCreated, nameof(GuildScheduledEventCreated), newEvent).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "GUILD_SCHEDULED_EVENT_UPDATE":
@@ -2809,14 +2809,14 @@ namespace Discord.WebSocket
 
                                     if ((before != null ? before.Status != GuildScheduledEventStatus.Completed : true) && data.Status == GuildScheduledEventStatus.Completed)
                                     {
-                                        _ = TimedInvokeAsync(_guildScheduledEventCompleted, nameof(GuildScheduledEventCompleted), after).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildScheduledEventCompleted, nameof(GuildScheduledEventCompleted), after).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else if ((before != null ? before.Status != GuildScheduledEventStatus.Active : false) && data.Status == GuildScheduledEventStatus.Active)
                                     {
-                                        _ = TimedInvokeAsync(_guildScheduledEventStarted, nameof(GuildScheduledEventStarted), after).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildScheduledEventStarted, nameof(GuildScheduledEventStarted), after).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                     }
                                     else
-                                        _ = TimedInvokeAsync(_guildScheduledEventUpdated, nameof(GuildScheduledEventUpdated), beforeCacheable, after).ContinueWith(HandleInvokedEventException);
+                                        _ = TimedInvokeAsync(_guildScheduledEventUpdated, nameof(GuildScheduledEventUpdated), beforeCacheable, after).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "GUILD_SCHEDULED_EVENT_DELETE":
@@ -2835,7 +2835,7 @@ namespace Discord.WebSocket
 
                                     var guildEvent = guild.RemoveEvent(data.Id) ?? SocketGuildEvent.Create(this, guild, data);
 
-                                    _ = TimedInvokeAsync(_guildScheduledEventCancelled, nameof(GuildScheduledEventCancelled), guildEvent).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_guildScheduledEventCancelled, nameof(GuildScheduledEventCancelled), guildEvent).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
                             case "GUILD_SCHEDULED_EVENT_USER_ADD" or "GUILD_SCHEDULED_EVENT_USER_REMOVE":
@@ -2867,10 +2867,10 @@ namespace Discord.WebSocket
                                     switch (type)
                                     {
                                         case "GUILD_SCHEDULED_EVENT_USER_ADD":
-                                            _ = TimedInvokeAsync(_guildScheduledEventUserAdd, nameof(GuildScheduledEventUserAdd), cacheableUser, guildEvent).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_guildScheduledEventUserAdd, nameof(GuildScheduledEventUserAdd), cacheableUser, guildEvent).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                         case "GUILD_SCHEDULED_EVENT_USER_REMOVE":
-                                            _ = TimedInvokeAsync(_guildScheduledEventUserRemove, nameof(GuildScheduledEventUserRemove), cacheableUser, guildEvent).ContinueWith(HandleInvokedEventException);
+                                            _ = TimedInvokeAsync(_guildScheduledEventUserRemove, nameof(GuildScheduledEventUserRemove), cacheableUser, guildEvent).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                             break;
                                     }
                                 }
@@ -2889,7 +2889,7 @@ namespace Discord.WebSocket
                                     var guild = State.GetGuild(data.GuildId);
                                     var channel = State.GetChannel(data.ChannelId);
 
-                                    _ = TimedInvokeAsync(_webhooksUpdated, nameof(WebhooksUpdated), guild, channel).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_webhooksUpdated, nameof(WebhooksUpdated), guild, channel).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
 
@@ -2905,7 +2905,7 @@ namespace Discord.WebSocket
 
                                     var rule = guild.AddOrUpdateAutoModRule(data);
 
-                                    _ = TimedInvokeAsync(_autoModRuleCreated, nameof(AutoModRuleCreated), rule).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_autoModRuleCreated, nameof(AutoModRuleCreated), rule).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
 
@@ -2921,7 +2921,7 @@ namespace Discord.WebSocket
                                         cachedRule is not null,
                                         async () => await guild.GetAutoModRuleAsync(data.Id));
 
-                                    _ = TimedInvokeAsync(_autoModRuleUpdated, nameof(AutoModRuleUpdated), cacheableBefore, guild.AddOrUpdateAutoModRule(data)).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_autoModRuleUpdated, nameof(AutoModRuleUpdated), cacheableBefore, guild.AddOrUpdateAutoModRule(data)).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
 
@@ -2933,7 +2933,7 @@ namespace Discord.WebSocket
 
                                     var rule = guild.RemoveAutoModRule(data);
 
-                                    _ = TimedInvokeAsync(_autoModRuleDeleted, nameof(AutoModRuleDeleted), rule).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_autoModRuleDeleted, nameof(AutoModRuleDeleted), rule).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
 
@@ -3023,7 +3023,7 @@ namespace Discord.WebSocket
                                             ? data.MatchedKeyword.Value
                                             : null);
 
-                                    _ = TimedInvokeAsync(_autoModActionExecuted, nameof(AutoModActionExecuted), guild, action, eventData).ContinueWith(HandleInvokedEventException);
+                                    _ = TimedInvokeAsync(_autoModActionExecuted, nameof(AutoModActionExecuted), guild, action, eventData).ContinueWith(t => HandleInvokeException(t, opCode, type));
                                 }
                                 break;
 
@@ -3208,7 +3208,7 @@ namespace Discord.WebSocket
             if (!guild.IsConnected)
             {
                 guild.IsConnected = true;
-                return TimedInvokeAsync(_guildAvailableEvent, nameof(GuildAvailable), guild).ContinueWith(HandleInvokedEventException);
+                return TimedInvokeAsync(_guildAvailableEvent, nameof(GuildAvailable), guild).ContinueWith(t => HandleInvokeException(t));
             }
             return Task.CompletedTask;
         }
@@ -3217,7 +3217,7 @@ namespace Discord.WebSocket
             if (guild.IsConnected)
             {
                 guild.IsConnected = false;
-                return TimedInvokeAsync(_guildUnavailableEvent, nameof(GuildUnavailable), guild).ContinueWith(HandleInvokedEventException);
+                return TimedInvokeAsync(_guildUnavailableEvent, nameof(GuildUnavailable), guild).ContinueWith(t => HandleInvokeException(t));
             }
             return Task.CompletedTask;
         }
