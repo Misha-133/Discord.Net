@@ -7,7 +7,7 @@ namespace Discord.Rest
         public static async Task DeleteAsync(IInvite invite, BaseDiscordClient client,
             RequestOptions options)
         {
-            await client.ApiClient.DeleteInviteAsync(invite.Code, options).ConfigureAwait(false);
+            await client.ApiClient.DeleteInviteAsync(invite.Code, options);
         }
     }
 }

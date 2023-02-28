@@ -30,7 +30,7 @@ namespace Discord.Interactions.Builders
                 }
                 else if (IsLoadableModule(type))
                 {
-                    await commandService._cmdLogger.WarningAsync($"Class {type.FullName} is not public and cannot be loaded.").ConfigureAwait(false);
+                    await commandService._cmdLogger.WarningAsync($"Class {type.FullName} is not public and cannot be loaded.");
                 }
             }
             return result;
@@ -57,7 +57,7 @@ namespace Discord.Interactions.Builders
                 result.Add(type.AsType(), moduleInfo);
             }
 
-            await commandService._cmdLogger.DebugAsync($"Successfully built {built.Count} Slash Command modules.").ConfigureAwait(false);
+            await commandService._cmdLogger.DebugAsync($"Successfully built {built.Count} Slash Command modules.");
 
             return result;
         }
@@ -396,29 +396,29 @@ namespace Discord.Interactions.Builders
 
                 try
                 {
-                    await instance.BeforeExecuteAsync(commandInfo).ConfigureAwait(false);
+                    await instance.BeforeExecuteAsync(commandInfo);
                     instance.BeforeExecute(commandInfo);
                     var task = commandInvoker(instance, args) ?? Task.Delay(0);
 
                     if (task is Task<RuntimeResult> runtimeTask)
                     {
-                        return await runtimeTask.ConfigureAwait(false);
+                        return await runtimeTask;
                     }
                     else
                     {
-                        await task.ConfigureAwait(false);
+                        await task;
                         return ExecuteResult.FromSuccess();
 
                     }
                 }
                 catch (Exception ex)
                 {
-                    await commandService._cmdLogger.ErrorAsync(ex).ConfigureAwait(false);
+                    await commandService._cmdLogger.ErrorAsync(ex);
                     return ExecuteResult.FromError(ex);
                 }
                 finally
                 {
-                    await instance.AfterExecuteAsync(commandInfo).ConfigureAwait(false);
+                    await instance.AfterExecuteAsync(commandInfo);
                     instance.AfterExecute(commandInfo);
                     (instance as IDisposable)?.Dispose();
                 }

@@ -29,7 +29,7 @@ namespace Discord.Interactions
             if (context.Interaction is not IComponentInteraction)
                 return ExecuteResult.FromError(InteractionCommandError.ParseFailed, $"Provided {nameof(IInteractionContext)} doesn't belong to a Message Component Interaction");
 
-            return await base.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await base.ExecuteAsync(context, services);
         }
 
         protected override async Task<IResult> ParseArgumentsAsync(IInteractionContext context, IServiceProvider services)
@@ -48,13 +48,13 @@ namespace Discord.Interactions
                     var isCapture = i < captureCount;
 
                     if (isCapture ^ parameter.IsRouteSegmentParameter)
-                        return await InvokeEventAndReturn(context, ExecuteResult.FromError(InteractionCommandError.BadArgs, "Argument type and parameter type didn't match (Wild Card capture/Component value)")).ConfigureAwait(false);
+                        return await InvokeEventAndReturn(context, ExecuteResult.FromError(InteractionCommandError.BadArgs, "Argument type and parameter type didn't match (Wild Card capture/Component value)"));
 
                     var readResult = isCapture ? await parameter.TypeReader.ReadAsync(context, captures[i].Value, services).ConfigureAwait(false) :
-                        await parameter.TypeConverter.ReadAsync(context, data, services).ConfigureAwait(false);
+                        await parameter.TypeConverter.ReadAsync(context, data, services);
 
                     if (!readResult.IsSuccess)
-                        return await InvokeEventAndReturn(context, readResult).ConfigureAwait(false);
+                        return await InvokeEventAndReturn(context, readResult);
 
                     args[i] = readResult.Value;
                 }
@@ -63,7 +63,7 @@ namespace Discord.Interactions
             }
             catch (Exception ex)
             {
-                return await InvokeEventAndReturn(context, ExecuteResult.FromError(ex)).ConfigureAwait(false);
+                return await InvokeEventAndReturn(context, ExecuteResult.FromError(ex));
             }
         }
 

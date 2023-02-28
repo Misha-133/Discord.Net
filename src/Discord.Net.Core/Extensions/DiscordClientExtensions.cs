@@ -28,7 +28,7 @@ namespace Discord
         /// <summary> Gets the most optimal voice region for the client. </summary>
         public static async Task<IVoiceRegion> GetOptimalVoiceRegionAsync(this IDiscordClient discord)
         {
-            var regions = await discord.GetVoiceRegionsAsync().ConfigureAwait(false);
+            var regions = await discord.GetVoiceRegionsAsync();
             return regions.FirstOrDefault(x => x.IsOptimal);
         }
     }

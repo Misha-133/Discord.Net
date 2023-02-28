@@ -97,7 +97,7 @@ namespace Discord.Rest
         /// <inheritdoc />
         public virtual async Task UpdateAsync(RequestOptions options = null)
         {
-            var model = await Discord.ApiClient.GetUserAsync(Id, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.GetUserAsync(Id, options);
             Update(model);
         }
 
@@ -138,7 +138,7 @@ namespace Discord.Rest
         #region IUser
         /// <inheritdoc />
         async Task<IDMChannel> IUser.CreateDMChannelAsync(RequestOptions options)
-            => await CreateDMChannelAsync(options).ConfigureAwait(false);
+            => await CreateDMChannelAsync(options);
         #endregion
     }
 }

@@ -33,7 +33,7 @@ namespace Discord.Audio.Streams
                     //We have enough data and no partial frames. Pass the buffer directly to the encoder
                     int encFrameSize = _encoder.EncodeFrame(buffer, offset, _buffer, 0);
                     _next.WriteHeader(_seq, _timestamp, false);
-                    await _next.WriteAsync(_buffer, 0, encFrameSize, cancelToken).ConfigureAwait(false);
+                    await _next.WriteAsync(_buffer, 0, encFrameSize, cancelToken);
 
                     offset += OpusConverter.FrameBytes;
                     count -= OpusConverter.FrameBytes;
@@ -47,7 +47,7 @@ namespace Discord.Audio.Streams
                     Buffer.BlockCopy(buffer, offset, _buffer, _partialFramePos, partialSize);
                     int encFrameSize = _encoder.EncodeFrame(_buffer, 0, _buffer, 0);
                     _next.WriteHeader(_seq, _timestamp, false);
-                    await _next.WriteAsync(_buffer, 0, encFrameSize, cancelToken).ConfigureAwait(false);
+                    await _next.WriteAsync(_buffer, 0, encFrameSize, cancelToken);
 
                     offset += partialSize;
                     count -= partialSize;
@@ -75,16 +75,16 @@ namespace Discord.Audio.Streams
             }
             catch (Exception) { } //Incomplete frame
             _partialFramePos = 0;
-            await base.FlushAsync(cancelToken).ConfigureAwait(false);
+            await base.FlushAsync(cancelToken);
         }*/
 
         public override async Task FlushAsync(CancellationToken cancelToken)
         {
-            await _next.FlushAsync(cancelToken).ConfigureAwait(false);
+            await _next.FlushAsync(cancelToken);
         }
         public override async Task ClearAsync(CancellationToken cancelToken)
         {
-            await _next.ClearAsync(cancelToken).ConfigureAwait(false);
+            await _next.ClearAsync(cancelToken);
         }
 
         protected override void Dispose(bool disposing)

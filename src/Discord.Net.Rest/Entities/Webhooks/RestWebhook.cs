@@ -76,7 +76,7 @@ namespace Discord.Rest
         /// <inheritdoc />
         public async Task UpdateAsync(RequestOptions options = null)
         {
-            var model = await Discord.ApiClient.GetWebhookAsync(Id, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.GetWebhookAsync(Id, options);
             Update(model);
         }
 
@@ -86,7 +86,7 @@ namespace Discord.Rest
 
         public async Task ModifyAsync(Action<WebhookProperties> func, RequestOptions options = null)
         {
-            var model = await WebhookHelper.ModifyAsync(this, Discord, func, options).ConfigureAwait(false);
+            var model = await WebhookHelper.ModifyAsync(this, Discord, func, options);
             Update(model);
         }
 

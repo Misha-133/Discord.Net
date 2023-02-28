@@ -37,7 +37,7 @@ namespace Discord.Interactions
             cancellationToken.Register(() => tcs.SetCanceled());
 
             client.InteractionCreated += HandleInteraction;
-            var result = await tcs.Task.ConfigureAwait(false);
+            var result = await tcs.Task;
             client.InteractionCreated -= HandleInteraction;
 
             return result;
@@ -98,11 +98,11 @@ namespace Discord.Interactions
                 .WithButton("Cancel", declineId, ButtonStyle.Danger)
                 .Build();
 
-            var prompt = await channel.SendMessageAsync(message, components: component).ConfigureAwait(false);
+            var prompt = await channel.SendMessageAsync(message, components: component);
 
             var response = await WaitForMessageComponentAsync(client, prompt, timeout, cancellationToken).ConfigureAwait(false) as SocketMessageComponent;
 
-            await prompt.DeleteAsync().ConfigureAwait(false);
+            await prompt.DeleteAsync();
 
             if (response != null && response.Data.CustomId == confirmId)
                 return true;

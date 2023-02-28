@@ -132,13 +132,13 @@ namespace Discord.Rest
         /// <inheritdoc />
         public override async Task UpdateAsync(RequestOptions options = null)
         {
-            var model = await Discord.ApiClient.GetGuildMemberAsync(GuildId, Id, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.GetGuildMemberAsync(GuildId, Id, options);
             Update(model);
         }
         /// <inheritdoc />
         public async Task ModifyAsync(Action<GuildUserProperties> func, RequestOptions options = null)
         {
-            var args = await UserHelper.ModifyAsync(this, Discord, func, options).ConfigureAwait(false);
+            var args = await UserHelper.ModifyAsync(this, Discord, func, options);
             if (args.Deaf.IsSpecified)
                 IsDeafened = args.Deaf.Value;
             if (args.Mute.IsSpecified)

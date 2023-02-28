@@ -54,8 +54,8 @@ namespace Discord.Net.Queue
             LastAttemptAt = DateTimeOffset.UtcNow;
             while (true)
             {
-                await _queue.EnterGlobalAsync(id, request).ConfigureAwait(false);
-                await EnterAsync(id, request).ConfigureAwait(false);
+                await _queue.EnterGlobalAsync(id, request);
+                await EnterAsync(id, request);
                 if (_redirectBucket != null)
                     return await _redirectBucket.SendAsync(request);
 
@@ -65,7 +65,7 @@ namespace Discord.Net.Queue
                 RateLimitInfo info = default(RateLimitInfo);
                 try
                 {
-                    var response = await request.SendAsync().ConfigureAwait(false);
+                    var response = await request.SendAsync();
                     info = new RateLimitInfo(response.Headers, request.Endpoint);
 
                     request.Options.ExecuteRatelimitCallback(info);
@@ -89,7 +89,7 @@ namespace Discord.Net.Queue
 #endif
                                     UpdateRateLimit(id, request, info, true, body: response.Stream);
                                 }
-                                await _queue.RaiseRateLimitTriggered(Id, info, $"{request.Method} {request.Endpoint}").ConfigureAwait(false);
+                                await _queue.RaiseRateLimitTriggered(Id, info, $"{request.Method} {request.Endpoint}");
                                 continue; //Retry
                             case HttpStatusCode.BadGateway: //502
 #if DEBUG_LIMITS
@@ -140,7 +140,7 @@ namespace Discord.Net.Queue
                     if ((request.Options.RetryMode & RetryMode.RetryTimeouts) == 0)
                         throw;
 
-                    await Task.Delay(500).ConfigureAwait(false);
+                    await Task.Delay(500);
                     continue; //Retry
                 }
                 /*catch (Exception)
@@ -172,15 +172,15 @@ namespace Discord.Net.Queue
             LastAttemptAt = DateTimeOffset.UtcNow;
             while (true)
             {
-                await _queue.EnterGlobalAsync(id, request).ConfigureAwait(false);
-                await EnterAsync(id, request).ConfigureAwait(false);
+                await _queue.EnterGlobalAsync(id, request);
+                await EnterAsync(id, request);
 
 #if DEBUG_LIMITS
                 Debug.WriteLine($"[{id}] Sending...");
 #endif
                 try
                 {
-                    await request.SendAsync().ConfigureAwait(false);
+                    await request.SendAsync();
                     return;
                 }
                 catch (TimeoutException)
@@ -191,7 +191,7 @@ namespace Discord.Net.Queue
                     if ((request.Options.RetryMode & RetryMode.RetryTimeouts) == 0)
                         throw;
 
-                    await Task.Delay(500).ConfigureAwait(false);
+                    await Task.Delay(500);
                     continue; //Retry
                 }
                 /*catch (Exception)
@@ -220,7 +220,7 @@ namespace Discord.Net.Queue
 #if DEBUG_LIMITS
             Debug.WriteLine($"[{id}] Trigger Bucket");
 #endif
-            await EnterAsync(id, request).ConfigureAwait(false);
+            await EnterAsync(id, request);
             UpdateRateLimit(id, request, default(RateLimitInfo), false);
         }
 
@@ -260,7 +260,7 @@ namespace Discord.Net.Queue
                         switch (request)
                         {
                             case RestRequest restRequest:
-                                await _queue.RaiseRateLimitTriggered(Id, null, $"{restRequest.Method} {restRequest.Endpoint}").ConfigureAwait(false);
+                                await _queue.RaiseRateLimitTriggered(Id, null, $"{restRequest.Method} {restRequest.Endpoint}");
                                 break;
                             case WebSocketRequest webSocketRequest:
                                 if (webSocketRequest.IgnoreLimit)
@@ -268,7 +268,7 @@ namespace Discord.Net.Queue
                                     ignoreRatelimit = true;
                                     break;
                                 }
-                                await _queue.RaiseRateLimitTriggered(Id, null, Id.Endpoint).ConfigureAwait(false);
+                                await _queue.RaiseRateLimitTriggered(Id, null, Id.Endpoint);
                                 break;
                             default:
                                 throw new InvalidOperationException("Unknown request type");
@@ -294,7 +294,7 @@ namespace Discord.Net.Queue
                         Debug.WriteLine($"[{id}] Sleeping {millis} ms (Pre-emptive)");
 #endif
                         if (millis > 0)
-                            await Task.Delay(millis, request.Options.CancelToken).ConfigureAwait(false);
+                            await Task.Delay(millis, request.Options.CancelToken);
                     }
                     else
                     {
@@ -303,7 +303,7 @@ namespace Discord.Net.Queue
 #if DEBUG_LIMITS
                         Debug.WriteLine($"[{id}] Sleeping {MinimumSleepTimeMs}* ms (Pre-emptive)");
 #endif
-                        await Task.Delay(MinimumSleepTimeMs, request.Options.CancelToken).ConfigureAwait(false);
+                        await Task.Delay(MinimumSleepTimeMs, request.Options.CancelToken);
                     }
                     continue;
                 }
@@ -466,7 +466,7 @@ namespace Discord.Net.Queue
             while (true)
             {
                 if (millis > 0)
-                    await Task.Delay(millis).ConfigureAwait(false);
+                    await Task.Delay(millis);
                 lock (_lock)
                 {
                     millis = (int)Math.Ceiling((_resetTick.Value - DateTimeOffset.UtcNow).TotalMilliseconds);

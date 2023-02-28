@@ -58,7 +58,7 @@ namespace Discord.Commands
         {
             IGuildUser guildUser = null;
             if (context.Guild != null)
-                guildUser = await context.Guild.GetCurrentUserAsync().ConfigureAwait(false);
+                guildUser = await context.Guild.GetCurrentUserAsync();
 
             if (GuildPermission.HasValue)
             {

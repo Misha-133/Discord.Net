@@ -133,7 +133,7 @@ namespace Discord.Commands
                     {
                         foreach (PreconditionAttribute precondition in preconditionGroup)
                         {
-                            var result = await precondition.CheckPermissionsAsync(context, this, services).ConfigureAwait(false);
+                            var result = await precondition.CheckPermissionsAsync(context, this, services);
                             if (!result.IsSuccess)
                                 return result;
                         }
@@ -151,11 +151,11 @@ namespace Discord.Commands
                 return PreconditionGroupResult.FromSuccess();
             }
 
-            var moduleResult = await CheckGroups(Module.Preconditions, "Module").ConfigureAwait(false);
+            var moduleResult = await CheckGroups(Module.Preconditions, "Module");
             if (!moduleResult.IsSuccess)
                 return moduleResult;
 
-            var commandResult = await CheckGroups(Preconditions, "Command").ConfigureAwait(false);
+            var commandResult = await CheckGroups(Preconditions, "Command");
             if (!commandResult.IsSuccess)
                 return commandResult;
 
@@ -173,7 +173,7 @@ namespace Discord.Commands
 
             string input = searchResult.Text.Substring(startIndex);
 
-            return await CommandParser.ParseArgsAsync(this, context, _commandService._ignoreExtraArgs, services, input, 0, _commandService._quotationMarkAliasMap).ConfigureAwait(false);
+            return await CommandParser.ParseArgsAsync(this, context, _commandService._ignoreExtraArgs, services, input, 0, _commandService._quotationMarkAliasMap);
         }
 
         public Task<IResult> ExecuteAsync(ICommandContext context, ParseResult parseResult, IServiceProvider services)
@@ -211,10 +211,10 @@ namespace Discord.Commands
                 {
                     var parameter = Parameters[position];
                     object argument = args[position];
-                    var result = await parameter.CheckPreconditionsAsync(context, argument, services).ConfigureAwait(false);
+                    var result = await parameter.CheckPreconditionsAsync(context, argument, services);
                     if (!result.IsSuccess)
                     {
-                        await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                        await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result);
                         return ExecuteResult.FromError(result);
                     }
                 }
@@ -222,11 +222,11 @@ namespace Discord.Commands
                 switch (RunMode)
                 {
                     case RunMode.Sync: //Always sync
-                        return await ExecuteInternalAsync(context, args, services).ConfigureAwait(false);
+                        return await ExecuteInternalAsync(context, args, services);
                     case RunMode.Async: //Always async
                         var t2 = Task.Run(async () =>
                         {
-                            await ExecuteInternalAsync(context, args, services).ConfigureAwait(false);
+                            await ExecuteInternalAsync(context, args, services);
                         });
                         break;
                 }
@@ -240,28 +240,28 @@ namespace Discord.Commands
 
         private async Task<IResult> ExecuteInternalAsync(ICommandContext context, object[] args, IServiceProvider services)
         {
-            await Module.Service._cmdLogger.DebugAsync($"Executing {GetLogText(context)}").ConfigureAwait(false);
+            await Module.Service._cmdLogger.DebugAsync($"Executing {GetLogText(context)}");
             try
             {
                 var task = _action(context, args, services, this);
                 if (task is Task<IResult> resultTask)
                 {
-                    var result = await resultTask.ConfigureAwait(false);
-                    await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                    var result = await resultTask;
+                    await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result);
                     if (result is RuntimeResult execResult)
                         return execResult;
                 }
                 else if (task is Task<ExecuteResult> execTask)
                 {
-                    var result = await execTask.ConfigureAwait(false);
-                    await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                    var result = await execTask;
+                    await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result);
                     return result;
                 }
                 else
                 {
-                    await task.ConfigureAwait(false);
+                    await task;
                     var result = ExecuteResult.FromSuccess();
-                    await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                    await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result);
                 }
 
                 var executeResult = ExecuteResult.FromSuccess();
@@ -274,10 +274,10 @@ namespace Discord.Commands
                     ex = ex.InnerException;
 
                 var wrappedEx = new CommandException(this, context, ex);
-                await Module.Service._cmdLogger.ErrorAsync(wrappedEx).ConfigureAwait(false);
+                await Module.Service._cmdLogger.ErrorAsync(wrappedEx);
 
                 var result = ExecuteResult.FromError(ex);
-                await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                await Module.Service._commandExecutedEvent.InvokeAsync(this, context, result);
 
                 if (Module.Service._throwOnError)
                 {
@@ -291,7 +291,7 @@ namespace Discord.Commands
             }
             finally
             {
-                await Module.Service._cmdLogger.VerboseAsync($"Executed {GetLogText(context)}").ConfigureAwait(false);
+                await Module.Service._cmdLogger.VerboseAsync($"Executed {GetLogText(context)}");
             }
         }
 

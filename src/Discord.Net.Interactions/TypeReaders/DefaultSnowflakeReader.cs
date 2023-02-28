@@ -13,7 +13,7 @@ namespace Discord.Interactions
             if (!ulong.TryParse(option, out var snowflake))
                 return TypeConverterResult.FromError(InteractionCommandError.ConvertFailed, $"{option} isn't a valid snowflake thus cannot be converted into {typeof(T).Name}");
 
-            var result = await GetEntity(snowflake, context).ConfigureAwait(false);
+            var result = await GetEntity(snowflake, context);
 
             return result is not null ?
                 TypeConverterResult.FromSuccess(result) : TypeConverterResult.FromError(InteractionCommandError.ConvertFailed, $"{option} must be a valid {typeof(T).Name} snowflake to be parsed.");

@@ -33,16 +33,16 @@ namespace Discord.Audio.Streams
 
             Buffer.BlockCopy(buffer, 0, _nonce, 0, 12); //Copy RTP header to nonce
             count = SecretBox.Decrypt(buffer, offset + 12, count - 12, buffer, offset + 12, _nonce, _client.SecretKey);
-            await _next.WriteAsync(buffer, 0, count + 12, cancelToken).ConfigureAwait(false);
+            await _next.WriteAsync(buffer, 0, count + 12, cancelToken);
         }
 
         public override async Task FlushAsync(CancellationToken cancelToken)
         {
-            await _next.FlushAsync(cancelToken).ConfigureAwait(false);
+            await _next.FlushAsync(cancelToken);
         }
         public override async Task ClearAsync(CancellationToken cancelToken)
         {
-            await _next.ClearAsync(cancelToken).ConfigureAwait(false);
+            await _next.ClearAsync(cancelToken);
         }
 
         protected override void Dispose(bool disposing)

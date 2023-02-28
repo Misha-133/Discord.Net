@@ -91,7 +91,7 @@ namespace Discord.Rest
         /// <exception cref="InvalidOperationException">Unable to update this object from a different application token.</exception>
         public async Task UpdateAsync()
         {
-            var response = await Discord.ApiClient.GetMyApplicationAsync().ConfigureAwait(false);
+            var response = await Discord.ApiClient.GetMyApplicationAsync();
             if (response.Id != Id)
                 throw new InvalidOperationException("Unable to update this object from a different application token.");
             Update(response);

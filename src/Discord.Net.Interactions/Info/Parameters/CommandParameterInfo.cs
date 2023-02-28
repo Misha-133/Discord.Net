@@ -51,7 +51,7 @@ namespace Discord.Interactions
         {
             foreach (var precondition in Preconditions)
             {
-                var result = await precondition.CheckRequirementsAsync(context, this, value, services).ConfigureAwait(false);
+                var result = await precondition.CheckRequirementsAsync(context, this, value, services);
                 if (!result.IsSuccess)
                     return result;
             }

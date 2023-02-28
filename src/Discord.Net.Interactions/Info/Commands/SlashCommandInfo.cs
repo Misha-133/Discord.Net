@@ -89,10 +89,10 @@ namespace Discord.Interactions
             for (var i = 0; i < Parameters.Count; i++)
             {
                 var parameter = Parameters[i];
-                var result = await ParseArgumentAsync(parameter, context, options, services).ConfigureAwait(false);
+                var result = await ParseArgumentAsync(parameter, context, options, services);
 
                 if (!result.IsSuccess)
-                    return await InvokeEventAndReturn(context, ParseResult.FromError(result)).ConfigureAwait(false);
+                    return await InvokeEventAndReturn(context, ParseResult.FromError(result));
 
                 if (result is not TypeConverterResult converterResult)
                     return ExecuteResult.FromError(InteractionCommandError.BadArgs, "Complex command parsing failed for an unknown reason.");
@@ -111,7 +111,7 @@ namespace Discord.Interactions
 
                 for (var i = 0; i < ctorArgs.Length; i++)
                 {
-                    var result = await ParseArgumentAsync(parameterInfo.ComplexParameterFields.ElementAt(i), context, argList, services).ConfigureAwait(false);
+                    var result = await ParseArgumentAsync(parameterInfo.ComplexParameterFields.ElementAt(i), context, argList, services);
 
                     if (!result.IsSuccess)
                         return result;
@@ -132,7 +132,7 @@ namespace Discord.Interactions
                     TypeConverterResult.FromSuccess(parameterInfo.DefaultValue);
 
             var typeConverter = parameterInfo.TypeConverter;
-            var readResult = await typeConverter.ReadAsync(context, arg, services).ConfigureAwait(false);
+            var readResult = await typeConverter.ReadAsync(context, arg, services);
             return readResult;
         }
 

@@ -22,7 +22,7 @@ namespace Discord.Logging
             try
             {
                 if (severity <= Level)
-                    await _messageEvent.InvokeAsync(new LogMessage(severity, source, null, ex)).ConfigureAwait(false);
+                    await _messageEvent.InvokeAsync(new LogMessage(severity, source, null, ex));
             }
             catch
             {
@@ -34,7 +34,7 @@ namespace Discord.Logging
             try
             {
                 if (severity <= Level)
-                    await _messageEvent.InvokeAsync(new LogMessage(severity, source, message, ex)).ConfigureAwait(false);
+                    await _messageEvent.InvokeAsync(new LogMessage(severity, source, message, ex));
             }
             catch
             {
@@ -47,7 +47,7 @@ namespace Discord.Logging
             try
             {
                 if (severity <= Level)
-                    await _messageEvent.InvokeAsync(new LogMessage(severity, source, message.ToString(), ex)).ConfigureAwait(false);
+                    await _messageEvent.InvokeAsync(new LogMessage(severity, source, message.ToString(), ex));
             }
             catch { }
         }
@@ -99,7 +99,7 @@ namespace Discord.Logging
 
         public async Task WriteInitialLog()
         {
-            await ClientLogger.InfoAsync($"Discord.Net v{DiscordConfig.Version} (API v{DiscordConfig.APIVersion})").ConfigureAwait(false);
+            await ClientLogger.InfoAsync($"Discord.Net v{DiscordConfig.Version} (API v{DiscordConfig.APIVersion})");
         }
     }
 }

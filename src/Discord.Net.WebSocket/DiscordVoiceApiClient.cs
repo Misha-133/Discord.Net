@@ -63,7 +63,7 @@ namespace Discord.Audio
                     Buffer.BlockCopy(data, index, newData, 0, count);
                     data = newData;
                 }
-                await _receivedPacketEvent.InvokeAsync(data).ConfigureAwait(false);
+                await _receivedPacketEvent.InvokeAsync(data);
             };
 
             WebSocketClient = webSocketProvider();
@@ -79,19 +79,19 @@ namespace Discord.Audio
                     using (var reader = new StreamReader(decompressed))
                     {
                         var msg = JsonConvert.DeserializeObject<SocketFrame>(reader.ReadToEnd());
-                        await _receivedEvent.InvokeAsync((VoiceOpCode)msg.Operation, msg.Payload).ConfigureAwait(false);
+                        await _receivedEvent.InvokeAsync((VoiceOpCode)msg.Operation, msg.Payload);
                     }
                 }
             };
             WebSocketClient.TextMessage += async text =>
             {
                 var msg = JsonConvert.DeserializeObject<SocketFrame>(text);
-                await _receivedEvent.InvokeAsync((VoiceOpCode)msg.Operation, msg.Payload).ConfigureAwait(false);
+                await _receivedEvent.InvokeAsync((VoiceOpCode)msg.Operation, msg.Payload);
             };
             WebSocketClient.Closed += async ex =>
             {
-                await DisconnectAsync().ConfigureAwait(false);
-                await _disconnectedEvent.InvokeAsync(ex).ConfigureAwait(false);
+                await DisconnectAsync();
+                await _disconnectedEvent.InvokeAsync(ex);
             };
 
             _serializer = serializer ?? new JsonSerializer { ContractResolver = new DiscordContractResolver() };
@@ -118,20 +118,20 @@ namespace Discord.Audio
             payload = new SocketFrame { Operation = (int)opCode, Payload = payload };
             if (payload != null)
                 bytes = Encoding.UTF8.GetBytes(SerializeJson(payload));
-            await WebSocketClient.SendAsync(bytes, 0, bytes.Length, true).ConfigureAwait(false);
-            await _sentGatewayMessageEvent.InvokeAsync(opCode).ConfigureAwait(false);
+            await WebSocketClient.SendAsync(bytes, 0, bytes.Length, true);
+            await _sentGatewayMessageEvent.InvokeAsync(opCode);
         }
         public async Task SendAsync(byte[] data, int offset, int bytes)
         {
-            await _udp.SendAsync(data, offset, bytes).ConfigureAwait(false);
-            await _sentDataEvent.InvokeAsync(bytes).ConfigureAwait(false);
+            await _udp.SendAsync(data, offset, bytes);
+            await _sentDataEvent.InvokeAsync(bytes);
         }
         #endregion
 
         #region WebSocket
         public async Task SendHeartbeatAsync(RequestOptions options = null)
         {
-            await SendAsync(VoiceOpCode.Heartbeat, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), options: options).ConfigureAwait(false);
+            await SendAsync(VoiceOpCode.Heartbeat, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), options: options);
         }
         public async Task SendIdentityAsync(ulong userId, string sessionId, string token)
         {
@@ -141,7 +141,7 @@ namespace Discord.Audio
                 UserId = userId,
                 SessionId = sessionId,
                 Token = token
-            }).ConfigureAwait(false);
+            });
         }
         public async Task SendSelectProtocol(string externalIp, int externalPort)
         {
@@ -154,7 +154,7 @@ namespace Discord.Audio
                     Port = externalPort,
                     Mode = Mode
                 }
-            }).ConfigureAwait(false);
+            });
         }
         public async Task SendSetSpeaking(bool value)
         {
@@ -162,15 +162,15 @@ namespace Discord.Audio
             {
                 IsSpeaking = value,
                 Delay = 0
-            }).ConfigureAwait(false);
+            });
         }
 
         public async Task ConnectAsync(string url)
         {
-            await _connectionLock.WaitAsync().ConfigureAwait(false);
+            await _connectionLock.WaitAsync();
             try
             {
-                await ConnectInternalAsync(url).ConfigureAwait(false);
+                await ConnectInternalAsync(url);
             }
             finally { _connectionLock.Release(); }
         }
@@ -184,26 +184,26 @@ namespace Discord.Audio
                 var cancelToken = _connectCancelToken.Token;
 
                 WebSocketClient.SetCancelToken(cancelToken);
-                await WebSocketClient.ConnectAsync(url).ConfigureAwait(false);
+                await WebSocketClient.ConnectAsync(url);
 
                 _udp.SetCancelToken(cancelToken);
-                await _udp.StartAsync().ConfigureAwait(false);
+                await _udp.StartAsync();
 
                 ConnectionState = ConnectionState.Connected;
             }
             catch
             {
-                await DisconnectInternalAsync().ConfigureAwait(false);
+                await DisconnectInternalAsync();
                 throw;
             }
         }
 
         public async Task DisconnectAsync()
         {
-            await _connectionLock.WaitAsync().ConfigureAwait(false);
+            await _connectionLock.WaitAsync();
             try
             {
-                await DisconnectInternalAsync().ConfigureAwait(false);
+                await DisconnectInternalAsync();
             }
             finally { _connectionLock.Release(); }
         }
@@ -218,8 +218,8 @@ namespace Discord.Audio
             catch { }
 
             //Wait for tasks to complete
-            await _udp.StopAsync().ConfigureAwait(false);
-            await WebSocketClient.DisconnectAsync().ConfigureAwait(false);
+            await _udp.StopAsync();
+            await WebSocketClient.DisconnectAsync();
 
             ConnectionState = ConnectionState.Disconnected;
         }
@@ -233,8 +233,8 @@ namespace Discord.Audio
             packet[1] = (byte)(ssrc >> 16);
             packet[2] = (byte)(ssrc >> 8);
             packet[3] = (byte)(ssrc >> 0);
-            await SendAsync(packet, 0, 70).ConfigureAwait(false);
-            await _sentDiscoveryEvent.InvokeAsync().ConfigureAwait(false);
+            await SendAsync(packet, 0, 70);
+            await _sentDiscoveryEvent.InvokeAsync();
         }
         public async Task<ulong> SendKeepaliveAsync()
         {
@@ -248,7 +248,7 @@ namespace Discord.Audio
             packet[5] = (byte)(value >> 40);
             packet[6] = (byte)(value >> 48);
             packet[7] = (byte)(value >> 56);
-            await SendAsync(packet, 0, 8).ConfigureAwait(false);
+            await SendAsync(packet, 0, 8);
             return value;
         }
 

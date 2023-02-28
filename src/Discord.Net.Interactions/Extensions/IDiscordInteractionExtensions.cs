@@ -79,7 +79,7 @@ namespace Discord.Interactions
             if (modifyModal is not null)
                 modifyModal(builder);
 
-            await interaction.RespondWithModalAsync(builder.Build(), options).ConfigureAwait(false);
+            await interaction.RespondWithModalAsync(builder.Build(), options);
         }
 
         private static async Task SendModalResponseAsync(IDiscordInteraction interaction, string customId, ModalInfo modalInfo, RequestOptions options = null, Action<ModalBuilder> modifyModal = null)
@@ -100,7 +100,7 @@ namespace Discord.Interactions
             if (modifyModal is not null)
                 modifyModal(builder);
 
-            await interaction.RespondWithModalAsync(builder.Build(), options).ConfigureAwait(false);
+            await interaction.RespondWithModalAsync(builder.Build(), options);
         }
     }
 }

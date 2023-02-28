@@ -121,7 +121,7 @@ namespace Discord.Rest
         /// <inheritdoc />
         public async Task UpdateAsync(RequestOptions options = null)
         {
-            var model = await Discord.ApiClient.GetInviteAsync(Code, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.GetInviteAsync(Code, options);
             Update(model);
         }
         /// <inheritdoc />

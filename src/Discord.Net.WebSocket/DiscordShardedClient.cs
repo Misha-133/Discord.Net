@@ -113,7 +113,7 @@ namespace Discord.WebSocket
         internal async Task AcquireIdentifyLockAsync(int shardId, CancellationToken token)
         {
             int semaphoreIdx = shardId % _baseConfig.IdentifyMaxConcurrency;
-            await _identifySemaphores[semaphoreIdx].WaitAsync(token).ConfigureAwait(false);
+            await _identifySemaphores[semaphoreIdx].WaitAsync(token);
         }
 
         internal void ReleaseIdentifyLock()
@@ -127,7 +127,7 @@ namespace Discord.WebSocket
 
         private async Task ResetSemaphoresAsync()
         {
-            await Task.Delay(5000).ConfigureAwait(false);
+            await Task.Delay(5000);
             lock (_semaphoreResetLock)
             {
                 foreach (var semaphore in _identifySemaphores)
@@ -139,7 +139,7 @@ namespace Discord.WebSocket
 
         internal override async Task OnLoginAsync(TokenType tokenType, string token)
         {
-            var botGateway = await GetBotGatewayAsync().ConfigureAwait(false);
+            var botGateway = await GetBotGatewayAsync();
             if (_automaticShards)
             {
                 _shardIds = Enumerable.Range(0, botGateway.Shards).ToArray();
@@ -171,7 +171,7 @@ namespace Discord.WebSocket
             }
 
             if (_defaultStickers.Length == 0 && _baseConfig.AlwaysDownloadDefaultStickers)
-                await DownloadDefaultStickersAsync().ConfigureAwait(false);
+                await DownloadDefaultStickersAsync();
 
         }
         internal override async Task OnLogoutAsync()
@@ -199,10 +199,10 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         public override async Task StartAsync()
-            => await Task.WhenAll(_shards.Select(x => x.StartAsync())).ConfigureAwait(false);
+            => await Task.WhenAll(_shards.Select(x => x.StartAsync()));
         /// <inheritdoc />
         public override async Task StopAsync()
-            => await Task.WhenAll(_shards.Select(x => x.StopAsync())).ConfigureAwait(false);
+            => await Task.WhenAll(_shards.Select(x => x.StopAsync()));
 
         public DiscordSocketClient GetShard(int id)
         {
@@ -221,7 +221,7 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         public override async Task<RestApplication> GetApplicationInfoAsync(RequestOptions options = null)
-            => await _shards[0].GetApplicationInfoAsync(options).ConfigureAwait(false);
+            => await _shards[0].GetApplicationInfoAsync(options);
 
         /// <inheritdoc />
         public override SocketGuild GetGuild(ulong id)
@@ -279,7 +279,7 @@ namespace Discord.WebSocket
 
             foreach (var guild in Guilds)
             {
-                sticker = await guild.GetStickerAsync(id, CacheMode.CacheOnly).ConfigureAwait(false);
+                sticker = await guild.GetStickerAsync(id, CacheMode.CacheOnly);
 
                 if (sticker != null)
                     return sticker;
@@ -288,7 +288,7 @@ namespace Discord.WebSocket
             if (mode == CacheMode.CacheOnly)
                 return null;
 
-            var model = await ApiClient.GetStickerAsync(id, options).ConfigureAwait(false);
+            var model = await ApiClient.GetStickerAsync(id, options);
 
             if (model == null)
                 return null;
@@ -307,7 +307,7 @@ namespace Discord.WebSocket
         }
         private async Task DownloadDefaultStickersAsync()
         {
-            var models = await ApiClient.ListNitroStickerPacksAsync().ConfigureAwait(false);
+            var models = await ApiClient.ListNitroStickerPacksAsync();
 
             var builder = ImmutableArray.CreateBuilder<StickerPack<SocketSticker>>();
 
@@ -357,13 +357,13 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         public override async ValueTask<IReadOnlyCollection<RestVoiceRegion>> GetVoiceRegionsAsync(RequestOptions options = null)
         {
-            return await _shards[0].GetVoiceRegionsAsync().ConfigureAwait(false);
+            return await _shards[0].GetVoiceRegionsAsync();
         }
 
         /// <inheritdoc />
         public override async ValueTask<RestVoiceRegion> GetVoiceRegionAsync(string id, RequestOptions options = null)
         {
-            return await _shards[0].GetVoiceRegionAsync(id, options).ConfigureAwait(false);
+            return await _shards[0].GetVoiceRegionAsync(id, options);
         }
 
         /// <inheritdoc />
@@ -377,7 +377,7 @@ namespace Discord.WebSocket
                 int id = _shardIds[i];
                 var arr = guilds.Where(x => GetShardIdFor(x) == id).ToArray();
                 if (arr.Length > 0)
-                    await _shards[i].DownloadUsersAsync(arr).ConfigureAwait(false);
+                    await _shards[i].DownloadUsersAsync(arr);
             }
         }
 
@@ -393,7 +393,7 @@ namespace Discord.WebSocket
         public override async Task SetStatusAsync(UserStatus status)
         {
             for (int i = 0; i < _shards.Length; i++)
-                await _shards[i].SetStatusAsync(status).ConfigureAwait(false);
+                await _shards[i].SetStatusAsync(status);
         }
         /// <inheritdoc />
         public override async Task SetGameAsync(string name, string streamUrl = null, ActivityType type = ActivityType.Playing)
@@ -403,13 +403,13 @@ namespace Discord.WebSocket
                 activity = new StreamingGame(name, streamUrl);
             else if (!string.IsNullOrEmpty(name))
                 activity = new Game(name, type);
-            await SetActivityAsync(activity).ConfigureAwait(false);
+            await SetActivityAsync(activity);
         }
         /// <inheritdoc />
         public override async Task SetActivityAsync(IActivity activity)
         {
             for (int i = 0; i < _shards.Length; i++)
-                await _shards[i].SetActivityAsync(activity).ConfigureAwait(false);
+                await _shards[i].SetActivityAsync(activity);
         }
 
         private void RegisterEvents(DiscordSocketClient client, bool isPrimary)
@@ -518,7 +518,7 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         async Task<IApplication> IDiscordClient.GetApplicationInfoAsync(RequestOptions options)
-            => await GetApplicationInfoAsync().ConfigureAwait(false);
+            => await GetApplicationInfoAsync();
 
         /// <inheritdoc />
         Task<IChannel> IDiscordClient.GetChannelAsync(ulong id, CacheMode mode, RequestOptions options)
@@ -529,11 +529,11 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IConnection>> IDiscordClient.GetConnectionsAsync(RequestOptions options)
-            => await GetConnectionsAsync().ConfigureAwait(false);
+            => await GetConnectionsAsync();
 
         /// <inheritdoc />
         async Task<IInvite> IDiscordClient.GetInviteAsync(string inviteId, RequestOptions options)
-            => await GetInviteAsync(inviteId, options).ConfigureAwait(false);
+            => await GetInviteAsync(inviteId, options);
 
         /// <inheritdoc />
         Task<IGuild> IDiscordClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions options)
@@ -543,7 +543,7 @@ namespace Discord.WebSocket
             => Task.FromResult<IReadOnlyCollection<IGuild>>(Guilds);
         /// <inheritdoc />
         async Task<IGuild> IDiscordClient.CreateGuildAsync(string name, IVoiceRegion region, Stream jpegIcon, RequestOptions options)
-            => await CreateGuildAsync(name, region, jpegIcon).ConfigureAwait(false);
+            => await CreateGuildAsync(name, region, jpegIcon);
 
         /// <inheritdoc />
         async Task<IUser> IDiscordClient.GetUserAsync(ulong id, CacheMode mode, RequestOptions options)
@@ -552,7 +552,7 @@ namespace Discord.WebSocket
             if (user is not null || mode == CacheMode.CacheOnly)
                 return user;
 
-            return await Rest.GetUserAsync(id, options).ConfigureAwait(false);
+            return await Rest.GetUserAsync(id, options);
         }
 
         /// <inheritdoc />
@@ -562,12 +562,12 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IVoiceRegion>> IDiscordClient.GetVoiceRegionsAsync(RequestOptions options)
         {
-            return await GetVoiceRegionsAsync().ConfigureAwait(false);
+            return await GetVoiceRegionsAsync();
         }
         /// <inheritdoc />
         async Task<IVoiceRegion> IDiscordClient.GetVoiceRegionAsync(string id, RequestOptions options)
         {
-            return await GetVoiceRegionAsync(id).ConfigureAwait(false);
+            return await GetVoiceRegionAsync(id);
         }
         #endregion
 

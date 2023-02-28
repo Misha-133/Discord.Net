@@ -30,7 +30,7 @@ namespace Discord.Rest
         internal static async Task<RestCommandBaseData> CreateAsync(DiscordRestClient client, Model model, RestGuild guild, IRestMessageChannel channel, bool doApiCall)
         {
             var entity = new RestCommandBaseData(client, model);
-            await entity.UpdateAsync(client, model, guild, channel, doApiCall).ConfigureAwait(false);
+            await entity.UpdateAsync(client, model, guild, channel, doApiCall);
             return entity;
         }
 
@@ -40,7 +40,7 @@ namespace Discord.Rest
             if (model.Resolved.IsSpecified && ResolvableData == null)
             {
                 ResolvableData = new RestResolvableData<Model>();
-                await ResolvableData.PopulateAsync(client, guild, channel, model, doApiCall).ConfigureAwait(false);
+                await ResolvableData.PopulateAsync(client, guild, channel, model, doApiCall);
             }
         }
 

@@ -102,7 +102,7 @@ namespace Discord.Commands
                 throw new InvalidOperationException("The default run mode cannot be set to Default.");
 
             _logManager = new LogManager(config.LogLevel);
-            _logManager.Message += async msg => await _logEvent.InvokeAsync(msg).ConfigureAwait(false);
+            _logManager.Message += async msg => await _logEvent.InvokeAsync(msg);
             _cmdLogger = _logManager.CreateLogger("Command");
 
             _moduleLock = new SemaphoreSlim(1, 1);
@@ -137,7 +137,7 @@ namespace Discord.Commands
         #region Modules
         public async Task<ModuleInfo> CreateModuleAsync(string primaryAlias, Action<ModuleBuilder> buildFunc)
         {
-            await _moduleLock.WaitAsync().ConfigureAwait(false);
+            await _moduleLock.WaitAsync();
             try
             {
                 var builder = new ModuleBuilder(this, null, primaryAlias);
@@ -191,7 +191,7 @@ namespace Discord.Commands
         {
             services ??= EmptyServiceProvider.Instance;
 
-            await _moduleLock.WaitAsync().ConfigureAwait(false);
+            await _moduleLock.WaitAsync();
             try
             {
                 var typeInfo = type.GetTypeInfo();
@@ -226,11 +226,11 @@ namespace Discord.Commands
         {
             services ??= EmptyServiceProvider.Instance;
 
-            await _moduleLock.WaitAsync().ConfigureAwait(false);
+            await _moduleLock.WaitAsync();
             try
             {
-                var types = await ModuleClassBuilder.SearchAsync(assembly, this).ConfigureAwait(false);
-                var moduleDefs = await ModuleClassBuilder.BuildAsync(types, this, services).ConfigureAwait(false);
+                var types = await ModuleClassBuilder.SearchAsync(assembly, this);
+                var moduleDefs = await ModuleClassBuilder.BuildAsync(types, this, services);
 
                 foreach (var info in moduleDefs)
                 {
@@ -267,7 +267,7 @@ namespace Discord.Commands
         /// </returns>
         public async Task<bool> RemoveModuleAsync(ModuleInfo module)
         {
-            await _moduleLock.WaitAsync().ConfigureAwait(false);
+            await _moduleLock.WaitAsync();
             try
             {
                 var typeModulePair = _typedModuleDefs.FirstOrDefault(x => x.Value.Equals(module));
@@ -301,7 +301,7 @@ namespace Discord.Commands
         /// </returns>
         public async Task<bool> RemoveModuleAsync(Type type)
         {
-            await _moduleLock.WaitAsync().ConfigureAwait(false);
+            await _moduleLock.WaitAsync();
             try
             {
                 if (!_typedModuleDefs.TryRemove(type, out var module))
@@ -562,7 +562,7 @@ namespace Discord.Commands
 
             if (validationResult is SearchResult result)
             {
-                await _commandExecutedEvent.InvokeAsync(Optional.Create<CommandInfo>(), context, result).ConfigureAwait(false);
+                await _commandExecutedEvent.InvokeAsync(Optional.Create<CommandInfo>(), context, result);
                 return result;
             }
 
@@ -596,7 +596,7 @@ namespace Discord.Commands
 
             if (matchResult.Pipeline is PreconditionResult preconditionResult)
             {
-                await _commandExecutedEvent.InvokeAsync(matchResult.Match.Value.Command, context, preconditionResult).ConfigureAwait(false);
+                await _commandExecutedEvent.InvokeAsync(matchResult.Match.Value.Command, context, preconditionResult);
                 return preconditionResult;
             }
 
@@ -660,7 +660,7 @@ namespace Discord.Commands
 
             foreach (var pair in successfulPreconditions)
             {
-                var parseResult = await pair.Key.ParseAsync(context, matches, pair.Value, provider).ConfigureAwait(false);
+                var parseResult = await pair.Key.ParseAsync(context, matches, pair.Value, provider);
 
                 if (parseResult.Error == CommandError.MultipleMatches)
                 {

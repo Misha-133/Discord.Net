@@ -43,27 +43,27 @@ namespace Discord.Audio.Streams
             if (!_nextMissed)
             {
                 count = _decoder.DecodeFrame(buffer, offset, count, _buffer, 0, false);
-                await _next.WriteAsync(_buffer, 0, count, cancelToken).ConfigureAwait(false);
+                await _next.WriteAsync(_buffer, 0, count, cancelToken);
             }
             else if (count > 0)
             {
                 count = _decoder.DecodeFrame(buffer, offset, count, _buffer, 0, true);
-                await _next.WriteAsync(_buffer, 0, count, cancelToken).ConfigureAwait(false);
+                await _next.WriteAsync(_buffer, 0, count, cancelToken);
             }
             else
             {
                 count = _decoder.DecodeFrame(null, 0, 0, _buffer, 0, true);
-                await _next.WriteAsync(_buffer, 0, count, cancelToken).ConfigureAwait(false);
+                await _next.WriteAsync(_buffer, 0, count, cancelToken);
             }
         }
 
         public override async Task FlushAsync(CancellationToken cancelToken)
         {
-            await _next.FlushAsync(cancelToken).ConfigureAwait(false);
+            await _next.FlushAsync(cancelToken);
         }
         public override async Task ClearAsync(CancellationToken cancelToken)
         {
-            await _next.ClearAsync(cancelToken).ConfigureAwait(false);
+            await _next.ClearAsync(cancelToken);
         }
 
         protected override void Dispose(bool disposing)

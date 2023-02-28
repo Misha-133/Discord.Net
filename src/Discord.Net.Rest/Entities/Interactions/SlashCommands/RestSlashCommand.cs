@@ -26,19 +26,19 @@ namespace Discord.Rest
         internal new static async Task<RestSlashCommand> CreateAsync(DiscordRestClient client, Model model, bool doApiCall)
         {
             var entity = new RestSlashCommand(client, model);
-            await entity.UpdateAsync(client, model, doApiCall).ConfigureAwait(false);
+            await entity.UpdateAsync(client, model, doApiCall);
             return entity;
         }
 
         internal override async Task UpdateAsync(DiscordRestClient client, Model model, bool doApiCall)
         {
-            await base.UpdateAsync(client, model, doApiCall).ConfigureAwait(false);
+            await base.UpdateAsync(client, model, doApiCall);
 
             var dataModel = model.Data.IsSpecified
                 ? (DataModel)model.Data.Value
                 : null;
 
-            Data = await RestSlashCommandData.CreateAsync(client, dataModel, Guild, Channel, doApiCall).ConfigureAwait(false);
+            Data = await RestSlashCommandData.CreateAsync(client, dataModel, Guild, Channel, doApiCall);
         }
 
         //ISlashCommandInteraction

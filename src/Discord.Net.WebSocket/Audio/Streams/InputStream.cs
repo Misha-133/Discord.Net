@@ -45,7 +45,7 @@ namespace Discord.Audio.Streams
         {
             cancelToken.ThrowIfCancellationRequested();
 
-            var frame = await ReadFrameAsync(cancelToken).ConfigureAwait(false);
+            var frame = await ReadFrameAsync(cancelToken);
             if (count < frame.Payload.Length)
                 throw new InvalidOperationException("Buffer is too small.");
             Buffer.BlockCopy(frame.Payload, 0, buffer, offset, frame.Payload.Length);
@@ -55,7 +55,7 @@ namespace Discord.Audio.Streams
         {
             cancelToken.ThrowIfCancellationRequested();
 
-            await _signal.WaitAsync(cancelToken).ConfigureAwait(false);
+            await _signal.WaitAsync(cancelToken);
             _frames.TryDequeue(out RTPFrame frame);
             return frame;
         }

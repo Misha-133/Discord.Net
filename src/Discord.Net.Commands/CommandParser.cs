@@ -147,7 +147,7 @@ namespace Discord.Commands
                             return ParseResult.FromError(CommandError.BadArgCount, "The input text has too many parameters.");
                     }
 
-                    var typeReaderResult = await curParam.ParseAsync(context, argString, services).ConfigureAwait(false);
+                    var typeReaderResult = await curParam.ParseAsync(context, argString, services);
                     if (!typeReaderResult.IsSuccess && typeReaderResult.Error != CommandError.MultipleMatches)
                         return ParseResult.FromError(typeReaderResult, curParam);
 
@@ -170,7 +170,7 @@ namespace Discord.Commands
 
             if (curParam != null && curParam.IsRemainder)
             {
-                var typeReaderResult = await curParam.ParseAsync(context, argBuilder.ToString(), services).ConfigureAwait(false);
+                var typeReaderResult = await curParam.ParseAsync(context, argBuilder.ToString(), services);
                 if (!typeReaderResult.IsSuccess)
                     return ParseResult.FromError(typeReaderResult, curParam);
                 argList.Add(typeReaderResult);

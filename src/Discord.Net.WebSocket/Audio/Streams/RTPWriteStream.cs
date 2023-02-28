@@ -58,16 +58,16 @@ namespace Discord.Audio.Streams
             Buffer.BlockCopy(buffer, offset, _buffer, 12, count);
 
             _next.WriteHeader(_nextSeq, _nextTimestamp, false);
-            await _next.WriteAsync(_buffer, 0, count + 12).ConfigureAwait(false);
+            await _next.WriteAsync(_buffer, 0, count + 12);
         }
 
         public override async Task FlushAsync(CancellationToken cancelToken)
         {
-            await _next.FlushAsync(cancelToken).ConfigureAwait(false);
+            await _next.FlushAsync(cancelToken);
         }
         public override async Task ClearAsync(CancellationToken cancelToken)
         {
-            await _next.ClearAsync(cancelToken).ConfigureAwait(false);
+            await _next.ClearAsync(cancelToken);
         }
 
         protected override void Dispose(bool disposing)

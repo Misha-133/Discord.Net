@@ -68,7 +68,7 @@ namespace Discord.WebSocket
                 }
             }
 
-            await InteractionHelper.SendAutocompleteResultAsync(Discord, result, Id, Token, options).ConfigureAwait(false);
+            await InteractionHelper.SendAutocompleteResultAsync(Discord, result, Id, Token, options);
             lock (_lock)
             {
                 HasResponded = true;

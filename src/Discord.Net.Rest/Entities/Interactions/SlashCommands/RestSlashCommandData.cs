@@ -17,12 +17,12 @@ namespace Discord.Rest
         internal static new async Task<RestSlashCommandData> CreateAsync(DiscordRestClient client, Model model, RestGuild guild, IRestMessageChannel channel, bool doApiCall)
         {
             var entity = new RestSlashCommandData(client, model);
-            await entity.UpdateAsync(client, model, guild, channel, doApiCall).ConfigureAwait(false);
+            await entity.UpdateAsync(client, model, guild, channel, doApiCall);
             return entity;
         }
         internal override async Task UpdateAsync(DiscordRestClient client, Model model, RestGuild guild, IRestMessageChannel channel, bool doApiCall)
         {
-            await base.UpdateAsync(client, model, guild, channel, doApiCall).ConfigureAwait(false);
+            await base.UpdateAsync(client, model, guild, channel, doApiCall);
 
             Options = model.Options.IsSpecified
                 ? model.Options.Value.Select(x => new RestSlashCommandDataOption(this, x)).ToImmutableArray()

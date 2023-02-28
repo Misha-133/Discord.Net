@@ -61,7 +61,7 @@ namespace Discord.Rest
         {
             try
             {
-                var model = await InteractionHelper.ModifyFollowupMessageAsync(Discord, this, func, options).ConfigureAwait(false);
+                var model = await InteractionHelper.ModifyFollowupMessageAsync(Discord, this, func, options);
                 Update(model);
             }
             catch (Net.HttpException x)

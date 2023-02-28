@@ -124,7 +124,7 @@ namespace Discord.Interactions
                 }
                 else
                 {
-                    var readResult = await input.TypeConverter.ReadAsync(context, component, services).ConfigureAwait(false);
+                    var readResult = await input.TypeConverter.ReadAsync(context, component, services);
 
                     if (!readResult.IsSuccess)
                         return readResult;

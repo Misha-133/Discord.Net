@@ -11,7 +11,7 @@ namespace Discord.Rest
         public static async Task DeleteAsync(IRole role, BaseDiscordClient client,
             RequestOptions options)
         {
-            await client.ApiClient.DeleteGuildRoleAsync(role.Guild.Id, role.Id, options).ConfigureAwait(false);
+            await client.ApiClient.DeleteGuildRoleAsync(role.Guild.Id, role.Id, options);
         }
         public static async Task<Model> ModifyAsync(IRole role, BaseDiscordClient client,
             Action<RoleProperties> func, RequestOptions options)
@@ -50,12 +50,12 @@ namespace Discord.Rest
                 apiArgs.Icon = Optional<API.Image?>.Unspecified;
             }
 
-            var model = await client.ApiClient.ModifyGuildRoleAsync(role.Guild.Id, role.Id, apiArgs, options).ConfigureAwait(false);
+            var model = await client.ApiClient.ModifyGuildRoleAsync(role.Guild.Id, role.Id, apiArgs, options);
 
             if (args.Position.IsSpecified)
             {
                 var bulkArgs = new[] { new BulkParams(role.Id, args.Position.Value) };
-                await client.ApiClient.ModifyGuildRolesAsync(role.Guild.Id, bulkArgs, options).ConfigureAwait(false);
+                await client.ApiClient.ModifyGuildRolesAsync(role.Guild.Id, bulkArgs, options);
                 model.Position = args.Position.Value;
             }
             return model;

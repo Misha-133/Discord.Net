@@ -61,7 +61,7 @@ namespace Discord.Rest
         {
             try
             {
-                var model = await InteractionHelper.ModifyInteractionResponseAsync(Discord, Token, func, options).ConfigureAwait(false);
+                var model = await InteractionHelper.ModifyInteractionResponseAsync(Discord, Token, func, options);
                 Update(model);
             }
             catch (Net.HttpException x)

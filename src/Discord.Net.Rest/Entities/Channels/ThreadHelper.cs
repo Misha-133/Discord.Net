@@ -29,9 +29,9 @@ namespace Discord.Rest
             Model model;
 
             if (message != null)
-                model = await client.ApiClient.StartThreadAsync(channel.Id, message.Id, args, options).ConfigureAwait(false);
+                model = await client.ApiClient.StartThreadAsync(channel.Id, message.Id, args, options);
             else
-                model = await client.ApiClient.StartThreadAsync(channel.Id, args, options).ConfigureAwait(false);
+                model = await client.ApiClient.StartThreadAsync(channel.Id, args, options);
 
             return model;
         }
@@ -55,12 +55,12 @@ namespace Discord.Rest
                 AppliedTags = args.AppliedTags,
                 Flags = args.Flags,
             };
-            return await client.ApiClient.ModifyThreadAsync(channel.Id, apiArgs, options).ConfigureAwait(false);
+            return await client.ApiClient.ModifyThreadAsync(channel.Id, apiArgs, options);
         }
 
         public static async Task<IReadOnlyCollection<RestThreadChannel>> GetActiveThreadsAsync(IGuild guild, ulong channelId, BaseDiscordClient client, RequestOptions options)
         {
-            var result = await client.ApiClient.GetActiveThreadsAsync(guild.Id, options).ConfigureAwait(false);
+            var result = await client.ApiClient.GetActiveThreadsAsync(guild.Id, options);
             return result.Threads.Where(x => x.CategoryId == channelId).Select(x => RestThreadChannel.Create(client, guild, x)).ToImmutableArray();
         }
 
@@ -110,7 +110,7 @@ namespace Discord.Rest
 
         public static async Task<RestThreadUser> GetUserAsync(ulong userId, IThreadChannel channel, BaseDiscordClient client, RequestOptions options = null)
         {
-            var model = await client.ApiClient.GetThreadMemberAsync(channel.Id, userId, options).ConfigureAwait(false);
+            var model = await client.ApiClient.GetThreadMemberAsync(channel.Id, userId, options);
 
             return RestThreadUser.Create(client, channel.Guild, model, channel);
         }
@@ -173,7 +173,7 @@ namespace Discord.Rest
                 Tags = tagIds
             };
 
-            var model = await client.ApiClient.CreatePostAsync(channel.Id, args, options).ConfigureAwait(false);
+            var model = await client.ApiClient.CreatePostAsync(channel.Id, args, options);
 
             return RestThreadChannel.Create(client, channel.Guild, model);
         }

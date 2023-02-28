@@ -83,7 +83,7 @@ namespace Discord.Audio.Streams
                 try
                 {
                     while (!_isPreloaded && !_cancelToken.IsCancellationRequested)
-                        await Task.Delay(1).ConfigureAwait(false);
+                        await Task.Delay(1);
 
                     long nextTick = Environment.TickCount;
                     ushort seq = 0;
@@ -96,9 +96,9 @@ namespace Discord.Audio.Streams
                         {
                             if (_queuedFrames.TryDequeue(out Frame frame))
                             {
-                                await _client.SetSpeakingAsync(true).ConfigureAwait(false);
+                                await _client.SetSpeakingAsync(true);
                                 _next.WriteHeader(seq, timestamp, false);
-                                await _next.WriteAsync(frame.Buffer, 0, frame.Bytes).ConfigureAwait(false);
+                                await _next.WriteAsync(frame.Buffer, 0, frame.Bytes);
                                 _bufferPool.Enqueue(frame.Buffer);
                                 _queueLock.Release();
                                 nextTick += _ticksPerFrame;
@@ -116,10 +116,10 @@ namespace Discord.Audio.Streams
                                     if (_silenceFrames++ < MaxSilenceFrames)
                                     {
                                         _next.WriteHeader(seq, timestamp, false);
-                                        await _next.WriteAsync(_silenceFrame, 0, _silenceFrame.Length).ConfigureAwait(false);
+                                        await _next.WriteAsync(_silenceFrame, 0, _silenceFrame.Length);
                                     }
                                     else
-                                        await _client.SetSpeakingAsync(false).ConfigureAwait(false);
+                                        await _client.SetSpeakingAsync(false);
                                     nextTick += _ticksPerFrame;
                                     seq++;
                                     timestamp += OpusEncoder.FrameSamplesPerChannel;
@@ -130,7 +130,7 @@ namespace Discord.Audio.Streams
                             }
                         }
                         else
-                            await Task.Delay((int)(dist)/*, _cancelToken*/).ConfigureAwait(false);
+                            await Task.Delay((int)(dist)/*, _cancelToken*/);
                     }
                 }
                 catch (OperationCanceledException) { }
@@ -149,7 +149,7 @@ namespace Discord.Audio.Streams
             else
                 cancelToken = _cancelToken;
 
-            await _queueLock.WaitAsync(-1, cancelToken).ConfigureAwait(false);
+            await _queueLock.WaitAsync(-1, cancelToken);
             if (!_bufferPool.TryDequeue(out byte[] buffer))
             {
 #if DEBUG
@@ -179,7 +179,7 @@ namespace Discord.Audio.Streams
                 cancelToken.ThrowIfCancellationRequested();
                 if (_queuedFrames.Count == 0)
                     return;
-                await Task.Delay(250, cancelToken).ConfigureAwait(false);
+                await Task.Delay(250, cancelToken);
             }
         }
         public override Task ClearAsync(CancellationToken cancelToken)

@@ -37,7 +37,7 @@ namespace Discord.Interactions
             if (_typeReader is not null && option.Values.Count > 0)
                 foreach (var value in option.Values)
                 {
-                    var result = await _typeReader.ReadAsync(context, value, services).ConfigureAwait(false);
+                    var result = await _typeReader.ReadAsync(context, value, services);
 
                     if (!result.IsSuccess)
                         return result;

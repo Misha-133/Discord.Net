@@ -46,7 +46,7 @@ namespace Discord.Rest
 
         public async Task LeaveAsync(RequestOptions options = null)
         {
-            await Discord.ApiClient.LeaveGuildAsync(Id, options).ConfigureAwait(false);
+            await Discord.ApiClient.LeaveGuildAsync(Id, options);
         }
 
         public async Task<RestGuildUser> GetCurrentUserGuildMemberAsync(RequestOptions options = null)
@@ -58,7 +58,7 @@ namespace Discord.Rest
         /// <inheritdoc />
         public async Task DeleteAsync(RequestOptions options = null)
         {
-            await Discord.ApiClient.DeleteGuildAsync(Id, options).ConfigureAwait(false);
+            await Discord.ApiClient.DeleteGuildAsync(Id, options);
         }
 
         public override string ToString() => Name;

@@ -33,7 +33,7 @@ namespace Discord.Interactions
             if (context.Interaction is not IModalInteraction modalInteraction)
                 return ExecuteResult.FromError(InteractionCommandError.ParseFailed, $"Provided {nameof(IInteractionContext)} doesn't belong to a Modal Interaction.");
 
-            return await base.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await base.ExecuteAsync(context, services);
         }
 
         protected override async Task<IResult> ParseArgumentsAsync(IInteractionContext context, IServiceProvider services)
@@ -51,17 +51,17 @@ namespace Discord.Interactions
 
                     if (i < captureCount)
                     {
-                        var readResult = await parameter.TypeReader.ReadAsync(context, captures[i].Value, services).ConfigureAwait(false);
+                        var readResult = await parameter.TypeReader.ReadAsync(context, captures[i].Value, services);
                         if (!readResult.IsSuccess)
-                            return await InvokeEventAndReturn(context, readResult).ConfigureAwait(false);
+                            return await InvokeEventAndReturn(context, readResult);
 
                         args[i] = readResult.Value;
                     }
                     else
                     {
-                        var modalResult = await Modal.CreateModalAsync(context, services, Module.CommandService._exitOnMissingModalField).ConfigureAwait(false);
+                        var modalResult = await Modal.CreateModalAsync(context, services, Module.CommandService._exitOnMissingModalField);
                         if (!modalResult.IsSuccess)
-                            return await InvokeEventAndReturn(context, modalResult).ConfigureAwait(false);
+                            return await InvokeEventAndReturn(context, modalResult);
 
                         if (modalResult is not TypeConverterResult converterResult)
                             return await InvokeEventAndReturn(context, ExecuteResult.FromError(InteractionCommandError.BadArgs, "Command parameter parsing failed for an unknown reason."));
@@ -74,7 +74,7 @@ namespace Discord.Interactions
             }
             catch (Exception ex)
             {
-                return await InvokeEventAndReturn(context, ExecuteResult.FromError(ex)).ConfigureAwait(false);
+                return await InvokeEventAndReturn(context, ExecuteResult.FromError(ex));
             }
         }
 

@@ -93,11 +93,11 @@ namespace Discord.Interactions
             switch (RunMode)
             {
                 case RunMode.Sync:
-                    return await ExecuteInternalAsync(context, services).ConfigureAwait(false);
+                    return await ExecuteInternalAsync(context, services);
                 case RunMode.Async:
                     _ = Task.Run(async () =>
                     {
-                        await ExecuteInternalAsync(context, services).ConfigureAwait(false);
+                        await ExecuteInternalAsync(context, services);
                     });
                     break;
                 default:
@@ -111,7 +111,7 @@ namespace Discord.Interactions
 
         private async Task<IResult> ExecuteInternalAsync(IInteractionContext context, IServiceProvider services)
         {
-            await CommandService._cmdLogger.DebugAsync($"Executing {GetLogString(context)}").ConfigureAwait(false);
+            await CommandService._cmdLogger.DebugAsync($"Executing {GetLogString(context)}");
 
             using var scope = services?.CreateScope();
 
@@ -120,14 +120,14 @@ namespace Discord.Interactions
 
             try
             {
-                var preconditionResult = await CheckPreconditionsAsync(context, services).ConfigureAwait(false);
+                var preconditionResult = await CheckPreconditionsAsync(context, services);
                 if (!preconditionResult.IsSuccess)
-                    return await InvokeEventAndReturn(context, preconditionResult).ConfigureAwait(false);
+                    return await InvokeEventAndReturn(context, preconditionResult);
 
-                var argsResult = await ParseArgumentsAsync(context, services).ConfigureAwait(false);
+                var argsResult = await ParseArgumentsAsync(context, services);
 
                 if (!argsResult.IsSuccess)
-                    return await InvokeEventAndReturn(context, argsResult).ConfigureAwait(false);
+                    return await InvokeEventAndReturn(context, argsResult);
 
                 if (argsResult is not ParseResult parseResult)
                     return ExecuteResult.FromError(InteractionCommandError.BadArgs, "Complex command parsing failed for an unknown reason.");
@@ -137,27 +137,27 @@ namespace Discord.Interactions
                 var index = 0;
                 foreach (var parameter in Parameters)
                 {
-                    var result = await parameter.CheckPreconditionsAsync(context, args[index++], services).ConfigureAwait(false);
+                    var result = await parameter.CheckPreconditionsAsync(context, args[index++], services);
                     if (!result.IsSuccess)
-                        return await InvokeEventAndReturn(context, result).ConfigureAwait(false);
+                        return await InvokeEventAndReturn(context, result);
                 }
 
                 var task = _action(context, args, services, this);
 
                 if (task is Task<IResult> resultTask)
                 {
-                    var result = await resultTask.ConfigureAwait(false);
-                    await InvokeModuleEvent(context, result).ConfigureAwait(false);
+                    var result = await resultTask;
+                    await InvokeModuleEvent(context, result);
                     if (result is RuntimeResult or ExecuteResult)
                         return result;
                 }
                 else
                 {
-                    await task.ConfigureAwait(false);
-                    return await InvokeEventAndReturn(context, ExecuteResult.FromSuccess()).ConfigureAwait(false);
+                    await task;
+                    return await InvokeEventAndReturn(context, ExecuteResult.FromSuccess());
                 }
 
-                return await InvokeEventAndReturn(context, ExecuteResult.FromError(InteractionCommandError.Unsuccessful, "Command execution failed for an unknown reason")).ConfigureAwait(false);
+                return await InvokeEventAndReturn(context, ExecuteResult.FromError(InteractionCommandError.Unsuccessful, "Command execution failed for an unknown reason"));
             }
             catch (Exception ex)
             {
@@ -165,10 +165,10 @@ namespace Discord.Interactions
                 while (ex is TargetInvocationException)
                     ex = ex.InnerException;
 
-                await Module.CommandService._cmdLogger.ErrorAsync(ex).ConfigureAwait(false);
+                await Module.CommandService._cmdLogger.ErrorAsync(ex);
 
                 var result = ExecuteResult.FromError(ex);
-                await InvokeModuleEvent(context, result).ConfigureAwait(false);
+                await InvokeModuleEvent(context, result);
 
                 if (Module.CommandService._throwOnError)
                 {
@@ -182,7 +182,7 @@ namespace Discord.Interactions
             }
             finally
             {
-                await CommandService._cmdLogger.VerboseAsync($"Executed {GetLogString(context)}").ConfigureAwait(false);
+                await CommandService._cmdLogger.VerboseAsync($"Executed {GetLogString(context)}");
             }
         }
 
@@ -200,7 +200,7 @@ namespace Discord.Interactions
                     {
                         foreach (PreconditionAttribute precondition in preconditionGroup)
                         {
-                            var result = await precondition.CheckRequirementsAsync(context, this, services).ConfigureAwait(false);
+                            var result = await precondition.CheckRequirementsAsync(context, this, services);
                             if (!result.IsSuccess)
                                 return result;
                         }
@@ -218,17 +218,17 @@ namespace Discord.Interactions
                 return PreconditionGroupResult.FromSuccess();
             }
 
-            var moduleResult = await CheckGroups(Module.GroupedPreconditions, "Module").ConfigureAwait(false);
+            var moduleResult = await CheckGroups(Module.GroupedPreconditions, "Module");
             if (!moduleResult.IsSuccess)
                 return moduleResult;
 
-            var commandResult = await CheckGroups(_groupedPreconditions, "Command").ConfigureAwait(false);
+            var commandResult = await CheckGroups(_groupedPreconditions, "Command");
             return !commandResult.IsSuccess ? commandResult : PreconditionResult.FromSuccess();
         }
 
         protected async Task<T> InvokeEventAndReturn<T>(IInteractionContext context, T result) where T : IResult
         {
-            await InvokeModuleEvent(context, result).ConfigureAwait(false);
+            await InvokeModuleEvent(context, result);
             return result;
         }
 

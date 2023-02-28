@@ -38,7 +38,7 @@ namespace Discord.Audio.Streams
                 (buffer[offset + 7] << 0));
 
             _next.WriteHeader(seq, timestamp, false);
-            await _next.WriteAsync(buffer, offset + headerSize, count - headerSize, cancelToken).ConfigureAwait(false);
+            await _next.WriteAsync(buffer, offset + headerSize, count - headerSize, cancelToken);
         }
 
         public static bool TryReadSsrc(byte[] buffer, int offset, out uint ssrc)

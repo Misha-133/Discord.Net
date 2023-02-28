@@ -32,7 +32,7 @@ namespace Discord.Net.Queue
 
         public async Task SendAsync()
         {
-            await Client.SendAsync(Data, 0, Data.Length, IsText).ConfigureAwait(false);
+            await Client.SendAsync(Data, 0, Data.Length, IsText);
         }
     }
 }

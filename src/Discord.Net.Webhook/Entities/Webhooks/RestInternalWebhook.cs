@@ -54,7 +54,7 @@ namespace Discord.Webhook
 
         public async Task ModifyAsync(Action<WebhookProperties> func, RequestOptions options = null)
         {
-            var model = await WebhookClientHelper.ModifyAsync(_client, func, options).ConfigureAwait(false);
+            var model = await WebhookClientHelper.ModifyAsync(_client, func, options);
             Update(model);
         }
 

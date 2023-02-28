@@ -33,7 +33,7 @@ namespace Discord.Commands
                 }
                 else if (IsLoadableModule(typeInfo))
                 {
-                    await service._cmdLogger.WarningAsync($"Class {typeInfo.FullName} is not public and cannot be loaded. To suppress this message, mark the class with {nameof(DontAutoLoadAttribute)}.").ConfigureAwait(false);
+                    await service._cmdLogger.WarningAsync($"Class {typeInfo.FullName} is not public and cannot be loaded. To suppress this message, mark the class with {nameof(DontAutoLoadAttribute)}.");
                 }
             }
 
@@ -68,7 +68,7 @@ namespace Discord.Commands
                 result[typeInfo.AsType()] = module.Build(service, services);
             }
 
-            await service._cmdLogger.DebugAsync($"Successfully built {builtTypes.Count} modules.").ConfigureAwait(false);
+            await service._cmdLogger.DebugAsync($"Successfully built {builtTypes.Count} modules.");
 
             return result;
         }
@@ -205,23 +205,23 @@ namespace Discord.Commands
 
                 try
                 {
-                    await instance.BeforeExecuteAsync(cmd).ConfigureAwait(false);
+                    await instance.BeforeExecuteAsync(cmd);
                     instance.BeforeExecute(cmd);
 
                     var task = method.Invoke(instance, args) as Task ?? Task.Delay(0);
                     if (task is Task<RuntimeResult> resultTask)
                     {
-                        return await resultTask.ConfigureAwait(false);
+                        return await resultTask;
                     }
                     else
                     {
-                        await task.ConfigureAwait(false);
+                        await task;
                         return ExecuteResult.FromSuccess();
                     }
                 }
                 finally
                 {
-                    await instance.AfterExecuteAsync(cmd).ConfigureAwait(false);
+                    await instance.AfterExecuteAsync(cmd);
                     instance.AfterExecute(cmd);
                     (instance as IDisposable)?.Dispose();
                 }

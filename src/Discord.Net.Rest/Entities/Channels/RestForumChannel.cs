@@ -113,7 +113,7 @@ namespace Discord.Rest
             ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None, ForumTag[] tags = null)
         {
             using var file = new FileAttachment(filePath, isSpoiler: isSpoiler);
-            return await ThreadHelper.CreatePostAsync(this, Discord, title, new FileAttachment[] { file }, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags?.Select(tag => tag.Id).ToArray()).ConfigureAwait(false);
+            return await ThreadHelper.CreatePostAsync(this, Discord, title, new FileAttachment[] { file }, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags?.Select(tag => tag.Id).ToArray());
         }
 
         /// <inheritdoc cref="IForumChannel.CreatePostWithFileAsync(string, Stream, string, ThreadArchiveDuration, int?, string, Embed, RequestOptions, bool, AllowedMentions, MessageComponent, ISticker[], Embed[], MessageFlags, ForumTag[])"/>
@@ -123,7 +123,7 @@ namespace Discord.Rest
             ISticker[] stickers = null, Embed[] embeds = null, MessageFlags flags = MessageFlags.None, ForumTag[] tags = null)
         {
             using var file = new FileAttachment(stream, filename, isSpoiler: isSpoiler);
-            return await ThreadHelper.CreatePostAsync(this, Discord, title, new FileAttachment[] { file }, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags?.Select(tag => tag.Id).ToArray()).ConfigureAwait(false);
+            return await ThreadHelper.CreatePostAsync(this, Discord, title, new FileAttachment[] { file }, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags?.Select(tag => tag.Id).ToArray());
         }
 
         /// <inheritdoc cref="IForumChannel.CreatePostWithFileAsync(string, FileAttachment, ThreadArchiveDuration, int?, string, Embed, RequestOptions, AllowedMentions, MessageComponent, ISticker[], Embed[], MessageFlags, ForumTag[])"/>
@@ -168,21 +168,21 @@ namespace Discord.Rest
 
         #region IForumChannel
         async Task<IReadOnlyCollection<IThreadChannel>> IForumChannel.GetActiveThreadsAsync(RequestOptions options)
-            => await GetActiveThreadsAsync(options).ConfigureAwait(false);
+            => await GetActiveThreadsAsync(options);
         async Task<IReadOnlyCollection<IThreadChannel>> IForumChannel.GetPublicArchivedThreadsAsync(int? limit, DateTimeOffset? before, RequestOptions options)
-            => await GetPublicArchivedThreadsAsync(limit, before, options).ConfigureAwait(false);
+            => await GetPublicArchivedThreadsAsync(limit, before, options);
         async Task<IReadOnlyCollection<IThreadChannel>> IForumChannel.GetPrivateArchivedThreadsAsync(int? limit, DateTimeOffset? before, RequestOptions options)
-            => await GetPrivateArchivedThreadsAsync(limit, before, options).ConfigureAwait(false);
+            => await GetPrivateArchivedThreadsAsync(limit, before, options);
         async Task<IReadOnlyCollection<IThreadChannel>> IForumChannel.GetJoinedPrivateArchivedThreadsAsync(int? limit, DateTimeOffset? before, RequestOptions options)
-            => await GetJoinedPrivateArchivedThreadsAsync(limit, before, options).ConfigureAwait(false);
+            => await GetJoinedPrivateArchivedThreadsAsync(limit, before, options);
         async Task<IThreadChannel> IForumChannel.CreatePostAsync(string title, ThreadArchiveDuration archiveDuration, int? slowmode, string text, Embed embed, RequestOptions options, AllowedMentions allowedMentions, MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags, ForumTag[] tags)
-            => await CreatePostAsync(title, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags).ConfigureAwait(false);
+            => await CreatePostAsync(title, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags);
         async Task<IThreadChannel> IForumChannel.CreatePostWithFileAsync(string title, string filePath, ThreadArchiveDuration archiveDuration, int? slowmode, string text, Embed embed, RequestOptions options, bool isSpoiler, AllowedMentions allowedMentions, MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags, ForumTag[] tags)
-            => await CreatePostWithFileAsync(title, filePath, archiveDuration, slowmode, text, embed, options, isSpoiler, allowedMentions, components, stickers, embeds, flags, tags).ConfigureAwait(false);
+            => await CreatePostWithFileAsync(title, filePath, archiveDuration, slowmode, text, embed, options, isSpoiler, allowedMentions, components, stickers, embeds, flags, tags);
         async Task<IThreadChannel> IForumChannel.CreatePostWithFileAsync(string title, Stream stream, string filename, ThreadArchiveDuration archiveDuration, int? slowmode, string text, Embed embed, RequestOptions options, bool isSpoiler, AllowedMentions allowedMentions, MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags, ForumTag[] tags)
-            => await CreatePostWithFileAsync(title, stream, filename, archiveDuration, slowmode, text, embed, options, isSpoiler, allowedMentions, components, stickers, embeds, flags, tags).ConfigureAwait(false);
+            => await CreatePostWithFileAsync(title, stream, filename, archiveDuration, slowmode, text, embed, options, isSpoiler, allowedMentions, components, stickers, embeds, flags, tags);
         async Task<IThreadChannel> IForumChannel.CreatePostWithFileAsync(string title, FileAttachment attachment, ThreadArchiveDuration archiveDuration, int? slowmode, string text, Embed embed, RequestOptions options, AllowedMentions allowedMentions, MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags, ForumTag[] tags)
-            => await CreatePostWithFileAsync(title, attachment, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags).ConfigureAwait(false);
+            => await CreatePostWithFileAsync(title, attachment, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags);
         async Task<IThreadChannel> IForumChannel.CreatePostWithFilesAsync(string title, IEnumerable<FileAttachment> attachments, ThreadArchiveDuration archiveDuration, int? slowmode, string text, Embed embed, RequestOptions options, AllowedMentions allowedMentions, MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags, ForumTag[] tags)
             => await CreatePostWithFilesAsync(title, attachments, archiveDuration, slowmode, text, embed, options, allowedMentions, components, stickers, embeds, flags, tags);
 
@@ -191,7 +191,7 @@ namespace Discord.Rest
         #region INestedChannel
         /// <inheritdoc />
         public virtual async Task<IInviteMetadata> CreateInviteAsync(int? maxAge = 86400, int? maxUses = null, bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
-            => await ChannelHelper.CreateInviteAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, options).ConfigureAwait(false);
+            => await ChannelHelper.CreateInviteAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, options);
         public virtual async Task<IInviteMetadata> CreateInviteToApplicationAsync(ulong applicationId, int? maxAge = 86400, int? maxUses = default(int?), bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
             => await ChannelHelper.CreateInviteToApplicationAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, applicationId, options);
         /// <inheritdoc />
@@ -201,7 +201,7 @@ namespace Discord.Rest
             => throw new NotImplementedException();
         /// <inheritdoc />
         public virtual async Task<IReadOnlyCollection<IInviteMetadata>> GetInvitesAsync(RequestOptions options = null)
-            => await ChannelHelper.GetInvitesAsync(this, Discord, options).ConfigureAwait(false);
+            => await ChannelHelper.GetInvitesAsync(this, Discord, options);
 
         /// <inheritdoc />
         async Task<ICategoryChannel> INestedChannel.GetCategoryAsync(CacheMode mode, RequestOptions options)
@@ -220,13 +220,13 @@ namespace Discord.Rest
 
         /// <inheritdoc />
         async Task<IWebhook> IIntegrationChannel.CreateWebhookAsync(string name, Stream avatar, RequestOptions options)
-            => await CreateWebhookAsync(name, avatar, options).ConfigureAwait(false);
+            => await CreateWebhookAsync(name, avatar, options);
         /// <inheritdoc />
         async Task<IWebhook> IIntegrationChannel.GetWebhookAsync(ulong id, RequestOptions options)
-            => await GetWebhookAsync(id, options).ConfigureAwait(false);
+            => await GetWebhookAsync(id, options);
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IWebhook>> IIntegrationChannel.GetWebhooksAsync(RequestOptions options)
-            => await GetWebhooksAsync(options).ConfigureAwait(false);
+            => await GetWebhooksAsync(options);
 
         #endregion
 

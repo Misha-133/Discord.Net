@@ -25,7 +25,7 @@ namespace Discord.Commands
             if (context.Guild != null)
             {
                 var results = new Dictionary<ulong, TypeReaderValue>();
-                var channels = await context.Guild.GetChannelsAsync(CacheMode.CacheOnly).ConfigureAwait(false);
+                var channels = await context.Guild.GetChannelsAsync(CacheMode.CacheOnly);
 
                 //By Mention (1.0)
                 if (MentionUtils.TryParseChannel(input, out ulong id))

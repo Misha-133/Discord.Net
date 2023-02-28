@@ -22,7 +22,7 @@ namespace Discord.Commands
             IReadOnlyCollection<IGuildUser> guildUsers = ImmutableArray.Create<IGuildUser>();
 
             if (context.Guild != null)
-                guildUsers = await context.Guild.GetUsersAsync(CacheMode.CacheOnly).ConfigureAwait(false);
+                guildUsers = await context.Guild.GetUsersAsync(CacheMode.CacheOnly);
 
             //By Mention (1.0)
             if (MentionUtils.TryParseUser(input, out var id))
@@ -50,7 +50,7 @@ namespace Discord.Commands
                 if (ushort.TryParse(input.Substring(index + 1), out ushort discriminator))
                 {
                     var channelUser = await channelUsers.FirstOrDefaultAsync(x => x.DiscriminatorValue == discriminator &&
-                        string.Equals(username, x.Username, StringComparison.OrdinalIgnoreCase)).ConfigureAwait(false);
+                        string.Equals(username, x.Username, StringComparison.OrdinalIgnoreCase));
                     AddResult(results, channelUser as T, channelUser?.Username == username ? 0.85f : 0.75f);
 
                     var guildUser = guildUsers.FirstOrDefault(x => x.DiscriminatorValue == discriminator &&
@@ -64,7 +64,7 @@ namespace Discord.Commands
                 await channelUsers
                     .Where(x => string.Equals(input, x.Username, StringComparison.OrdinalIgnoreCase))
                     .ForEachAsync(channelUser => AddResult(results, channelUser as T, channelUser.Username == input ? 0.65f : 0.55f))
-                    .ConfigureAwait(false);
+                    ;
 
                 foreach (var guildUser in guildUsers.Where(x => string.Equals(input, x.Username, StringComparison.OrdinalIgnoreCase)))
                     AddResult(results, guildUser as T, guildUser.Username == input ? 0.60f : 0.50f);
@@ -75,7 +75,7 @@ namespace Discord.Commands
                 await channelUsers
                     .Where(x => string.Equals(input, (x as IGuildUser)?.Nickname, StringComparison.OrdinalIgnoreCase))
                     .ForEachAsync(channelUser => AddResult(results, channelUser as T, (channelUser as IGuildUser).Nickname == input ? 0.65f : 0.55f))
-                    .ConfigureAwait(false);
+                    ;
 
                 foreach (var guildUser in guildUsers.Where(x => string.Equals(input, x.Nickname, StringComparison.OrdinalIgnoreCase)))
                     AddResult(results, guildUser as T, guildUser.Nickname == input ? 0.60f : 0.50f);

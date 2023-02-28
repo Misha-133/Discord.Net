@@ -1230,7 +1230,7 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         public async Task DownloadUsersAsync()
         {
-            await Discord.DownloadUsersAsync(new[] { this }).ConfigureAwait(false);
+            await Discord.DownloadUsersAsync(new[] { this });
         }
         internal void CompleteDownloadUsers()
         {
@@ -1462,7 +1462,7 @@ namespace Discord.WebSocket
             if (mode == CacheMode.CacheOnly)
                 return null;
 
-            var model = await Discord.ApiClient.GetGuildStickerAsync(Id, id, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.GetGuildStickerAsync(Id, id, options);
 
             if (model == null)
                 return null;
@@ -1494,7 +1494,7 @@ namespace Discord.WebSocket
             if (mode == CacheMode.CacheOnly)
                 return ImmutableArray.Create<SocketCustomSticker>();
 
-            var models = await Discord.ApiClient.ListGuildStickersAsync(Id, options).ConfigureAwait(false);
+            var models = await Discord.ApiClient.ListGuildStickersAsync(Id, options);
 
             List<SocketCustomSticker> stickers = new();
 
@@ -1519,7 +1519,7 @@ namespace Discord.WebSocket
         public async Task<SocketCustomSticker> CreateStickerAsync(string name, string description, IEnumerable<string> tags, Image image,
             RequestOptions options = null)
         {
-            var model = await GuildHelper.CreateStickerAsync(Discord, this, name, description, tags, image, options).ConfigureAwait(false);
+            var model = await GuildHelper.CreateStickerAsync(Discord, this, name, description, tags, image, options);
 
             return AddOrUpdateSticker(model);
         }
@@ -1555,7 +1555,7 @@ namespace Discord.WebSocket
         public async Task<SocketCustomSticker> CreateStickerAsync(string name, string description, IEnumerable<string> tags, Stream stream,
             string filename, RequestOptions options = null)
         {
-            var model = await GuildHelper.CreateStickerAsync(Discord, this, name, description, tags, stream, filename, options).ConfigureAwait(false);
+            var model = await GuildHelper.CreateStickerAsync(Discord, this, name, description, tags, stream, filename, options);
 
             return AddOrUpdateSticker(model);
         }
@@ -1586,14 +1586,14 @@ namespace Discord.WebSocket
                     if (after.VoiceChannel != null && _audioClient.ChannelId != after.VoiceChannel?.Id)
                     {
                         _audioClient.ChannelId = after.VoiceChannel.Id;
-                        await RepopulateAudioStreamsAsync().ConfigureAwait(false);
+                        await RepopulateAudioStreamsAsync();
                     }
                 }
                 else
                 {
-                    await _audioClient.RemoveInputStreamAsync(model.UserId).ConfigureAwait(false); //User changed channels, end their stream
+                    await _audioClient.RemoveInputStreamAsync(model.UserId); //User changed channels, end their stream
                     if (CurrentUser.VoiceChannel != null && after.VoiceChannel?.Id == CurrentUser.VoiceChannel?.Id)
-                        await _audioClient.CreateInputStreamAsync(model.UserId).ConfigureAwait(false);
+                        await _audioClient.CreateInputStreamAsync(model.UserId);
                 }
             }
 
@@ -1610,7 +1610,7 @@ namespace Discord.WebSocket
             if (_voiceStates.TryRemove(id, out SocketVoiceState voiceState))
             {
                 if (_audioClient != null)
-                    await _audioClient.RemoveInputStreamAsync(id).ConfigureAwait(false); //User changed channels, end their stream
+                    await _audioClient.RemoveInputStreamAsync(id); //User changed channels, end their stream
                 return voiceState;
             }
             return null;
@@ -1626,10 +1626,10 @@ namespace Discord.WebSocket
         {
             TaskCompletionSource<AudioClient> promise;
 
-            await _audioLock.WaitAsync().ConfigureAwait(false);
+            await _audioLock.WaitAsync();
             try
             {
-                await DisconnectAudioInternalAsync().ConfigureAwait(false);
+                await DisconnectAudioInternalAsync();
                 promise = new TaskCompletionSource<AudioClient>();
                 _audioConnectPromise = promise;
 
@@ -1645,7 +1645,7 @@ namespace Discord.WebSocket
                 {
 #pragma warning disable IDISP001
                     var _ = promise.TrySetResultAsync(null);
-                    await Discord.ApiClient.SendVoiceStateUpdateAsync(_voiceStateUpdateParams).ConfigureAwait(false);
+                    await Discord.ApiClient.SendVoiceStateUpdateAsync(_voiceStateUpdateParams);
                     return null;
 #pragma warning restore IDISP001
                 }
@@ -1680,11 +1680,11 @@ namespace Discord.WebSocket
 #pragma warning restore IDISP003
                 }
 
-                await Discord.ApiClient.SendVoiceStateUpdateAsync(_voiceStateUpdateParams).ConfigureAwait(false);
+                await Discord.ApiClient.SendVoiceStateUpdateAsync(_voiceStateUpdateParams);
             }
             catch
             {
-                await DisconnectAudioInternalAsync().ConfigureAwait(false);
+                await DisconnectAudioInternalAsync();
                 throw;
             }
             finally
@@ -1697,21 +1697,21 @@ namespace Discord.WebSocket
                 var timeoutTask = Task.Delay(15000);
                 if (await Task.WhenAny(promise.Task, timeoutTask).ConfigureAwait(false) == timeoutTask)
                     throw new TimeoutException();
-                return await promise.Task.ConfigureAwait(false);
+                return await promise.Task;
             }
             catch
             {
-                await DisconnectAudioAsync().ConfigureAwait(false);
+                await DisconnectAudioAsync();
                 throw;
             }
         }
 
         internal async Task DisconnectAudioAsync()
         {
-            await _audioLock.WaitAsync().ConfigureAwait(false);
+            await _audioLock.WaitAsync();
             try
             {
-                await DisconnectAudioInternalAsync().ConfigureAwait(false);
+                await DisconnectAudioInternalAsync();
             }
             finally
             {
@@ -1723,8 +1723,8 @@ namespace Discord.WebSocket
             _audioConnectPromise?.TrySetCanceledAsync(); //Cancel any previous audio connection
             _audioConnectPromise = null;
             if (_audioClient != null)
-                await _audioClient.StopAsync().ConfigureAwait(false);
-            await Discord.ApiClient.SendVoiceStateUpdateAsync(Id, null, false, false).ConfigureAwait(false);
+                await _audioClient.StopAsync();
+            await Discord.ApiClient.SendVoiceStateUpdateAsync(Id, null, false, false);
             _audioClient?.Dispose();
             _audioClient = null;
             _voiceStateUpdateParams = null;
@@ -1732,10 +1732,10 @@ namespace Discord.WebSocket
 
         internal async Task ModifyAudioAsync(ulong channelId, Action<AudioChannelProperties> func, RequestOptions options)
         {
-            await _audioLock.WaitAsync().ConfigureAwait(false);
+            await _audioLock.WaitAsync();
             try
             {
-                await ModifyAudioInternalAsync(channelId, func, options).ConfigureAwait(false);
+                await ModifyAudioInternalAsync(channelId, func, options);
             }
             finally
             {
@@ -1756,7 +1756,7 @@ namespace Discord.WebSocket
             if (props.SelfMute.IsSpecified)
                 _voiceStateUpdateParams.SelfMute = props.SelfMute.Value;
 
-            await Discord.ApiClient.SendVoiceStateUpdateAsync(_voiceStateUpdateParams, options).ConfigureAwait(false);
+            await Discord.ApiClient.SendVoiceStateUpdateAsync(_voiceStateUpdateParams, options);
         }
 
         internal async Task FinishConnectAudio(string url, string token)
@@ -1764,23 +1764,23 @@ namespace Discord.WebSocket
             //TODO: Mem Leak: Disconnected/Connected handlers aren't cleaned up
             var voiceState = GetVoiceState(Discord.CurrentUser.Id).Value;
 
-            await _audioLock.WaitAsync().ConfigureAwait(false);
+            await _audioLock.WaitAsync();
             try
             {
                 if (_audioClient != null)
                 {
-                    await RepopulateAudioStreamsAsync().ConfigureAwait(false);
-                    await _audioClient.StartAsync(url, Discord.CurrentUser.Id, voiceState.VoiceSessionId, token).ConfigureAwait(false);
+                    await RepopulateAudioStreamsAsync();
+                    await _audioClient.StartAsync(url, Discord.CurrentUser.Id, voiceState.VoiceSessionId, token);
                 }
             }
             catch (OperationCanceledException)
             {
-                await DisconnectAudioInternalAsync().ConfigureAwait(false);
+                await DisconnectAudioInternalAsync();
             }
             catch (Exception e)
             {
-                await _audioConnectPromise.SetExceptionAsync(e).ConfigureAwait(false);
-                await DisconnectAudioInternalAsync().ConfigureAwait(false);
+                await _audioConnectPromise.SetExceptionAsync(e);
+                await DisconnectAudioInternalAsync();
             }
             finally
             {
@@ -1790,13 +1790,13 @@ namespace Discord.WebSocket
 
         internal async Task RepopulateAudioStreamsAsync()
         {
-            await _audioClient.ClearInputStreamsAsync().ConfigureAwait(false); //We changed channels, end all current streams
+            await _audioClient.ClearInputStreamsAsync(); //We changed channels, end all current streams
             if (CurrentUser.VoiceChannel != null)
             {
                 foreach (var pair in _voiceStates)
                 {
                     if (pair.Value.VoiceChannel?.Id == CurrentUser.VoiceChannel?.Id && pair.Key != CurrentUser.Id)
-                        await _audioClient.CreateInputStreamAsync(pair.Key).ConfigureAwait(false);
+                        await _audioClient.CreateInputStreamAsync(pair.Key);
                 }
             }
         }
@@ -1911,13 +1911,13 @@ namespace Discord.WebSocket
         IReadOnlyCollection<ICustomSticker> IGuild.Stickers => Stickers;
         /// <inheritdoc />
         async Task<IGuildScheduledEvent> IGuild.CreateEventAsync(string name, DateTimeOffset startTime, GuildScheduledEventType type, GuildScheduledEventPrivacyLevel privacyLevel, string description, DateTimeOffset? endTime, ulong? channelId, string location, Image? coverImage, RequestOptions options)
-            => await CreateEventAsync(name, startTime, type, privacyLevel, description, endTime, channelId, location, coverImage, options).ConfigureAwait(false);
+            => await CreateEventAsync(name, startTime, type, privacyLevel, description, endTime, channelId, location, coverImage, options);
         /// <inheritdoc />
         async Task<IGuildScheduledEvent> IGuild.GetEventAsync(ulong id, RequestOptions options)
-            => await GetEventAsync(id, options).ConfigureAwait(false);
+            => await GetEventAsync(id, options);
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IGuildScheduledEvent>> IGuild.GetEventsAsync(RequestOptions options)
-            => await GetEventsAsync(options).ConfigureAwait(false);
+            => await GetEventsAsync(options);
         /// <inheritdoc />
         IAsyncEnumerable<IReadOnlyCollection<IBan>> IGuild.GetBansAsync(int limit, RequestOptions options)
             => GetBansAsync(limit, options);
@@ -1929,10 +1929,10 @@ namespace Discord.WebSocket
             => GetBansAsync(fromUser, dir, limit, options);
         /// <inheritdoc/>
         async Task<IBan> IGuild.GetBanAsync(IUser user, RequestOptions options)
-            => await GetBanAsync(user, options).ConfigureAwait(false);
+            => await GetBanAsync(user, options);
         /// <inheritdoc/>
         async Task<IBan> IGuild.GetBanAsync(ulong userId, RequestOptions options)
-            => await GetBanAsync(userId, options).ConfigureAwait(false);
+            => await GetBanAsync(userId, options);
 
         /// <inheritdoc />
         Task<IReadOnlyCollection<IGuildChannel>> IGuild.GetChannelsAsync(CacheMode mode, RequestOptions options)
@@ -1987,47 +1987,47 @@ namespace Discord.WebSocket
             => Task.FromResult<ITextChannel>(PublicUpdatesChannel);
         /// <inheritdoc />
         async Task<ITextChannel> IGuild.CreateTextChannelAsync(string name, Action<TextChannelProperties> func, RequestOptions options)
-            => await CreateTextChannelAsync(name, func, options).ConfigureAwait(false);
+            => await CreateTextChannelAsync(name, func, options);
         /// <inheritdoc />
         async Task<IVoiceChannel> IGuild.CreateVoiceChannelAsync(string name, Action<VoiceChannelProperties> func, RequestOptions options)
-            => await CreateVoiceChannelAsync(name, func, options).ConfigureAwait(false);
+            => await CreateVoiceChannelAsync(name, func, options);
         /// <inheritdoc />
         async Task<IStageChannel> IGuild.CreateStageChannelAsync(string name, Action<VoiceChannelProperties> func, RequestOptions options)
-            => await CreateStageChannelAsync(name, func, options).ConfigureAwait(false);
+            => await CreateStageChannelAsync(name, func, options);
         /// <inheritdoc />
         async Task<ICategoryChannel> IGuild.CreateCategoryAsync(string name, Action<GuildChannelProperties> func, RequestOptions options)
-            => await CreateCategoryChannelAsync(name, func, options).ConfigureAwait(false);
+            => await CreateCategoryChannelAsync(name, func, options);
         /// <inheritdoc />
         async Task<IForumChannel> IGuild.CreateForumChannelAsync(string name, Action<ForumChannelProperties> func, RequestOptions options)
-            => await CreateForumChannelAsync(name, func, options).ConfigureAwait(false);
+            => await CreateForumChannelAsync(name, func, options);
 
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IVoiceRegion>> IGuild.GetVoiceRegionsAsync(RequestOptions options)
-            => await GetVoiceRegionsAsync(options).ConfigureAwait(false);
+            => await GetVoiceRegionsAsync(options);
 
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IIntegration>> IGuild.GetIntegrationsAsync(RequestOptions options)
-            => await GetIntegrationsAsync(options).ConfigureAwait(false);
+            => await GetIntegrationsAsync(options);
         /// <inheritdoc />
         async Task IGuild.DeleteIntegrationAsync(ulong id, RequestOptions options)
-            => await DeleteIntegrationAsync(id, options).ConfigureAwait(false);
+            => await DeleteIntegrationAsync(id, options);
 
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IInviteMetadata>> IGuild.GetInvitesAsync(RequestOptions options)
-            => await GetInvitesAsync(options).ConfigureAwait(false);
+            => await GetInvitesAsync(options);
         /// <inheritdoc />
         async Task<IInviteMetadata> IGuild.GetVanityInviteAsync(RequestOptions options)
-            => await GetVanityInviteAsync(options).ConfigureAwait(false);
+            => await GetVanityInviteAsync(options);
 
         /// <inheritdoc />
         IRole IGuild.GetRole(ulong id)
             => GetRole(id);
         /// <inheritdoc />
         async Task<IRole> IGuild.CreateRoleAsync(string name, GuildPermissions? permissions, Color? color, bool isHoisted, RequestOptions options)
-            => await CreateRoleAsync(name, permissions, color, isHoisted, false, options).ConfigureAwait(false);
+            => await CreateRoleAsync(name, permissions, color, isHoisted, false, options);
         /// <inheritdoc />
         async Task<IRole> IGuild.CreateRoleAsync(string name, GuildPermissions? permissions, Color? color, bool isHoisted, bool isMentionable, RequestOptions options)
-            => await CreateRoleAsync(name, permissions, color, isHoisted, isMentionable, options).ConfigureAwait(false);
+            => await CreateRoleAsync(name, permissions, color, isHoisted, isMentionable, options);
 
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IGuildUser>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions options)
@@ -2048,7 +2048,7 @@ namespace Discord.WebSocket
             if (user is not null || mode == CacheMode.CacheOnly)
                 return user;
 
-            return await GuildHelper.GetUserAsync(this, Discord, id, options).ConfigureAwait(false);
+            return await GuildHelper.GetUserAsync(this, Discord, id, options);
         }
 
         /// <inheritdoc />
@@ -2061,7 +2061,7 @@ namespace Discord.WebSocket
         async Task<IReadOnlyCollection<IGuildUser>> IGuild.SearchUsersAsync(string query, int limit, CacheMode mode, RequestOptions options)
         {
             if (mode == CacheMode.AllowDownload)
-                return await SearchUsersAsync(query, limit, options).ConfigureAwait(false);
+                return await SearchUsersAsync(query, limit, options);
             else
                 return ImmutableArray.Create<IGuildUser>();
         }
@@ -2078,13 +2078,13 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         async Task<IWebhook> IGuild.GetWebhookAsync(ulong id, RequestOptions options)
-            => await GetWebhookAsync(id, options).ConfigureAwait(false);
+            => await GetWebhookAsync(id, options);
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IWebhook>> IGuild.GetWebhooksAsync(RequestOptions options)
-            => await GetWebhooksAsync(options).ConfigureAwait(false);
+            => await GetWebhooksAsync(options);
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IApplicationCommand>> IGuild.GetApplicationCommandsAsync(bool withLocalizations, string locale, RequestOptions options)
-            => await GetApplicationCommandsAsync(withLocalizations, locale, options).ConfigureAwait(false);
+            => await GetApplicationCommandsAsync(withLocalizations, locale, options);
         /// <inheritdoc />
         async Task<ICustomSticker> IGuild.CreateStickerAsync(string name, string description, IEnumerable<string> tags, Image image, RequestOptions options)
             => await CreateStickerAsync(name, description, tags, image, options);
@@ -2131,15 +2131,15 @@ namespace Discord.WebSocket
 
         /// <inheritdoc/>
         async Task<IAutoModRule> IGuild.GetAutoModRuleAsync(ulong ruleId, RequestOptions options)
-            => await GetAutoModRuleAsync(ruleId, options).ConfigureAwait(false);
+            => await GetAutoModRuleAsync(ruleId, options);
 
         /// <inheritdoc/>
         async Task<IAutoModRule[]> IGuild.GetAutoModRulesAsync(RequestOptions options)
-            => await GetAutoModRulesAsync(options).ConfigureAwait(false);
+            => await GetAutoModRulesAsync(options);
 
         /// <inheritdoc/>
         async Task<IAutoModRule> IGuild.CreateAutoModRuleAsync(Action<AutoModRuleProperties> props, RequestOptions options)
-            => await CreateAutoModRuleAsync(props, options).ConfigureAwait(false);
+            => await CreateAutoModRuleAsync(props, options);
 
         #endregion
     }

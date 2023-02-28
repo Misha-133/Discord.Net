@@ -289,7 +289,7 @@ namespace Discord.WebSocket
         #region IDiscordClient
         /// <inheritdoc />
         async Task<IApplication> IDiscordClient.GetApplicationInfoAsync(RequestOptions options)
-            => await GetApplicationInfoAsync(options).ConfigureAwait(false);
+            => await GetApplicationInfoAsync(options);
 
         /// <inheritdoc />
         Task<IChannel> IDiscordClient.GetChannelAsync(ulong id, CacheMode mode, RequestOptions options)
@@ -300,11 +300,11 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IConnection>> IDiscordClient.GetConnectionsAsync(RequestOptions options)
-            => await GetConnectionsAsync(options).ConfigureAwait(false);
+            => await GetConnectionsAsync(options);
 
         /// <inheritdoc />
         async Task<IInvite> IDiscordClient.GetInviteAsync(string inviteId, RequestOptions options)
-            => await GetInviteAsync(inviteId, options).ConfigureAwait(false);
+            => await GetInviteAsync(inviteId, options);
 
         /// <inheritdoc />
         Task<IGuild> IDiscordClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions options)
@@ -315,7 +315,7 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         async Task<IGuild> IDiscordClient.CreateGuildAsync(string name, IVoiceRegion region, Stream jpegIcon, RequestOptions options)
-            => await CreateGuildAsync(name, region, jpegIcon, options).ConfigureAwait(false);
+            => await CreateGuildAsync(name, region, jpegIcon, options);
 
         /// <inheritdoc />
         async Task<IUser> IDiscordClient.GetUserAsync(ulong id, CacheMode mode, RequestOptions options)
@@ -324,7 +324,7 @@ namespace Discord.WebSocket
             if (user is not null || mode == CacheMode.CacheOnly)
                 return user;
 
-            return await Rest.GetUserAsync(id, options).ConfigureAwait(false);
+            return await Rest.GetUserAsync(id, options);
         }
 
         /// <inheritdoc />
@@ -334,12 +334,12 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         async Task<IVoiceRegion> IDiscordClient.GetVoiceRegionAsync(string id, RequestOptions options)
         {
-            return await GetVoiceRegionAsync(id).ConfigureAwait(false);
+            return await GetVoiceRegionAsync(id);
         }
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IVoiceRegion>> IDiscordClient.GetVoiceRegionsAsync(RequestOptions options)
         {
-            return await GetVoiceRegionsAsync().ConfigureAwait(false);
+            return await GetVoiceRegionsAsync();
         }
         #endregion
     }

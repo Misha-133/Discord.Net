@@ -41,7 +41,7 @@ namespace Discord.Interactions
             if (context.Interaction is not IAutocompleteInteraction)
                 return ExecuteResult.FromError(InteractionCommandError.ParseFailed, $"Provided {nameof(IInteractionContext)} doesn't belong to a Autocomplete Interaction");
 
-            return await base.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await base.ExecuteAsync(context, services);
         }
 
         protected override Task<IResult> ParseArgumentsAsync(IInteractionContext context, IServiceProvider services)

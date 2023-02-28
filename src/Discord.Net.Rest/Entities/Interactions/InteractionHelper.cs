@@ -38,19 +38,19 @@ namespace Discord.Rest
         public static async Task SendInteractionResponseAsync(BaseDiscordClient client, InteractionResponse response,
             IDiscordInteraction interaction, IMessageChannel channel = null, RequestOptions options = null)
         {
-            await client.ApiClient.CreateInteractionResponseAsync(response, interaction.Id, interaction.Token, options).ConfigureAwait(false);
+            await client.ApiClient.CreateInteractionResponseAsync(response, interaction.Id, interaction.Token, options);
         }
 
         public static async Task SendInteractionResponseAsync(BaseDiscordClient client, UploadInteractionFileParams response,
             IDiscordInteraction interaction, IMessageChannel channel = null, RequestOptions options = null)
         {
-            await client.ApiClient.CreateInteractionResponseAsync(response, interaction.Id, interaction.Token, options).ConfigureAwait(false);
+            await client.ApiClient.CreateInteractionResponseAsync(response, interaction.Id, interaction.Token, options);
         }
 
         public static async Task<RestInteractionMessage> GetOriginalResponseAsync(BaseDiscordClient client, IMessageChannel channel,
             IDiscordInteraction interaction, RequestOptions options = null)
         {
-            var model = await client.ApiClient.GetInteractionResponseAsync(interaction.Token, options).ConfigureAwait(false);
+            var model = await client.ApiClient.GetInteractionResponseAsync(interaction.Token, options);
             if (model != null)
                 return RestInteractionMessage.Create(client, model, interaction.Token, channel);
             return null;
@@ -59,7 +59,7 @@ namespace Discord.Rest
         public static async Task<RestFollowupMessage> SendFollowupAsync(BaseDiscordClient client, CreateWebhookMessageParams args,
             string token, IMessageChannel channel, RequestOptions options = null)
         {
-            var model = await client.ApiClient.CreateInteractionFollowupMessageAsync(args, token, options).ConfigureAwait(false);
+            var model = await client.ApiClient.CreateInteractionFollowupMessageAsync(args, token, options);
 
             var entity = RestFollowupMessage.Create(client, model, token, channel);
             return entity;
@@ -68,7 +68,7 @@ namespace Discord.Rest
         public static async Task<RestFollowupMessage> SendFollowupAsync(BaseDiscordClient client, UploadWebhookFileParams args,
            string token, IMessageChannel channel, RequestOptions options = null)
         {
-            var model = await client.ApiClient.CreateInteractionFollowupMessageAsync(args, token, options).ConfigureAwait(false);
+            var model = await client.ApiClient.CreateInteractionFollowupMessageAsync(args, token, options);
 
             var entity = RestFollowupMessage.Create(client, model, token, channel);
             return entity;
@@ -79,7 +79,7 @@ namespace Discord.Rest
         public static async Task<RestGlobalCommand> GetGlobalCommandAsync(BaseDiscordClient client, ulong id,
             RequestOptions options = null)
         {
-            var model = await client.ApiClient.GetGlobalApplicationCommandAsync(id, options).ConfigureAwait(false);
+            var model = await client.ApiClient.GetGlobalApplicationCommandAsync(id, options);
 
             return RestGlobalCommand.Create(client, model);
         }
@@ -122,7 +122,7 @@ namespace Discord.Rest
                     : Optional<ApplicationCommandOption[]>.Unspecified;
             }
 
-            return await client.ApiClient.CreateGlobalApplicationCommandAsync(model, options).ConfigureAwait(false);
+            return await client.ApiClient.CreateGlobalApplicationCommandAsync(model, options);
         }
 
         public static async Task<ApplicationCommand[]> BulkOverwriteGlobalCommandsAsync(BaseDiscordClient client,
@@ -166,7 +166,7 @@ namespace Discord.Rest
                 models.Add(model);
             }
 
-            return await client.ApiClient.BulkOverwriteGlobalApplicationCommandsAsync(models.ToArray(), options).ConfigureAwait(false);
+            return await client.ApiClient.BulkOverwriteGlobalApplicationCommandsAsync(models.ToArray(), options);
         }
 
         public static async Task<IReadOnlyCollection<ApplicationCommand>> BulkOverwriteGuildCommandsAsync(BaseDiscordClient client, ulong guildId,
@@ -210,7 +210,7 @@ namespace Discord.Rest
                 models.Add(model);
             }
 
-            return await client.ApiClient.BulkOverwriteGuildApplicationCommandsAsync(guildId, models.ToArray(), options).ConfigureAwait(false);
+            return await client.ApiClient.BulkOverwriteGuildApplicationCommandsAsync(guildId, models.ToArray(), options);
         }
 
         private static TArg GetApplicationCommandProperties<TArg>(IApplicationCommand command)
@@ -281,7 +281,7 @@ namespace Discord.Rest
                     : Optional<ApplicationCommandOption[]>.Unspecified;
             }
 
-            return await client.ApiClient.ModifyGlobalApplicationCommandAsync(model, command.Id, options).ConfigureAwait(false);
+            return await client.ApiClient.ModifyGlobalApplicationCommandAsync(model, command.Id, options);
         }
 
         public static async Task DeleteGlobalCommandAsync(BaseDiscordClient client, IApplicationCommand command, RequestOptions options = null)
@@ -289,7 +289,7 @@ namespace Discord.Rest
             Preconditions.NotNull(command, nameof(command));
             Preconditions.NotEqual(command.Id, 0, nameof(command.Id));
 
-            await client.ApiClient.DeleteGlobalApplicationCommandAsync(command.Id, options).ConfigureAwait(false);
+            await client.ApiClient.DeleteGlobalApplicationCommandAsync(command.Id, options);
         }
         #endregion
 
@@ -332,7 +332,7 @@ namespace Discord.Rest
                     : Optional<ApplicationCommandOption[]>.Unspecified;
             }
 
-            return await client.ApiClient.CreateGuildApplicationCommandAsync(model, guildId, options).ConfigureAwait(false);
+            return await client.ApiClient.CreateGuildApplicationCommandAsync(model, guildId, options);
         }
 
         public static Task<ApplicationCommand> ModifyGuildCommandAsync<TArg>(BaseDiscordClient client, IApplicationCommand command, ulong guildId,
@@ -369,7 +369,7 @@ namespace Discord.Rest
                     : Optional<ApplicationCommandOption[]>.Unspecified;
             }
 
-            return await client.ApiClient.ModifyGuildApplicationCommandAsync(model, guildId, command.Id, options).ConfigureAwait(false);
+            return await client.ApiClient.ModifyGuildApplicationCommandAsync(model, guildId, command.Id, options);
         }
 
         public static async Task DeleteGuildCommandAsync(BaseDiscordClient client, ulong guildId, IApplicationCommand command, RequestOptions options = null)
@@ -377,7 +377,7 @@ namespace Discord.Rest
             Preconditions.NotNull(command, nameof(command));
             Preconditions.NotEqual(command.Id, 0, nameof(command.Id));
 
-            await client.ApiClient.DeleteGuildApplicationCommandAsync(guildId, command.Id, options).ConfigureAwait(false);
+            await client.ApiClient.DeleteGuildApplicationCommandAsync(guildId, command.Id, options);
         }
 
         public static Task DeleteUnknownApplicationCommandAsync(BaseDiscordClient client, ulong? guildId, IApplicationCommand command, RequestOptions options = null)
@@ -429,7 +429,7 @@ namespace Discord.Rest
                         : Optional<API.ActionRowComponent[]>.Unspecified,
             };
 
-            return await client.ApiClient.ModifyInteractionFollowupMessageAsync(apiArgs, message.Id, message.Token, options).ConfigureAwait(false);
+            return await client.ApiClient.ModifyInteractionFollowupMessageAsync(apiArgs, message.Id, message.Token, options);
         }
         public static async Task DeleteFollowupMessageAsync(BaseDiscordClient client, RestFollowupMessage message, RequestOptions options = null)
             => await client.ApiClient.DeleteInteractionFollowupMessageAsync(message.Id, message.Token, options);
@@ -476,7 +476,7 @@ namespace Discord.Rest
                     Flags = args.Flags
                 };
 
-                return await client.ApiClient.ModifyInteractionResponseAsync(apiArgs, token, options).ConfigureAwait(false);
+                return await client.ApiClient.ModifyInteractionResponseAsync(apiArgs, token, options);
             }
             else
             {
@@ -490,7 +490,7 @@ namespace Discord.Rest
                         : Optional<API.ActionRowComponent[]>.Unspecified
                 };
 
-                return await client.ApiClient.ModifyInteractionResponseAsync(apiArgs, token, options).ConfigureAwait(false);
+                return await client.ApiClient.ModifyInteractionResponseAsync(apiArgs, token, options);
             }
         }
 

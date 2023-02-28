@@ -186,7 +186,7 @@ namespace Discord.Interactions
             _moduleDefs = new HashSet<ModuleInfo>();
 
             _logManager = new LogManager(config.LogLevel);
-            _logManager.Message += async msg => await _logEvent.InvokeAsync(msg).ConfigureAwait(false);
+            _logManager.Message += async msg => await _logEvent.InvokeAsync(msg);
             _cmdLogger = _logManager.CreateLogger("App Commands");
 
             _slashCommandMap = new CommandMap<SlashCommandInfo>(this);
@@ -259,7 +259,7 @@ namespace Discord.Interactions
         {
             services ??= EmptyServiceProvider.Instance;
 
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
             try
             {
                 var builder = new ModuleBuilder(this, name);
@@ -288,7 +288,7 @@ namespace Discord.Interactions
         {
             services ??= EmptyServiceProvider.Instance;
 
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
 
             try
             {
@@ -346,7 +346,7 @@ namespace Discord.Interactions
 
             services ??= EmptyServiceProvider.Instance;
 
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
 
             try
             {
@@ -392,12 +392,12 @@ namespace Discord.Interactions
             if (!deleteMissing)
             {
 
-                var existing = await RestClient.GetGuildApplicationCommands(guildId).ConfigureAwait(false);
+                var existing = await RestClient.GetGuildApplicationCommands(guildId);
                 var missing = existing.Where(x => !props.Any(y => y.Name.IsSpecified && y.Name.Value == x.Name));
                 props.AddRange(missing.Select(x => x.ToApplicationCommandProps()));
             }
 
-            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId);
         }
 
         /// <summary>
@@ -416,12 +416,12 @@ namespace Discord.Interactions
 
             if (!deleteMissing)
             {
-                var existing = await RestClient.GetGlobalApplicationCommands().ConfigureAwait(false);
+                var existing = await RestClient.GetGlobalApplicationCommands();
                 var missing = existing.Where(x => !props.Any(y => y.Name.IsSpecified && y.Name.Value == x.Name));
                 props.AddRange(missing.Select(x => x.ToApplicationCommandProps()));
             }
 
-            return await RestClient.BulkOverwriteGlobalCommands(props.ToArray()).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGlobalCommands(props.ToArray());
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace Discord.Interactions
             if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
-            return await AddCommandsToGuildAsync(guild.Id, deleteMissing, commands).ConfigureAwait(false);
+            return await AddCommandsToGuildAsync(guild.Id, deleteMissing, commands);
         }
 
         /// <summary>
@@ -481,12 +481,12 @@ namespace Discord.Interactions
 
             if (!deleteMissing)
             {
-                var existing = await RestClient.GetGuildApplicationCommands(guildId).ConfigureAwait(false);
+                var existing = await RestClient.GetGuildApplicationCommands(guildId);
                 var missing = existing.Where(x => !props.Any(y => y.Name.IsSpecified && y.Name.Value == x.Name));
                 props.AddRange(missing.Select(x => x.ToApplicationCommandProps()));
             }
 
-            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId);
         }
 
         /// <summary>
@@ -503,7 +503,7 @@ namespace Discord.Interactions
             if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
-            return await AddModulesToGuildAsync(guild.Id, deleteMissing, modules).ConfigureAwait(false);
+            return await AddModulesToGuildAsync(guild.Id, deleteMissing, modules);
         }
 
         /// <summary>
@@ -523,12 +523,12 @@ namespace Discord.Interactions
 
             if (!deleteMissing)
             {
-                var existing = await RestClient.GetGuildApplicationCommands(guildId).ConfigureAwait(false);
+                var existing = await RestClient.GetGuildApplicationCommands(guildId);
                 var missing = existing.Where(x => !props.Any(y => y.Name.IsSpecified && y.Name.Value == x.Name));
                 props.AddRange(missing.Select(x => x.ToApplicationCommandProps()));
             }
 
-            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId);
         }
 
         /// <summary>
@@ -547,12 +547,12 @@ namespace Discord.Interactions
 
             if (!deleteMissing)
             {
-                var existing = await RestClient.GetGlobalApplicationCommands().ConfigureAwait(false);
+                var existing = await RestClient.GetGlobalApplicationCommands();
                 var missing = existing.Where(x => !props.Any(y => y.Name.IsSpecified && y.Name.Value == x.Name));
                 props.AddRange(missing.Select(x => x.ToApplicationCommandProps()));
             }
 
-            return await RestClient.BulkOverwriteGlobalCommands(props.ToArray()).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGlobalCommands(props.ToArray());
         }
 
         /// <summary>
@@ -590,12 +590,12 @@ namespace Discord.Interactions
 
             if (!deleteMissing)
             {
-                var existing = await RestClient.GetGlobalApplicationCommands().ConfigureAwait(false);
+                var existing = await RestClient.GetGlobalApplicationCommands();
                 var missing = existing.Where(x => !props.Any(y => y.Name.IsSpecified && y.Name.Value == x.Name));
                 props.AddRange(missing.Select(x => x.ToApplicationCommandProps()));
             }
 
-            return await RestClient.BulkOverwriteGlobalCommands(props.ToArray()).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGlobalCommands(props.ToArray());
         }
 
         private void LoadModuleInternal(ModuleInfo module)
@@ -642,7 +642,7 @@ namespace Discord.Interactions
         /// </returns>
         public async Task<bool> RemoveModuleAsync(Type type)
         {
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
 
             try
             {
@@ -667,7 +667,7 @@ namespace Discord.Interactions
         /// </returns>
         public async Task<bool> RemoveModuleAsync(ModuleInfo module)
         {
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
 
             try
             {
@@ -697,7 +697,7 @@ namespace Discord.Interactions
             if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
-            return await RemoveModulesFromGuildAsync(guild.Id, modules).ConfigureAwait(false);
+            return await RemoveModulesFromGuildAsync(guild.Id, modules);
         }
 
         /// <summary>
@@ -713,11 +713,11 @@ namespace Discord.Interactions
             EnsureClientReady();
 
             var exclude = modules.SelectMany(x => x.ToApplicationCommandProps(true)).ToList();
-            var existing = await RestClient.GetGuildApplicationCommands(guildId).ConfigureAwait(false);
+            var existing = await RestClient.GetGuildApplicationCommands(guildId);
 
             var props = existing.Where(x => !exclude.Any(y => y.Name.IsSpecified && x.Name == y.Name.Value)).Select(x => x.ToApplicationCommandProps());
 
-            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId).ConfigureAwait(false);
+            return await RestClient.BulkOverwriteGuildCommands(props.ToArray(), guildId);
         }
 
         private bool RemoveModuleInternal(ModuleInfo moduleInfo)
@@ -821,10 +821,10 @@ namespace Discord.Interactions
             {
                 await _cmdLogger.DebugAsync($"Unknown slash command, skipping execution ({string.Join(" ", keywords).ToUpper()})");
 
-                await _slashCommandExecutedEvent.InvokeAsync(null, context, result).ConfigureAwait(false);
+                await _slashCommandExecutedEvent.InvokeAsync(null, context, result);
                 return result;
             }
-            return await result.Command.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await result.Command.ExecuteAsync(context, services);
         }
 
         private async Task<IResult> ExecuteContextCommandAsync(IInteractionContext context, string input, ApplicationCommandType commandType, IServiceProvider services)
@@ -838,10 +838,10 @@ namespace Discord.Interactions
             {
                 await _cmdLogger.DebugAsync($"Unknown context command, skipping execution ({result.Text.ToUpper()})");
 
-                await _contextCommandExecutedEvent.InvokeAsync(null, context, result).ConfigureAwait(false);
+                await _contextCommandExecutedEvent.InvokeAsync(null, context, result);
                 return result;
             }
-            return await result.Command.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await result.Command.ExecuteAsync(context, services);
         }
 
         private async Task<IResult> ExecuteComponentCommandAsync(IInteractionContext context, string input, IServiceProvider services)
@@ -852,13 +852,13 @@ namespace Discord.Interactions
             {
                 await _cmdLogger.DebugAsync($"Unknown custom interaction id, skipping execution ({input.ToUpper()})");
 
-                await _componentCommandExecutedEvent.InvokeAsync(null, context, result).ConfigureAwait(false);
+                await _componentCommandExecutedEvent.InvokeAsync(null, context, result);
                 return result;
             }
 
             SetMatchesIfApplicable(context, result);
 
-            return await result.Command.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await result.Command.ExecuteAsync(context, services);
         }
 
         private async Task<IResult> ExecuteAutocompleteAsync(IInteractionContext context, IAutocompleteInteraction interaction, IServiceProvider services)
@@ -872,7 +872,7 @@ namespace Discord.Interactions
                 if (autocompleteHandlerResult.IsSuccess)
                 {
                     if (autocompleteHandlerResult.Command._flattenedParameterDictionary.TryGetValue(interaction.Data.Current.Name, out var parameter) && parameter?.AutocompleteHandler is not null)
-                        return await parameter.AutocompleteHandler.ExecuteAsync(context, interaction, parameter, services).ConfigureAwait(false);
+                        return await parameter.AutocompleteHandler.ExecuteAsync(context, interaction, parameter, services);
                 }
             }
 
@@ -884,11 +884,11 @@ namespace Discord.Interactions
             {
                 await _cmdLogger.DebugAsync($"Unknown command name, skipping autocomplete process ({interaction.Data.CommandName.ToUpper()})");
 
-                await _autocompleteCommandExecutedEvent.InvokeAsync(null, context, commandResult).ConfigureAwait(false);
+                await _autocompleteCommandExecutedEvent.InvokeAsync(null, context, commandResult);
                 return commandResult;
             }
 
-            return await commandResult.Command.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await commandResult.Command.ExecuteAsync(context, services);
         }
 
         private async Task<IResult> ExecuteModalCommandAsync(IInteractionContext context, string input, IServiceProvider services)
@@ -899,13 +899,13 @@ namespace Discord.Interactions
             {
                 await _cmdLogger.DebugAsync($"Unknown custom interaction id, skipping execution ({input.ToUpper()})");
 
-                await _componentCommandExecutedEvent.InvokeAsync(null, context, result).ConfigureAwait(false);
+                await _componentCommandExecutedEvent.InvokeAsync(null, context, result);
                 return result;
             }
 
             SetMatchesIfApplicable(context, result);
 
-            return await result.Command.ExecuteAsync(context, services).ConfigureAwait(false);
+            return await result.Command.ExecuteAsync(context, services);
         }
 
         private static void SetMatchesIfApplicable<T>(IInteractionContext context, SearchResult<T> searchResult)
@@ -1113,7 +1113,7 @@ namespace Discord.Interactions
             {
                 var arg = args[i];
                 var typeReader = _typeReaderMap.Get(arg.GetType(), null);
-                var result = await typeReader.SerializeAsync(arg, services).ConfigureAwait(false);
+                var result = await typeReader.SerializeAsync(arg, services);
                 serializedValues[i] = result;
             }
 
@@ -1173,7 +1173,7 @@ namespace Discord.Interactions
             if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
-            return await ModifySlashCommandPermissionsAsync(module, guild.Id, permissions).ConfigureAwait(false);
+            return await ModifySlashCommandPermissionsAsync(module, guild.Id, permissions);
         }
 
         /// <summary>
@@ -1197,10 +1197,10 @@ namespace Discord.Interactions
             if (!module.IsTopLevelGroup)
                 throw new InvalidOperationException("This module is not a top level application command. You cannot change its permissions");
 
-            var commands = await RestClient.GetGuildApplicationCommands(guildId).ConfigureAwait(false);
+            var commands = await RestClient.GetGuildApplicationCommands(guildId);
             var appCommand = commands.First(x => x.Name == module.SlashGroupName);
 
-            return await appCommand.ModifyCommandPermissions(permissions).ConfigureAwait(false);
+            return await appCommand.ModifyCommandPermissions(permissions);
         }
 
         /// <summary>
@@ -1221,7 +1221,7 @@ namespace Discord.Interactions
             if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
-            return await ModifyApplicationCommandPermissionsAsync(command, guild.Id, permissions).ConfigureAwait(false);
+            return await ModifyApplicationCommandPermissionsAsync(command, guild.Id, permissions);
         }
 
         /// <summary>
@@ -1234,7 +1234,7 @@ namespace Discord.Interactions
         ///     The active command permissions after the modification.
         /// </returns>
         public async Task<GuildApplicationCommandPermission> ModifySlashCommandPermissionsAsync(SlashCommandInfo command, ulong guildId,
-            params ApplicationCommandPermission[] permissions) => await ModifyApplicationCommandPermissionsAsync(command, guildId, permissions).ConfigureAwait(false);
+            params ApplicationCommandPermission[] permissions) => await ModifyApplicationCommandPermissionsAsync(command, guildId, permissions);
 
         /// <summary>
         ///     Modify the command permissions of the matching Discord Slash Command.
@@ -1254,7 +1254,7 @@ namespace Discord.Interactions
             if (guild is null)
                 throw new ArgumentNullException(nameof(guild));
 
-            return await ModifyApplicationCommandPermissionsAsync(command, guild.Id, permissions).ConfigureAwait(false);
+            return await ModifyApplicationCommandPermissionsAsync(command, guild.Id, permissions);
         }
 
         /// <summary>
@@ -1267,7 +1267,7 @@ namespace Discord.Interactions
         ///     The active command permissions after the modification.
         /// </returns>
         public async Task<GuildApplicationCommandPermission> ModifyContextCommandPermissionsAsync(ContextCommandInfo command, ulong guildId,
-            params ApplicationCommandPermission[] permissions) => await ModifyApplicationCommandPermissionsAsync(command, guildId, permissions).ConfigureAwait(false);
+            params ApplicationCommandPermission[] permissions) => await ModifyApplicationCommandPermissionsAsync(command, guildId, permissions);
 
         private async Task<GuildApplicationCommandPermission> ModifyApplicationCommandPermissionsAsync<T>(T command, ulong guildId,
             params ApplicationCommandPermission[] permissions) where T : class, IApplicationCommandInfo, ICommandInfo
@@ -1278,10 +1278,10 @@ namespace Discord.Interactions
             if (!command.IsTopLevelCommand)
                 throw new InvalidOperationException("This command is not a top level application command. You cannot change its permissions");
 
-            var commands = await RestClient.GetGuildApplicationCommands(guildId).ConfigureAwait(false);
+            var commands = await RestClient.GetGuildApplicationCommands(guildId);
             var appCommand = commands.First(x => x.Name == (command as IApplicationCommandInfo).Name);
 
-            return await appCommand.ModifyCommandPermissions(permissions).ConfigureAwait(false);
+            return await appCommand.ModifyCommandPermissions(permissions);
         }
 
         /// <summary>

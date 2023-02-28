@@ -79,7 +79,7 @@ namespace Discord.WebSocket
                 PrivacyLevel = privacyLevel
             };
 
-            var model = await Discord.ApiClient.CreateStageInstanceAsync(args, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.CreateStageInstanceAsync(args, options);
 
             Update(model, true);
         }

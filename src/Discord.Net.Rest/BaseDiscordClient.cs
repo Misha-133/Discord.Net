@@ -43,7 +43,7 @@ namespace Discord.Rest
         {
             ApiClient = client;
             LogManager = new LogManager(config.LogLevel);
-            LogManager.Message += async msg => await _logEvent.InvokeAsync(msg).ConfigureAwait(false);
+            LogManager.Message += async msg => await _logEvent.InvokeAsync(msg);
 
             _stateLock = new SemaphoreSlim(1, 1);
             _restLogger = LogManager.CreateLogger("Rest");
@@ -55,19 +55,19 @@ namespace Discord.Rest
             ApiClient.RequestQueue.RateLimitTriggered += async (id, info, endpoint) =>
             {
                 if (info == null)
-                    await _restLogger.VerboseAsync($"Preemptive Rate limit triggered: {endpoint} {(id.IsHashBucket ? $"(Bucket: {id.BucketHash})" : "")}").ConfigureAwait(false);
+                    await _restLogger.VerboseAsync($"Preemptive Rate limit triggered: {endpoint} {(id.IsHashBucket ? $"(Bucket: {id.BucketHash})" : "")}");
                 else
-                    await _restLogger.WarningAsync($"Rate limit triggered: {endpoint} Remaining: {info.Value.RetryAfter}s {(id.IsHashBucket ? $"(Bucket: {id.BucketHash})" : "")}").ConfigureAwait(false);
+                    await _restLogger.WarningAsync($"Rate limit triggered: {endpoint} Remaining: {info.Value.RetryAfter}s {(id.IsHashBucket ? $"(Bucket: {id.BucketHash})" : "")}");
             };
-            ApiClient.SentRequest += async (method, endpoint, millis) => await _restLogger.VerboseAsync($"{method} {endpoint}: {millis} ms").ConfigureAwait(false);
+            ApiClient.SentRequest += async (method, endpoint, millis) => await _restLogger.VerboseAsync($"{method} {endpoint}: {millis} ms");
         }
 
         public async Task LoginAsync(TokenType tokenType, string token, bool validateToken = true)
         {
-            await _stateLock.WaitAsync().ConfigureAwait(false);
+            await _stateLock.WaitAsync();
             try
             {
-                await LoginInternalAsync(tokenType, token, validateToken).ConfigureAwait(false);
+                await LoginInternalAsync(tokenType, token, validateToken);
             }
             finally { _stateLock.Release(); }
         }
@@ -76,11 +76,11 @@ namespace Discord.Rest
             if (_isFirstLogin)
             {
                 _isFirstLogin = false;
-                await LogManager.WriteInitialLog().ConfigureAwait(false);
+                await LogManager.WriteInitialLog();
             }
 
             if (LoginState != LoginState.LoggedOut)
-                await LogoutInternalAsync().ConfigureAwait(false);
+                await LogoutInternalAsync();
             LoginState = LoginState.LoggingIn;
 
             try
@@ -96,31 +96,31 @@ namespace Discord.Rest
                     catch (ArgumentException ex)
                     {
                         // log these ArgumentExceptions and allow for the client to attempt to log in anyways
-                        await LogManager.WarningAsync("Discord", "A supplied token was invalid.", ex).ConfigureAwait(false);
+                        await LogManager.WarningAsync("Discord", "A supplied token was invalid.", ex);
                     }
                 }
 
-                await ApiClient.LoginAsync(tokenType, token).ConfigureAwait(false);
-                await OnLoginAsync(tokenType, token).ConfigureAwait(false);
+                await ApiClient.LoginAsync(tokenType, token);
+                await OnLoginAsync(tokenType, token);
                 LoginState = LoginState.LoggedIn;
             }
             catch
             {
-                await LogoutInternalAsync().ConfigureAwait(false);
+                await LogoutInternalAsync();
                 throw;
             }
 
-            await _loggedInEvent.InvokeAsync().ConfigureAwait(false);
+            await _loggedInEvent.InvokeAsync();
         }
         internal virtual Task OnLoginAsync(TokenType tokenType, string token)
             => Task.Delay(0);
 
         public async Task LogoutAsync()
         {
-            await _stateLock.WaitAsync().ConfigureAwait(false);
+            await _stateLock.WaitAsync();
             try
             {
-                await LogoutInternalAsync().ConfigureAwait(false);
+                await LogoutInternalAsync();
             }
             finally { _stateLock.Release(); }
         }
@@ -130,13 +130,13 @@ namespace Discord.Rest
                 return;
             LoginState = LoginState.LoggingOut;
 
-            await ApiClient.LogoutAsync().ConfigureAwait(false);
+            await ApiClient.LogoutAsync();
 
-            await OnLogoutAsync().ConfigureAwait(false);
+            await OnLogoutAsync();
             CurrentUser = null;
             LoginState = LoginState.LoggedOut;
 
-            await _loggedOutEvent.InvokeAsync().ConfigureAwait(false);
+            await _loggedOutEvent.InvokeAsync();
         }
         internal virtual Task OnLogoutAsync()
             => Task.Delay(0);
@@ -158,7 +158,7 @@ namespace Discord.Rest
             if (!_isDisposed)
             {
 #pragma warning disable IDISP007
-                await ApiClient.DisposeAsync().ConfigureAwait(false);
+                await ApiClient.DisposeAsync();
 #pragma warning restore IDISP007
                 _stateLock?.Dispose();
                 _isDisposed = true;

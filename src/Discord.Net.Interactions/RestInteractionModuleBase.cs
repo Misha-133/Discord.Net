@@ -33,9 +33,9 @@ namespace Discord.Interactions
             var payload = restInteraction.Defer(ephemeral, options);
 
             if (Context is IRestInteractionContext restContext && restContext.InteractionResponseCallback != null)
-                await restContext.InteractionResponseCallback.Invoke(payload).ConfigureAwait(false);
+                await restContext.InteractionResponseCallback.Invoke(payload);
             else
-                await InteractionService._restResponseCallback(Context, payload).ConfigureAwait(false);
+                await InteractionService._restResponseCallback(Context, payload);
         }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace Discord.Interactions
             var payload = restInteraction.Respond(text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
 
             if (Context is IRestInteractionContext restContext && restContext.InteractionResponseCallback != null)
-                await restContext.InteractionResponseCallback.Invoke(payload).ConfigureAwait(false);
+                await restContext.InteractionResponseCallback.Invoke(payload);
             else
-                await InteractionService._restResponseCallback(Context, payload).ConfigureAwait(false);
+                await InteractionService._restResponseCallback(Context, payload);
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace Discord.Interactions
             var payload = restInteraction.RespondWithModal(modal, options);
 
             if (Context is IRestInteractionContext restContext && restContext.InteractionResponseCallback != null)
-                await restContext.InteractionResponseCallback.Invoke(payload).ConfigureAwait(false);
+                await restContext.InteractionResponseCallback.Invoke(payload);
             else
-                await InteractionService._restResponseCallback(Context, payload).ConfigureAwait(false);
+                await InteractionService._restResponseCallback(Context, payload);
         }
 
         protected override async Task RespondWithModalAsync<TModal>(string customId, RequestOptions options = null)
@@ -95,9 +95,9 @@ namespace Discord.Interactions
             var payload = restInteraction.RespondWithModal<TModal>(customId, options);
 
             if (Context is IRestInteractionContext restContext && restContext.InteractionResponseCallback != null)
-                await restContext.InteractionResponseCallback.Invoke(payload).ConfigureAwait(false);
+                await restContext.InteractionResponseCallback.Invoke(payload);
             else
-                await InteractionService._restResponseCallback(Context, payload).ConfigureAwait(false);
+                await InteractionService._restResponseCallback(Context, payload);
         }
     }
 }

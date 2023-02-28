@@ -27,14 +27,14 @@ namespace Discord.Rest
                 {
                     try
                     {
-                        await _channel.TriggerTypingAsync(_options).ConfigureAwait(false);
+                        await _channel.TriggerTypingAsync(_options);
                     }
                     catch
                     {
                         // ignored
                     }
 
-                    await Task.Delay(9500, token).ConfigureAwait(false);
+                    await Task.Delay(9500, token);
                 }
             }
             catch (OperationCanceledException) { }

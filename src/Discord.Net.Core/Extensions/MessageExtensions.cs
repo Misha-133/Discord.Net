@@ -45,7 +45,7 @@ namespace Discord
         public static async Task AddReactionsAsync(this IUserMessage msg, IEnumerable<IEmote> reactions, RequestOptions options = null)
         {
             foreach (var rxn in reactions)
-                await msg.AddReactionAsync(rxn, options).ConfigureAwait(false);
+                await msg.AddReactionAsync(rxn, options);
         }
         /// <summary>
         ///     Remove multiple reactions from a message.
@@ -71,7 +71,7 @@ namespace Discord
         public static async Task RemoveReactionsAsync(this IUserMessage msg, IUser user, IEnumerable<IEmote> reactions, RequestOptions options = null)
         {
             foreach (var rxn in reactions)
-                await msg.RemoveReactionAsync(rxn, user, options).ConfigureAwait(false);
+                await msg.RemoveReactionAsync(rxn, user, options);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Discord
         /// </returns>
         public static async Task<IUserMessage> ReplyAsync(this IUserMessage msg, string text = null, bool isTTS = false, Embed embed = null, AllowedMentions allowedMentions = null, RequestOptions options = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null)
         {
-            return await msg.Channel.SendMessageAsync(text, isTTS, embed, options, allowedMentions, new MessageReference(messageId: msg.Id), components, stickers, embeds).ConfigureAwait(false);
+            return await msg.Channel.SendMessageAsync(text, isTTS, embed, options, allowedMentions, new MessageReference(messageId: msg.Id), components, stickers, embeds);
         }
     }
 }

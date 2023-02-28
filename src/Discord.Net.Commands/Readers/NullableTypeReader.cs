@@ -29,7 +29,7 @@ namespace Discord.Commands
         {
             if (string.Equals(input, "null", StringComparison.OrdinalIgnoreCase) || string.Equals(input, "nothing", StringComparison.OrdinalIgnoreCase))
                 return TypeReaderResult.FromSuccess(new T?());
-            return await _baseTypeReader.ReadAsync(context, input, services).ConfigureAwait(false);
+            return await _baseTypeReader.ReadAsync(context, input, services);
         }
     }
 }

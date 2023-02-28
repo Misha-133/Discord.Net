@@ -24,7 +24,7 @@ namespace Discord.Rest
             if (!apiArgs.Avatar.IsSpecified && user.AvatarId != null)
                 apiArgs.Avatar = new ImageModel(user.AvatarId);
 
-            return await client.ApiClient.ModifySelfAsync(apiArgs, options).ConfigureAwait(false);
+            return await client.ApiClient.ModifySelfAsync(apiArgs, options);
         }
         public static async Task<GuildUserProperties> ModifyAsync(IGuildUser user, BaseDiscordClient client, Action<GuildUserProperties> func,
             RequestOptions options)
@@ -62,14 +62,14 @@ namespace Discord.Rest
             if (apiArgs.Nickname.IsSpecified && apiArgs.Nickname.Value == null)
                 apiArgs.Nickname = new Optional<string>(string.Empty);
 
-            await client.ApiClient.ModifyGuildMemberAsync(user.GuildId, user.Id, apiArgs, options).ConfigureAwait(false);
+            await client.ApiClient.ModifyGuildMemberAsync(user.GuildId, user.Id, apiArgs, options);
             return args;
         }
 
         public static async Task KickAsync(IGuildUser user, BaseDiscordClient client,
             string reason, RequestOptions options)
         {
-            await client.ApiClient.RemoveGuildMemberAsync(user.GuildId, user.Id, reason, options).ConfigureAwait(false);
+            await client.ApiClient.RemoveGuildMemberAsync(user.GuildId, user.Id, reason, options);
         }
 
         public static async Task<RestDMChannel> CreateDMChannelAsync(IUser user, BaseDiscordClient client,
@@ -105,7 +105,7 @@ namespace Discord.Rest
             {
                 TimedOutUntil = DateTimeOffset.UtcNow.Add(span)
             };
-            await client.ApiClient.ModifyGuildMemberAsync(user.Guild.Id, user.Id, apiArgs, options).ConfigureAwait(false);
+            await client.ApiClient.ModifyGuildMemberAsync(user.Guild.Id, user.Id, apiArgs, options);
         }
 
         public static async Task RemoveTimeOutAsync(IGuildUser user, BaseDiscordClient client, RequestOptions options)
@@ -114,7 +114,7 @@ namespace Discord.Rest
             {
                 TimedOutUntil = null
             };
-            await client.ApiClient.ModifyGuildMemberAsync(user.Guild.Id, user.Id, apiArgs, options).ConfigureAwait(false);
+            await client.ApiClient.ModifyGuildMemberAsync(user.Guild.Id, user.Id, apiArgs, options);
         }
     }
 }

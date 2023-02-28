@@ -31,7 +31,7 @@ namespace Discord.Rest
         internal new static async Task<RestMessageCommandData> CreateAsync(DiscordRestClient client, Model model, RestGuild guild, IRestMessageChannel channel, bool doApiCall)
         {
             var entity = new RestMessageCommandData(client, model);
-            await entity.UpdateAsync(client, model, guild, channel, doApiCall).ConfigureAwait(false);
+            await entity.UpdateAsync(client, model, guild, channel, doApiCall);
             return entity;
         }
 

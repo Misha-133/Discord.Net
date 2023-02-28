@@ -79,7 +79,7 @@ namespace Discord.Commands
 
             foreach (var precondition in Preconditions)
             {
-                var result = await precondition.CheckPermissionsAsync(context, this, arg, services).ConfigureAwait(false);
+                var result = await precondition.CheckPermissionsAsync(context, this, arg, services);
                 if (!result.IsSuccess)
                     return result;
             }
@@ -90,7 +90,7 @@ namespace Discord.Commands
         public async Task<TypeReaderResult> ParseAsync(ICommandContext context, string input, IServiceProvider services = null)
         {
             services ??= EmptyServiceProvider.Instance;
-            return await _reader.ReadAsync(context, input, services).ConfigureAwait(false);
+            return await _reader.ReadAsync(context, input, services);
         }
 
         public override string ToString() => Name;

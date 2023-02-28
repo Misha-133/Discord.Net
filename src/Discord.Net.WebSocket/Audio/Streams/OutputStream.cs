@@ -18,7 +18,7 @@ namespace Discord.Audio.Streams
         public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancelToken)
         {
             cancelToken.ThrowIfCancellationRequested();
-            await _client.SendAsync(buffer, offset, count).ConfigureAwait(false);
+            await _client.SendAsync(buffer, offset, count);
         }
     }
 }

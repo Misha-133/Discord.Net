@@ -101,7 +101,7 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         public async Task<IDMChannel> CreateDMChannelAsync(RequestOptions options = null)
-            => await UserHelper.CreateDMChannelAsync(this, Discord, options).ConfigureAwait(false);
+            => await UserHelper.CreateDMChannelAsync(this, Discord, options);
 
         /// <inheritdoc />
         public string GetAvatarUrl(ImageFormat format = ImageFormat.Auto, ushort size = 128)

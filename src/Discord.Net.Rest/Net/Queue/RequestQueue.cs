@@ -42,7 +42,7 @@ namespace Discord.Net.Queue
 
         public async Task SetCancelTokenAsync(CancellationToken cancelToken)
         {
-            await _tokenLock.WaitAsync().ConfigureAwait(false);
+            await _tokenLock.WaitAsync();
             try
             {
                 _parentToken = cancelToken;
@@ -54,7 +54,7 @@ namespace Discord.Net.Queue
         }
         public async Task ClearAsync()
         {
-            await _tokenLock.WaitAsync().ConfigureAwait(false);
+            await _tokenLock.WaitAsync();
             try
             {
                 _clearToken?.Cancel();
@@ -79,7 +79,7 @@ namespace Discord.Net.Queue
                 request.Options.CancelToken = _requestCancelToken;
 
             var bucket = GetOrCreateBucket(request.Options, request);
-            var result = await bucket.SendAsync(request).ConfigureAwait(false);
+            var result = await bucket.SendAsync(request);
             createdTokenSource?.Dispose();
             return result;
         }
@@ -95,7 +95,7 @@ namespace Discord.Net.Queue
                 request.Options.CancelToken = _requestCancelToken;
 
             var bucket = GetOrCreateBucket(request.Options, request);
-            await bucket.SendAsync(request).ConfigureAwait(false);
+            await bucket.SendAsync(request);
             createdTokenSource?.Dispose();
         }
 
@@ -107,7 +107,7 @@ namespace Discord.Net.Queue
 #if DEBUG_LIMITS
                 Debug.WriteLine($"[{id}] Sleeping {millis} ms (Pre-emptive) [Global]");
 #endif
-                await Task.Delay(millis).ConfigureAwait(false);
+                await Task.Delay(millis);
             }
         }
         internal void PauseGlobal(RateLimitInfo info)
@@ -143,7 +143,7 @@ namespace Discord.Net.Queue
         }
         internal async Task RaiseRateLimitTriggered(BucketId bucketId, RateLimitInfo? info, string endpoint)
         {
-            await RateLimitTriggered(bucketId, info, endpoint).ConfigureAwait(false);
+            await RateLimitTriggered(bucketId, info, endpoint);
         }
         internal (RequestBucket, BucketId) UpdateBucketHash(BucketId id, string discordHash)
         {
@@ -180,7 +180,7 @@ namespace Discord.Net.Queue
                             _buckets.TryRemove(bucket.Id, out _);
                         }
                     }
-                    await Task.Delay(60000, _cancelTokenSource.Token).ConfigureAwait(false); //Runs each minute
+                    await Task.Delay(60000, _cancelTokenSource.Token); //Runs each minute
                 }
             }
             catch (TaskCanceledException) { }
@@ -206,7 +206,7 @@ namespace Discord.Net.Queue
             {
                 _cancelTokenSource.Cancel();
                 _cancelTokenSource.Dispose();
-                await _cleanupTask.ConfigureAwait(false);
+                await _cleanupTask;
             }
             _tokenLock?.Dispose();
             _clearToken?.Dispose();

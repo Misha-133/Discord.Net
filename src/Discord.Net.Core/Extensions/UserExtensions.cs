@@ -47,7 +47,7 @@ namespace Discord
             MessageComponent components = null,
             Embed[] embeds = null)
         {
-            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendMessageAsync(text, isTTS, embed, options, allowedMentions, components: components, embeds: embeds).ConfigureAwait(false);
+            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendMessageAsync(text, isTTS, embed, options, allowedMentions, components: components, embeds: embeds);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Discord
             MessageComponent components = null,
             Embed[] embeds = null)
         {
-            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(stream, filename, text, isTTS, embed, options, components: components, embeds: embeds).ConfigureAwait(false);
+            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(stream, filename, text, isTTS, embed, options, components: components, embeds: embeds);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Discord
             MessageComponent components = null,
             Embed[] embeds = null)
         {
-            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(filePath, text, isTTS, embed, options, components: components, embeds: embeds).ConfigureAwait(false);
+            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(filePath, text, isTTS, embed, options, components: components, embeds: embeds);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace Discord
             MessageComponent components = null,
             Embed[] embeds = null)
         {
-            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(attachment, text, isTTS, embed, options, components: components, embeds: embeds).ConfigureAwait(false);
+            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFileAsync(attachment, text, isTTS, embed, options, components: components, embeds: embeds);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace Discord
             MessageComponent components = null,
             Embed[] embeds = null)
         {
-            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFilesAsync(attachments, text, isTTS, embed, options, components: components, embeds: embeds).ConfigureAwait(false);
+            return await (await user.CreateDMChannelAsync().ConfigureAwait(false)).SendFilesAsync(attachments, text, isTTS, embed, options, components: components, embeds: embeds);
         }
 
         /// <summary>

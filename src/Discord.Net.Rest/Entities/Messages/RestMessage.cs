@@ -272,7 +272,7 @@ namespace Discord.Rest
         /// <inheritdoc />
         public async Task UpdateAsync(RequestOptions options = null)
         {
-            var model = await Discord.ApiClient.GetChannelMessageAsync(Channel.Id, Id, options).ConfigureAwait(false);
+            var model = await Discord.ApiClient.GetChannelMessageAsync(Channel.Id, Id, options);
             Update(model);
         }
         /// <inheritdoc />

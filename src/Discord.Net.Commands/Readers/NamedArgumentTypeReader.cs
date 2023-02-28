@@ -33,7 +33,7 @@ namespace Discord.Commands
                 try
                 {
                     var prop = Read(out var arg);
-                    var propVal = await ReadArgumentAsync(prop, arg).ConfigureAwait(false);
+                    var propVal = await ReadArgumentAsync(prop, arg);
                     if (propVal != null)
                         prop.SetMethod.Invoke(result, new[] { propVal });
                     else
@@ -145,10 +145,10 @@ namespace Discord.Commands
                     {
                         var method = _readMultipleMethod.MakeGenericMethod(elemType);
                         var task = (Task<IEnumerable>)method.Invoke(null, new object[] { reader, context, arg.Split(','), services });
-                        return await task.ConfigureAwait(false);
+                        return await task;
                     }
                     else
-                        return await ReadSingle(reader, context, arg, services).ConfigureAwait(false);
+                        return await ReadSingle(reader, context, arg, services);
                 }
                 return null;
             }
@@ -156,7 +156,7 @@ namespace Discord.Commands
 
         private static async Task<object> ReadSingle(TypeReader reader, ICommandContext context, string arg, IServiceProvider services)
         {
-            var readResult = await reader.ReadAsync(context, arg, services).ConfigureAwait(false);
+            var readResult = await reader.ReadAsync(context, arg, services);
             return (readResult.IsSuccess)
                 ? readResult.BestMatch
                 : null;
@@ -166,7 +166,7 @@ namespace Discord.Commands
             var objs = new List<TObj>();
             foreach (var arg in args)
             {
-                var read = await ReadSingle(reader, context, arg.Trim(), services).ConfigureAwait(false);
+                var read = await ReadSingle(reader, context, arg.Trim(), services);
                 if (read != null)
                     objs.Add((TObj)read);
             }

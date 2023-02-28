@@ -243,7 +243,7 @@ namespace Discord
             {
                 foreach (var item in _logEvents)
                 {
-                    await item.Invoke(ovr, msg).ConfigureAwait(false);
+                    await item.Invoke(ovr, msg);
                 }
             });
         }

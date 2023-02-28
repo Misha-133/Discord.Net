@@ -81,7 +81,7 @@ namespace Discord.WebSocket
             if (user is not null || mode == CacheMode.CacheOnly)
                 return user;
 
-            return await ChannelHelper.GetUserAsync(this, Guild, Discord, id, options).ConfigureAwait(false);
+            return await ChannelHelper.GetUserAsync(this, Guild, Discord, id, options);
         }
         #endregion
 
@@ -101,7 +101,7 @@ namespace Discord.WebSocket
             if (user is not null || mode == CacheMode.CacheOnly)
                 return user;
 
-            return await ChannelHelper.GetUserAsync(this, Guild, Discord, id, options).ConfigureAwait(false);
+            return await ChannelHelper.GetUserAsync(this, Guild, Discord, id, options);
         }
         #endregion
     }

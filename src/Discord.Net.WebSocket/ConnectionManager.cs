@@ -60,7 +60,7 @@ namespace Discord
             if (State != ConnectionState.Disconnected)
                 throw new InvalidOperationException("Cannot start an already running client.");
 
-            await AcquireConnectionLock().ConfigureAwait(false);
+            await AcquireConnectionLock();
             var reconnectCancelToken = new CancellationTokenSource();
             _reconnectCancelToken?.Dispose();
             _reconnectCancelToken = reconnectCancelToken;
@@ -74,9 +74,9 @@ namespace Discord
                     {
                         try
                         {
-                            await ConnectAsync(reconnectCancelToken).ConfigureAwait(false);
+                            await ConnectAsync(reconnectCancelToken);
                             nextReconnectDelay = 1000; //Reset delay
-                            await _connectionPromise.Task.ConfigureAwait(false);
+                            await _connectionPromise.Task;
                         }
                         // remove for testing.
                         //catch (OperationCanceledException ex)
@@ -85,27 +85,27 @@ namespace Discord
                         //    // ref #2026
 
                         //    Cancel(); //In case this exception didn't come from another Error call
-                        //    await DisconnectAsync(ex, !reconnectCancelToken.IsCancellationRequested).ConfigureAwait(false);
+                        //    await DisconnectAsync(ex, !reconnectCancelToken.IsCancellationRequested);
                         //}
                         catch (Exception ex)
                         {
                             Error(ex); //In case this exception didn't come from another Error call
                             if (!reconnectCancelToken.IsCancellationRequested)
                             {
-                                await _logger.WarningAsync(ex).ConfigureAwait(false);
-                                await DisconnectAsync(ex, true).ConfigureAwait(false);
+                                await _logger.WarningAsync(ex);
+                                await DisconnectAsync(ex, true);
                             }
                             else
                             {
-                                await _logger.ErrorAsync(ex).ConfigureAwait(false);
-                                await DisconnectAsync(ex, false).ConfigureAwait(false);
+                                await _logger.ErrorAsync(ex);
+                                await DisconnectAsync(ex, false);
                             }
                         }
 
                         if (!reconnectCancelToken.IsCancellationRequested)
                         {
                             //Wait before reconnecting
-                            await Task.Delay(nextReconnectDelay, reconnectCancelToken.Token).ConfigureAwait(false);
+                            await Task.Delay(nextReconnectDelay, reconnectCancelToken.Token);
                             nextReconnectDelay = (nextReconnectDelay * 2) + jitter.Next(-250, 250);
                             if (nextReconnectDelay > 60000)
                                 nextReconnectDelay = 60000;
@@ -131,7 +131,7 @@ namespace Discord
 
             _connectionPromise = new TaskCompletionSource<bool>();
             State = ConnectionState.Connecting;
-            await _logger.InfoAsync("Connecting").ConfigureAwait(false);
+            await _logger.InfoAsync("Connecting");
 
             try
             {
@@ -144,18 +144,18 @@ namespace Discord
                 {
                     try
                     {
-                        await Task.Delay(_connectionTimeout, cancelToken).ConfigureAwait(false);
+                        await Task.Delay(_connectionTimeout, cancelToken);
                         readyPromise.TrySetException(new TimeoutException());
                     }
                     catch (OperationCanceledException) { }
                 });
 
-                await _onConnecting().ConfigureAwait(false);
+                await _onConnecting();
 
-                await _logger.InfoAsync("Connected").ConfigureAwait(false);
+                await _logger.InfoAsync("Connected");
                 State = ConnectionState.Connected;
-                await _logger.DebugAsync("Raising Event").ConfigureAwait(false);
-                await _connectedEvent.InvokeAsync().ConfigureAwait(false);
+                await _logger.DebugAsync("Raising Event");
+                await _connectedEvent.InvokeAsync();
             }
             catch (Exception ex)
             {
@@ -168,22 +168,22 @@ namespace Discord
             if (State == ConnectionState.Disconnected)
                 return;
             State = ConnectionState.Disconnecting;
-            await _logger.InfoAsync("Disconnecting").ConfigureAwait(false);
+            await _logger.InfoAsync("Disconnecting");
 
-            await _onDisconnecting(ex).ConfigureAwait(false);
+            await _onDisconnecting(ex);
 
-            await _disconnectedEvent.InvokeAsync(ex, isReconnecting).ConfigureAwait(false);
+            await _disconnectedEvent.InvokeAsync(ex, isReconnecting);
             State = ConnectionState.Disconnected;
-            await _logger.InfoAsync("Disconnected").ConfigureAwait(false);
+            await _logger.InfoAsync("Disconnected");
         }
 
         public async Task CompleteAsync()
         {
-            await _readyPromise.TrySetResultAsync(true).ConfigureAwait(false);
+            await _readyPromise.TrySetResultAsync(true);
         }
         public async Task WaitAsync()
         {
-            await _readyPromise.Task.ConfigureAwait(false);
+            await _readyPromise.Task;
         }
 
         public void Cancel()
@@ -214,7 +214,7 @@ namespace Discord
         {
             while (true)
             {
-                await StopAsync().ConfigureAwait(false);
+                await StopAsync();
                 if (await _stateLock.WaitAsync(0).ConfigureAwait(false))
                     break;
             }

@@ -84,13 +84,13 @@ namespace Discord.Audio.Streams
                         long dist = nextTick - tick;
                         if (dist > 0)
                         {
-                            await Task.Delay((int)dist).ConfigureAwait(false);
+                            await Task.Delay((int)dist);
                             continue;
                         }
                         nextTick += _ticksPerFrame;
                         if (!_isPreloaded)
                         {
-                            await Task.Delay(_ticksPerFrame).ConfigureAwait(false);
+                            await Task.Delay(_ticksPerFrame);
                             continue;
                         }
 
@@ -122,7 +122,7 @@ namespace Discord.Audio.Streams
                                 silenceFrames = 0;
 
                                 _next.WriteHeader(_seq++, _timestamp, false);
-                                await _next.WriteAsync(frame.Buffer, 0, frame.Bytes).ConfigureAwait(false);
+                                await _next.WriteAsync(frame.Buffer, 0, frame.Bytes);
                                 _queuedFrames.TryDequeue(out frame);
                                 _bufferPool.Enqueue(frame.Buffer);
                                 _queueLock.Release();
@@ -134,7 +134,7 @@ namespace Discord.Audio.Streams
                             {
                                 //Missed this frame, but the next queued one might have FEC info
                                 _next.WriteHeader(_seq++, _timestamp, true);
-                                await _next.WriteAsync(frame.Buffer, 0, frame.Bytes).ConfigureAwait(false);
+                                await _next.WriteAsync(frame.Buffer, 0, frame.Bytes);
 #if DEBUG
                                 var _ = _logger?.DebugAsync($"Recreated Frame {_timestamp} (Next is {frame.Timestamp})  ({_queuedFrames.Count} frames buffered)");
 #endif
@@ -143,7 +143,7 @@ namespace Discord.Audio.Streams
                             {
                                 //Missed this frame and we have no FEC data to work with
                                 _next.WriteHeader(_seq++, _timestamp, true);
-                                await _next.WriteAsync(null, 0, 0).ConfigureAwait(false);
+                                await _next.WriteAsync(null, 0, 0);
 #if DEBUG
                                 var _ = _logger?.DebugAsync($"Missed Frame {_timestamp} (Next is {frame.Timestamp}) ({_queuedFrames.Count} frames buffered)");
 #endif
@@ -153,7 +153,7 @@ namespace Discord.Audio.Streams
                         {
                             //Missed this frame and we have no FEC data to work with
                             _next.WriteHeader(_seq++, _timestamp, true);
-                            await _next.WriteAsync(null, 0, 0).ConfigureAwait(false);
+                            await _next.WriteAsync(null, 0, 0);
                             if (silenceFrames < 5)
                                 silenceFrames++;
                             else
@@ -232,7 +232,7 @@ namespace Discord.Audio.Streams
                 cancelToken.ThrowIfCancellationRequested();
                 if (_queuedFrames.Count == 0)
                     return;
-                await Task.Delay(250, cancelToken).ConfigureAwait(false);
+                await Task.Delay(250, cancelToken);
             }
         }
         public override Task ClearAsync(CancellationToken cancelToken)

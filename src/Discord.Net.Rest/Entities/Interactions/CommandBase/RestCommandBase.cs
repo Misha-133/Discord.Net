@@ -42,13 +42,13 @@ namespace Discord.Rest
         internal new static async Task<RestCommandBase> CreateAsync(DiscordRestClient client, Model model, bool doApiCall)
         {
             var entity = new RestCommandBase(client, model);
-            await entity.UpdateAsync(client, model, doApiCall).ConfigureAwait(false);
+            await entity.UpdateAsync(client, model, doApiCall);
             return entity;
         }
 
         internal override async Task UpdateAsync(DiscordRestClient client, Model model, bool doApiCall)
         {
-            await base.UpdateAsync(client, model, doApiCall).ConfigureAwait(false);
+            await base.UpdateAsync(client, model, doApiCall);
 
             if (model.Data.IsSpecified && model.Data.Value is RestCommandBaseData data)
                 Data = data;
@@ -194,7 +194,7 @@ namespace Discord.Rest
             Preconditions.NotNullOrEmpty(fileName, nameof(fileName), "File Name must not be empty or null");
 
             using (var file = new FileAttachment(fileStream, fileName))
-                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         }
 
         /// <inheritdoc/>
@@ -216,7 +216,7 @@ namespace Discord.Rest
             Preconditions.NotNullOrEmpty(fileName, nameof(fileName), "File Name must not be empty or null");
 
             using (var file = new FileAttachment(File.OpenRead(filePath), fileName))
-                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         }
 
         /// <inheritdoc/>
@@ -284,7 +284,7 @@ namespace Discord.Rest
                 flags |= MessageFlags.Ephemeral;
 
             var args = new API.Rest.UploadWebhookFileParams(attachments.ToArray()) { Flags = flags, Content = text, IsTTS = isTTS, Embeds = embeds.Any() ? embeds.Select(x => x.ToModel()).ToArray() : Optional<API.Embed[]>.Unspecified, AllowedMentions = allowedMentions?.ToModel() ?? Optional<API.AllowedMentions>.Unspecified, MessageComponents = components?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() ?? Optional<API.ActionRowComponent[]>.Unspecified };
-            return await InteractionHelper.SendFollowupAsync(Discord, args, Token, Channel, options).ConfigureAwait(false);
+            return await InteractionHelper.SendFollowupAsync(Discord, args, Token, Channel, options);
         }
 
         /// <summary>

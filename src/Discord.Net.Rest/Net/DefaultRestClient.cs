@@ -77,7 +77,7 @@ namespace Discord.Net.Rest
                 if (requestHeaders != null)
                     foreach (var header in requestHeaders)
                         restRequest.Headers.Add(header.Key, header.Value);
-                return await SendInternalAsync(restRequest, cancelToken, headerOnly).ConfigureAwait(false);
+                return await SendInternalAsync(restRequest, cancelToken, headerOnly);
             }
         }
         public async Task<RestResponse> SendAsync(string method, string endpoint, string json, CancellationToken cancelToken, bool headerOnly, string reason = null,
@@ -92,7 +92,7 @@ namespace Discord.Net.Rest
                     foreach (var header in requestHeaders)
                         restRequest.Headers.Add(header.Key, header.Value);
                 restRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                return await SendInternalAsync(restRequest, cancelToken, headerOnly).ConfigureAwait(false);
+                return await SendInternalAsync(restRequest, cancelToken, headerOnly);
             }
         }
 
@@ -129,7 +129,7 @@ namespace Discord.Net.Rest
                                     if (!stream.CanSeek)
                                     {
                                         memoryStream = new MemoryStream();
-                                        await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
+                                        await stream.CopyToAsync(memoryStream);
                                         memoryStream.Position = 0;
 #pragma warning disable IDISP001
                                         stream = memoryStream;
@@ -153,7 +153,7 @@ namespace Discord.Net.Rest
                     }
                 }
                 restRequest.Content = content;
-                var result = await SendInternalAsync(restRequest, cancelToken, headerOnly).ConfigureAwait(false);
+                var result = await SendInternalAsync(restRequest, cancelToken, headerOnly);
                 memoryStream?.Dispose();
                 return result;
             }
@@ -164,7 +164,7 @@ namespace Discord.Net.Rest
             using (var cancelTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancelToken, cancelToken))
             {
                 cancelToken = cancelTokenSource.Token;
-                HttpResponseMessage response = await _client.SendAsync(request, cancelToken).ConfigureAwait(false);
+                HttpResponseMessage response = await _client.SendAsync(request, cancelToken);
 
                 var headers = response.Headers.ToDictionary(x => x.Key, x => x.Value.FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
                 var stream = (!headerOnly || !response.IsSuccessStatusCode) ? await response.Content.ReadAsStreamAsync().ConfigureAwait(false) : null;

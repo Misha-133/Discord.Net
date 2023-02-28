@@ -33,12 +33,12 @@ namespace Discord.Interactions
             {
                 case RunMode.Sync:
                     {
-                        return await ExecuteInternalAsync(context, autocompleteInteraction, parameter, services).ConfigureAwait(false);
+                        return await ExecuteInternalAsync(context, autocompleteInteraction, parameter, services);
                     }
                 case RunMode.Async:
                     _ = Task.Run(async () =>
                     {
-                        await ExecuteInternalAsync(context, autocompleteInteraction, parameter, services).ConfigureAwait(false);
+                        await ExecuteInternalAsync(context, autocompleteInteraction, parameter, services);
                     });
                     break;
                 default:
@@ -53,7 +53,7 @@ namespace Discord.Interactions
         {
             try
             {
-                var result = await GenerateSuggestionsAsync(context, autocompleteInteraction, parameter, services).ConfigureAwait(false);
+                var result = await GenerateSuggestionsAsync(context, autocompleteInteraction, parameter, services);
 
                 if (result.IsSuccess)
                     switch (autocompleteInteraction)
@@ -62,16 +62,16 @@ namespace Discord.Interactions
                             var payload = restAutocomplete.Respond(result.Suggestions);
 
                             if (context is IRestInteractionContext restContext && restContext.InteractionResponseCallback != null)
-                                await restContext.InteractionResponseCallback.Invoke(payload).ConfigureAwait(false);
+                                await restContext.InteractionResponseCallback.Invoke(payload);
                             else
-                                await InteractionService._restResponseCallback(context, payload).ConfigureAwait(false);
+                                await InteractionService._restResponseCallback(context, payload);
                             break;
                         case SocketAutocompleteInteraction socketAutocomplete:
-                            await socketAutocomplete.RespondAsync(result.Suggestions).ConfigureAwait(false);
+                            await socketAutocomplete.RespondAsync(result.Suggestions);
                             break;
                     }
 
-                await InteractionService._autocompleteHandlerExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                await InteractionService._autocompleteHandlerExecutedEvent.InvokeAsync(this, context, result);
                 return result;
             }
             catch (Exception ex)
@@ -80,10 +80,10 @@ namespace Discord.Interactions
                 while (ex is TargetInvocationException)
                     ex = ex.InnerException;
 
-                await InteractionService._cmdLogger.ErrorAsync(ex).ConfigureAwait(false);
+                await InteractionService._cmdLogger.ErrorAsync(ex);
 
                 var result = ExecuteResult.FromError(ex);
-                await InteractionService._autocompleteHandlerExecutedEvent.InvokeAsync(this, context, result).ConfigureAwait(false);
+                await InteractionService._autocompleteHandlerExecutedEvent.InvokeAsync(this, context, result);
 
                 if (InteractionService._throwOnError)
                 {
@@ -97,7 +97,7 @@ namespace Discord.Interactions
             }
             finally
             {
-                await InteractionService._cmdLogger.VerboseAsync($"Executed {GetLogString(context)}").ConfigureAwait(false);
+                await InteractionService._cmdLogger.VerboseAsync($"Executed {GetLogString(context)}");
             }
         }
     }

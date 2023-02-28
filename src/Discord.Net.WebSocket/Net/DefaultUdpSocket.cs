@@ -47,10 +47,10 @@ namespace Discord.Net.Udp
 
         public async Task StartAsync()
         {
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
             try
             {
-                await StartInternalAsync(_cancelToken).ConfigureAwait(false);
+                await StartInternalAsync(_cancelToken);
             }
             finally
             {
@@ -59,7 +59,7 @@ namespace Discord.Net.Udp
         }
         public async Task StartInternalAsync(CancellationToken cancelToken)
         {
-            await StopInternalAsync().ConfigureAwait(false);
+            await StopInternalAsync();
 
             _stopCancelTokenSource?.Dispose();
             _cancelTokenSource?.Dispose();
@@ -75,10 +75,10 @@ namespace Discord.Net.Udp
         }
         public async Task StopAsync()
         {
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
             try
             {
-                await StopInternalAsync().ConfigureAwait(false);
+                await StopInternalAsync();
             }
             finally
             {
@@ -92,7 +92,7 @@ namespace Discord.Net.Udp
             catch { }
 
             if (!isDisposing)
-                await (_task ?? Task.Delay(0)).ConfigureAwait(false);
+                await (_task ?? Task.Delay(0));
 
             if (_udp != null)
             {
@@ -124,7 +124,7 @@ namespace Discord.Net.Udp
                 Buffer.BlockCopy(data, index, newData, 0, count);
                 data = newData;
             }
-            await _udp.SendAsync(data, count, _destination).ConfigureAwait(false);
+            await _udp.SendAsync(data, count, _destination);
         }
 
         private async Task RunAsync(CancellationToken cancelToken)
@@ -141,12 +141,12 @@ namespace Discord.Net.Udp
 
                 }, TaskContinuationOptions.OnlyOnFaulted);
 
-                var task = await Task.WhenAny(closeTask, receiveTask).ConfigureAwait(false);
+                var task = await Task.WhenAny(closeTask, receiveTask);
                 if (task == closeTask)
                     break;
 
                 var result = receiveTask.Result;
-                await ReceivedDatagram(result.Buffer, 0, result.Buffer.Length).ConfigureAwait(false);
+                await ReceivedDatagram(result.Buffer, 0, result.Buffer.Length);
             }
         }
     }

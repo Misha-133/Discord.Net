@@ -59,10 +59,10 @@ namespace Discord.Net.WebSockets
 
         public async Task ConnectAsync(string host)
         {
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
             try
             {
-                await ConnectInternalAsync(host).ConfigureAwait(false);
+                await ConnectInternalAsync(host);
             }
             finally
             {
@@ -71,7 +71,7 @@ namespace Discord.Net.WebSockets
         }
         private async Task ConnectInternalAsync(string host)
         {
-            await DisconnectInternalAsync().ConfigureAwait(false);
+            await DisconnectInternalAsync();
 
             _disconnectTokenSource?.Dispose();
             _cancelTokenSource?.Dispose();
@@ -90,16 +90,16 @@ namespace Discord.Net.WebSockets
                     _client.Options.SetRequestHeader(header.Key, header.Value);
             }
 
-            await _client.ConnectAsync(new Uri(host), _cancelToken).ConfigureAwait(false);
+            await _client.ConnectAsync(new Uri(host), _cancelToken);
             _task = RunAsync(_cancelToken);
         }
 
         public async Task DisconnectAsync(int closeCode = 1000)
         {
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
             try
             {
-                await DisconnectInternalAsync(closeCode: closeCode).ConfigureAwait(false);
+                await DisconnectInternalAsync(closeCode: closeCode);
             }
             finally
             {
@@ -132,7 +132,7 @@ namespace Discord.Net.WebSockets
 
             try
             {
-                await (_task ?? Task.Delay(0)).ConfigureAwait(false);
+                await (_task ?? Task.Delay(0));
                 _task = null;
             }
             finally { _isDisconnecting = false; }
@@ -142,7 +142,7 @@ namespace Discord.Net.WebSockets
             if (_isDisconnecting)
                 return; //Ignore, this disconnect was requested.
 
-            await _lock.WaitAsync().ConfigureAwait(false);
+            await _lock.WaitAsync();
             try
             {
                 await DisconnectInternalAsync(isDisposing: false);
@@ -171,7 +171,7 @@ namespace Discord.Net.WebSockets
         {
             try
             {
-                await _lock.WaitAsync(_cancelToken).ConfigureAwait(false);
+                await _lock.WaitAsync(_cancelToken);
             }
             catch (TaskCanceledException)
             {
@@ -195,7 +195,7 @@ namespace Discord.Net.WebSockets
                         frameSize = SendChunkSize;
 
                     var type = isText ? WebSocketMessageType.Text : WebSocketMessageType.Binary;
-                    await _client.SendAsync(new ArraySegment<byte>(data, index, count), type, isLast, _cancelToken).ConfigureAwait(false);
+                    await _client.SendAsync(new ArraySegment<byte>(data, index, count), type, isLast, _cancelToken);
                 }
             }
             finally
@@ -212,7 +212,7 @@ namespace Discord.Net.WebSockets
             {
                 while (!cancelToken.IsCancellationRequested)
                 {
-                    WebSocketReceiveResult socketResult = await _client.ReceiveAsync(buffer, cancelToken).ConfigureAwait(false);
+                    WebSocketReceiveResult socketResult = await _client.ReceiveAsync(buffer, cancelToken);
                     byte[] result;
                     int resultCount;
 
@@ -229,7 +229,7 @@ namespace Discord.Net.WebSockets
                             {
                                 if (cancelToken.IsCancellationRequested)
                                     return;
-                                socketResult = await _client.ReceiveAsync(buffer, cancelToken).ConfigureAwait(false);
+                                socketResult = await _client.ReceiveAsync(buffer, cancelToken);
                                 stream.Write(buffer.Array, 0, socketResult.Count);
                             }
                             while (socketResult == null || !socketResult.EndOfMessage);
@@ -251,10 +251,10 @@ namespace Discord.Net.WebSockets
                     if (socketResult.MessageType == WebSocketMessageType.Text)
                     {
                         string text = Encoding.UTF8.GetString(result, 0, resultCount);
-                        await TextMessage(text).ConfigureAwait(false);
+                        await TextMessage(text);
                     }
                     else
-                        await BinaryMessage(result, 0, resultCount).ConfigureAwait(false);
+                        await BinaryMessage(result, 0, resultCount);
                 }
             }
             catch (Win32Exception ex) when (ex.HResult == HR_TIMEOUT)

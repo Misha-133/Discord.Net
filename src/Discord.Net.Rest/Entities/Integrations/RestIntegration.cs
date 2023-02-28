@@ -79,7 +79,7 @@ namespace Discord.Rest
 
         public async Task DeleteAsync()
         {
-            await Discord.ApiClient.DeleteIntegrationAsync(GuildId, Id).ConfigureAwait(false);
+            await Discord.ApiClient.DeleteIntegrationAsync(GuildId, Id);
         }
 
         public override string ToString() => Name;

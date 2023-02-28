@@ -59,6 +59,6 @@ internal static class ForumHelper
             DefaultSortOrder = args.DefaultSortOrder,
             DefaultLayout = args.DefaultLayout,
         };
-        return await client.ApiClient.ModifyGuildChannelAsync(channel.Id, apiArgs, options).ConfigureAwait(false);
+        return await client.ApiClient.ModifyGuildChannelAsync(channel.Id, apiArgs, options);
     }
 }

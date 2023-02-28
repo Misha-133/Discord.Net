@@ -129,7 +129,7 @@ namespace Discord.Rest
         /// <inheritdoc/>
         public async Task ModifyAsync(Action<GuildScheduledEventsProperties> func, RequestOptions options = null)
         {
-            var model = await GuildHelper.ModifyGuildEventAsync(Discord, func, this, options).ConfigureAwait(false);
+            var model = await GuildHelper.ModifyGuildEventAsync(Discord, func, this, options);
             Update(model);
         }
 

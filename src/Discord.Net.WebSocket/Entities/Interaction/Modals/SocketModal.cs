@@ -103,7 +103,7 @@ namespace Discord.WebSocket
                 }
             }
 
-            await InteractionHelper.SendInteractionResponseAsync(Discord, response, this, Channel, options).ConfigureAwait(false);
+            await InteractionHelper.SendInteractionResponseAsync(Discord, response, this, Channel, options);
             HasResponded = true;
         }
 
@@ -170,7 +170,7 @@ namespace Discord.WebSocket
                 }
             }
 
-            await InteractionHelper.SendInteractionResponseAsync(Discord, response, this, Channel, options).ConfigureAwait(false);
+            await InteractionHelper.SendInteractionResponseAsync(Discord, response, this, Channel, options);
             HasResponded = true;
         }
 
@@ -255,7 +255,7 @@ namespace Discord.WebSocket
                 }
             }
 
-            await InteractionHelper.SendInteractionResponseAsync(Discord, response, this, Channel, options).ConfigureAwait(false);
+            await InteractionHelper.SendInteractionResponseAsync(Discord, response, this, Channel, options);
             HasResponded = true;
         }
 
@@ -346,7 +346,7 @@ namespace Discord.WebSocket
                 flags |= MessageFlags.Ephemeral;
 
             var args = new API.Rest.UploadWebhookFileParams(attachments.ToArray()) { Flags = flags, Content = text, IsTTS = isTTS, Embeds = embeds.Any() ? embeds.Select(x => x.ToModel()).ToArray() : Optional<API.Embed[]>.Unspecified, AllowedMentions = allowedMentions?.ToModel() ?? Optional<API.AllowedMentions>.Unspecified, MessageComponents = components?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() ?? Optional<API.ActionRowComponent[]>.Unspecified };
-            return await InteractionHelper.SendFollowupAsync(Discord, args, Token, Channel, options).ConfigureAwait(false);
+            return await InteractionHelper.SendFollowupAsync(Discord, args, Token, Channel, options);
         }
 
         /// <inheritdoc/>
@@ -369,7 +369,7 @@ namespace Discord.WebSocket
                 }
             }
 
-            await Discord.Rest.ApiClient.CreateInteractionResponseAsync(response, Id, Token, options).ConfigureAwait(false);
+            await Discord.Rest.ApiClient.CreateInteractionResponseAsync(response, Id, Token, options);
 
             lock (_lock)
             {

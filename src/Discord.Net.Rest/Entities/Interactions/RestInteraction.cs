@@ -122,13 +122,13 @@ namespace Discord.Rest
             }
 
             if (model.Type == InteractionType.MessageComponent)
-                return await RestMessageComponent.CreateAsync(client, model, doApiCall).ConfigureAwait(false);
+                return await RestMessageComponent.CreateAsync(client, model, doApiCall);
 
             if (model.Type == InteractionType.ApplicationCommandAutocomplete)
-                return await RestAutocompleteInteraction.CreateAsync(client, model, doApiCall).ConfigureAwait(false);
+                return await RestAutocompleteInteraction.CreateAsync(client, model, doApiCall);
 
             if (model.Type == InteractionType.ModalSubmit)
-                return await RestModal.CreateAsync(client, model, doApiCall).ConfigureAwait(false);
+                return await RestModal.CreateAsync(client, model, doApiCall);
 
             return null;
         }
@@ -414,27 +414,27 @@ namespace Discord.Rest
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.FollowupAsync(string text, Embed[] embeds, bool isTTS, bool ephemeral, AllowedMentions allowedMentions,
             MessageComponent components, Embed embed, RequestOptions options)
-            => await FollowupAsync(text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+            => await FollowupAsync(text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.GetOriginalResponseAsync(RequestOptions options)
-            => await GetOriginalResponseAsync(options).ConfigureAwait(false);
+            => await GetOriginalResponseAsync(options);
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.ModifyOriginalResponseAsync(Action<MessageProperties> func, RequestOptions options)
-            => await ModifyOriginalResponseAsync(func, options).ConfigureAwait(false);
+            => await ModifyOriginalResponseAsync(func, options);
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.FollowupWithFileAsync(Stream fileStream, string fileName, string text, Embed[] embeds, bool isTTS, bool ephemeral,
             AllowedMentions allowedMentions, MessageComponent components, Embed embed, RequestOptions options)
-            => await FollowupWithFileAsync(fileStream, fileName, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+            => await FollowupWithFileAsync(fileStream, fileName, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.FollowupWithFileAsync(string filePath, string fileName, string text, Embed[] embeds, bool isTTS, bool ephemeral,
             AllowedMentions allowedMentions, MessageComponent components, Embed embed, RequestOptions options)
-            => await FollowupWithFileAsync(filePath, text, fileName, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+            => await FollowupWithFileAsync(filePath, text, fileName, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.FollowupWithFileAsync(FileAttachment attachment, string text, Embed[] embeds, bool isTTS, bool ephemeral, AllowedMentions allowedMentions, MessageComponent components, Embed embed, RequestOptions options)
-            => await FollowupWithFileAsync(attachment, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+            => await FollowupWithFileAsync(attachment, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         /// <inheritdoc/>
         async Task<IUserMessage> IDiscordInteraction.FollowupWithFilesAsync(IEnumerable<FileAttachment> attachments, string text, Embed[] embeds, bool isTTS, bool ephemeral, AllowedMentions allowedMentions, MessageComponent components, Embed embed, RequestOptions options)
-            => await FollowupWithFilesAsync(attachments, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options).ConfigureAwait(false);
+            => await FollowupWithFilesAsync(attachments, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options);
         /// <inheritdoc/>
         Task IDiscordInteraction.RespondWithFilesAsync(IEnumerable<FileAttachment> attachments, string text, Embed[] embeds, bool isTTS, bool ephemeral, AllowedMentions allowedMentions, MessageComponent components, Embed embed, RequestOptions options) => throw new NotSupportedException("REST-Based interactions don't support files.");
 #if NETCOREAPP3_0_OR_GREATER != true

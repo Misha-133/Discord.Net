@@ -153,7 +153,7 @@ namespace Discord.WebSocket
         {
             IMessage msg = _messages?.Get(id);
             if (msg == null)
-                msg = await ChannelHelper.GetMessageAsync(this, Discord, id, options).ConfigureAwait(false);
+                msg = await ChannelHelper.GetMessageAsync(this, Discord, id, options);
             return msg;
         }
 
@@ -270,7 +270,7 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         public virtual async Task<IUserMessage> ModifyMessageAsync(ulong messageId, Action<MessageProperties> func, RequestOptions options = null)
-            => await ChannelHelper.ModifyMessageAsync(this, messageId, func, Discord, options).ConfigureAwait(false);
+            => await ChannelHelper.ModifyMessageAsync(this, messageId, func, Discord, options);
 
         /// <inheritdoc />
         public virtual Task DeleteMessageAsync(ulong messageId, RequestOptions options = null)
@@ -347,19 +347,19 @@ namespace Discord.WebSocket
         #region Invites
         /// <inheritdoc />
         public virtual async Task<IInviteMetadata> CreateInviteAsync(int? maxAge = 86400, int? maxUses = null, bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
-            => await ChannelHelper.CreateInviteAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, options).ConfigureAwait(false);
+            => await ChannelHelper.CreateInviteAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, options);
         /// <inheritdoc />
         public virtual async Task<IInviteMetadata> CreateInviteToApplicationAsync(ulong applicationId, int? maxAge, int? maxUses = default(int?), bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
-            => await ChannelHelper.CreateInviteToApplicationAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, applicationId, options).ConfigureAwait(false);
+            => await ChannelHelper.CreateInviteToApplicationAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, applicationId, options);
         /// <inheritdoc />
         public virtual async Task<IInviteMetadata> CreateInviteToApplicationAsync(DefaultApplications application, int? maxAge = 86400, int? maxUses = default(int?), bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
             => await ChannelHelper.CreateInviteToApplicationAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, (ulong)application, options);
         /// <inheritdoc />
         public virtual async Task<IInviteMetadata> CreateInviteToStreamAsync(IUser user, int? maxAge, int? maxUses = default(int?), bool isTemporary = false, bool isUnique = false, RequestOptions options = null)
-            => await ChannelHelper.CreateInviteToStreamAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, user, options).ConfigureAwait(false);
+            => await ChannelHelper.CreateInviteToStreamAsync(this, Discord, maxAge, maxUses, isTemporary, isUnique, user, options);
         /// <inheritdoc />
         public virtual async Task<IReadOnlyCollection<IInviteMetadata>> GetInvitesAsync(RequestOptions options = null)
-            => await ChannelHelper.GetInvitesAsync(this, Discord, options).ConfigureAwait(false);
+            => await ChannelHelper.GetInvitesAsync(this, Discord, options);
 
         private string DebuggerDisplay => $"{Name} ({Id}, Text)";
         internal new SocketTextChannel Clone() => MemberwiseClone() as SocketTextChannel;
@@ -369,13 +369,13 @@ namespace Discord.WebSocket
 
         /// <inheritdoc />
         async Task<IWebhook> IIntegrationChannel.CreateWebhookAsync(string name, Stream avatar, RequestOptions options)
-            => await CreateWebhookAsync(name, avatar, options).ConfigureAwait(false);
+            => await CreateWebhookAsync(name, avatar, options);
         /// <inheritdoc />
         async Task<IWebhook> IIntegrationChannel.GetWebhookAsync(ulong id, RequestOptions options)
-            => await GetWebhookAsync(id, options).ConfigureAwait(false);
+            => await GetWebhookAsync(id, options);
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IWebhook>> IIntegrationChannel.GetWebhooksAsync(RequestOptions options)
-            => await GetWebhooksAsync(options).ConfigureAwait(false);
+            => await GetWebhooksAsync(options);
         /// <inheritdoc />
         #endregion
 
@@ -395,7 +395,7 @@ namespace Discord.WebSocket
             if (user is not null || mode == CacheMode.CacheOnly)
                 return user;
 
-            return await ChannelHelper.GetUserAsync(this, Guild, Discord, id, options).ConfigureAwait(false);
+            return await ChannelHelper.GetUserAsync(this, Guild, Discord, id, options);
         }
         /// <inheritdoc />
         IAsyncEnumerable<IReadOnlyCollection<IGuildUser>> IGuildChannel.GetUsersAsync(CacheMode mode, RequestOptions options)
@@ -412,7 +412,7 @@ namespace Discord.WebSocket
         async Task<IMessage> IMessageChannel.GetMessageAsync(ulong id, CacheMode mode, RequestOptions options)
         {
             if (mode == CacheMode.AllowDownload)
-                return await GetMessageAsync(id, options).ConfigureAwait(false);
+                return await GetMessageAsync(id, options);
             else
                 return GetCachedMessage(id);
         }
@@ -427,40 +427,40 @@ namespace Discord.WebSocket
             => SocketChannelHelper.GetMessagesAsync(this, Discord, _messages, fromMessage.Id, dir, limit, mode, options);
         /// <inheritdoc />
         async Task<IReadOnlyCollection<IMessage>> IMessageChannel.GetPinnedMessagesAsync(RequestOptions options)
-            => await GetPinnedMessagesAsync(options).ConfigureAwait(false);
+            => await GetPinnedMessagesAsync(options);
 
         /// <inheritdoc />
         async Task<IUserMessage> IMessageChannel.SendFileAsync(string filePath, string text, bool isTTS, Embed embed,
             RequestOptions options, bool isSpoiler, AllowedMentions allowedMentions, MessageReference messageReference,
             MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags)
             => await SendFileAsync(filePath, text, isTTS, embed, options, isSpoiler, allowedMentions, messageReference,
-            components, stickers, embeds, flags).ConfigureAwait(false);
+            components, stickers, embeds, flags);
 
         /// <inheritdoc />
         async Task<IUserMessage> IMessageChannel.SendFileAsync(Stream stream, string filename, string text, bool isTTS,
             Embed embed, RequestOptions options, bool isSpoiler, AllowedMentions allowedMentions, MessageReference messageReference,
             MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags)
             => await SendFileAsync(stream, filename, text, isTTS, embed, options, isSpoiler, allowedMentions, messageReference,
-                components, stickers, embeds, flags).ConfigureAwait(false);
+                components, stickers, embeds, flags);
 
         /// <inheritdoc />
         async Task<IUserMessage> IMessageChannel.SendFileAsync(FileAttachment attachment, string text, bool isTTS,
             Embed embed, RequestOptions options, AllowedMentions allowedMentions, MessageReference messageReference,
             MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags)
             => await SendFileAsync(attachment, text, isTTS, embed, options, allowedMentions, messageReference, components,
-                stickers, embeds, flags).ConfigureAwait(false);
+                stickers, embeds, flags);
 
         /// <inheritdoc />
         async Task<IUserMessage> IMessageChannel.SendFilesAsync(IEnumerable<FileAttachment> attachments, string text,
             bool isTTS, Embed embed, RequestOptions options, AllowedMentions allowedMentions, MessageReference messageReference,
             MessageComponent components, ISticker[] stickers, Embed[] embeds, MessageFlags flags)
-           => await SendFilesAsync(attachments, text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags).ConfigureAwait(false);
+           => await SendFilesAsync(attachments, text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags);
 
         /// <inheritdoc />
         async Task<IUserMessage> IMessageChannel.SendMessageAsync(string text, bool isTTS, Embed embed, RequestOptions options,
             AllowedMentions allowedMentions, MessageReference messageReference, MessageComponent components,
             ISticker[] stickers, Embed[] embeds, MessageFlags flags)
-            => await SendMessageAsync(text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags).ConfigureAwait(false);
+            => await SendMessageAsync(text, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds, flags);
 
         #endregion
 

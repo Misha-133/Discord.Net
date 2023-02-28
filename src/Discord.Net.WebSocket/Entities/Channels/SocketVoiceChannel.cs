@@ -74,7 +74,7 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         public async Task<IAudioClient> ConnectAsync(bool selfDeaf = false, bool selfMute = false, bool external = false)
         {
-            return await Guild.ConnectAudioAsync(Id, selfDeaf, selfMute, external).ConfigureAwait(false);
+            return await Guild.ConnectAudioAsync(Id, selfDeaf, selfMute, external);
         }
 
         /// <inheritdoc />
@@ -84,7 +84,7 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         public async Task ModifyAsync(Action<AudioChannelProperties> func, RequestOptions options = null)
         {
-            await Guild.ModifyAudioAsync(Id, func, options).ConfigureAwait(false);
+            await Guild.ModifyAudioAsync(Id, func, options);
         }
 
         /// <inheritdoc />

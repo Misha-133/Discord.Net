@@ -17,7 +17,7 @@ namespace Discord.Webhook
         /// <exception cref="InvalidOperationException">Could not find a webhook with the supplied credentials.</exception>
         public static async Task<RestInternalWebhook> GetWebhookAsync(DiscordWebhookClient client, ulong webhookId)
         {
-            var model = await client.ApiClient.GetWebhookAsync(webhookId).ConfigureAwait(false);
+            var model = await client.ApiClient.GetWebhookAsync(webhookId);
             if (model == null)
                 throw new InvalidOperationException("Could not find a webhook with the supplied credentials.");
             return RestInternalWebhook.Create(client, model);
@@ -49,7 +49,7 @@ namespace Discord.Webhook
             if (flags is not MessageFlags.None and not MessageFlags.SuppressEmbeds)
                 throw new ArgumentException("The only valid MessageFlags are SuppressEmbeds and none.", nameof(flags));
 
-            var model = await client.ApiClient.CreateWebhookMessageAsync(client.Webhook.Id, args, options: options, threadId: threadId).ConfigureAwait(false);
+            var model = await client.ApiClient.CreateWebhookMessageAsync(client.Webhook.Id, args, options: options, threadId: threadId);
             return model.Id;
         }
 
@@ -100,12 +100,12 @@ namespace Discord.Webhook
             };
 
             await client.ApiClient.ModifyWebhookMessageAsync(client.Webhook.Id, messageId, apiArgs, options, threadId)
-                .ConfigureAwait(false);
+                ;
         }
 
         public static async Task DeleteMessageAsync(DiscordWebhookClient client, ulong messageId, RequestOptions options, ulong? threadId)
         {
-            await client.ApiClient.DeleteWebhookMessageAsync(client.Webhook.Id, messageId, options, threadId).ConfigureAwait(false);
+            await client.ApiClient.DeleteWebhookMessageAsync(client.Webhook.Id, messageId, options, threadId);
         }
 
         public static async Task<ulong> SendFileAsync(DiscordWebhookClient client, string filePath, string text, bool isTTS,
@@ -114,7 +114,7 @@ namespace Discord.Webhook
         {
             string filename = Path.GetFileName(filePath);
             using (var file = File.OpenRead(filePath))
-                return await SendFileAsync(client, file, filename, text, isTTS, embeds, username, avatarUrl, allowedMentions, options, isSpoiler, components, flags, threadId, threadName).ConfigureAwait(false);
+                return await SendFileAsync(client, file, filename, text, isTTS, embeds, username, avatarUrl, allowedMentions, options, isSpoiler, components, flags, threadId, threadName);
         }
 
         public static Task<ulong> SendFileAsync(DiscordWebhookClient client, Stream stream, string filename, string text, bool isTTS,
@@ -174,7 +174,7 @@ namespace Discord.Webhook
                 Flags = flags,
                 ThreadName = threadName
             };
-            var msg = await client.ApiClient.UploadWebhookFileAsync(client.Webhook.Id, args, options, threadId).ConfigureAwait(false);
+            var msg = await client.ApiClient.UploadWebhookFileAsync(client.Webhook.Id, args, options, threadId);
             return msg.Id;
         }
 
@@ -192,12 +192,12 @@ namespace Discord.Webhook
             if (!apiArgs.Avatar.IsSpecified && client.Webhook.AvatarId != null)
                 apiArgs.Avatar = new ImageModel(client.Webhook.AvatarId);
 
-            return await client.ApiClient.ModifyWebhookAsync(client.Webhook.Id, apiArgs, options).ConfigureAwait(false);
+            return await client.ApiClient.ModifyWebhookAsync(client.Webhook.Id, apiArgs, options);
         }
 
         public static async Task DeleteAsync(DiscordWebhookClient client, RequestOptions options)
         {
-            await client.ApiClient.DeleteWebhookAsync(client.Webhook.Id, options).ConfigureAwait(false);
+            await client.ApiClient.DeleteWebhookAsync(client.Webhook.Id, options);
         }
     }
 }

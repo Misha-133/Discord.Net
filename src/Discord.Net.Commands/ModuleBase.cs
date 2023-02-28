@@ -43,7 +43,7 @@ namespace Discord.Commands
         /// <param name="embeds">A array of <see cref="Embed"/>s to send with this response. Max 10.</param>
         protected virtual async Task<IUserMessage> ReplyAsync(string message = null, bool isTTS = false, Embed embed = null, RequestOptions options = null, AllowedMentions allowedMentions = null, MessageReference messageReference = null, MessageComponent components = null, ISticker[] stickers = null, Embed[] embeds = null)
         {
-            return await Context.Channel.SendMessageAsync(message, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds).ConfigureAwait(false);
+            return await Context.Channel.SendMessageAsync(message, isTTS, embed, options, allowedMentions, messageReference, components, stickers, embeds);
         }
         /// <summary>
         ///     The method to execute asynchronously before executing the command.
