@@ -42,7 +42,7 @@ namespace Discord.Rest
         ///     Gets the webhook that was created if it still exists.
         /// </summary>
         /// <returns>
-        ///     A webhook object representing the webhook that was created if it still exists, otherwise returns <c>null</c>.
+        ///     A webhook object representing the webhook that was created if it still exists, otherwise returns <see langword="null" />.
         /// </returns>
         public IWebhook Webhook { get; }
 

@@ -32,7 +32,7 @@ namespace Discord.Rest
         /// <returns>
         ///     An <see cref="int"/> representing the amount of time in seconds for a user to be marked as inactive
         ///     and moved into the AFK voice channel.
-        ///     <c>null</c> if this is not mentioned in this entry.
+        ///     <see langword="null" /> if this is not mentioned in this entry.
         /// </returns>
         public int? AfkTimeout { get; }
         /// <summary>
@@ -40,14 +40,14 @@ namespace Discord.Rest
         /// </summary>
         /// <returns>
         ///     The default message notifications setting of this guild.
-        ///     <c>null</c> if this is not mentioned in this entry.
+        ///     <see langword="null" /> if this is not mentioned in this entry.
         /// </returns>
         public DefaultMessageNotifications? DefaultMessageNotifications { get; }
         /// <summary>
         ///     Gets the ID of the AFK voice channel for this guild.
         /// </summary>
         /// <returns>
-        ///     A <see cref="ulong"/> representing the snowflake identifier of the AFK voice channel; <c>null</c> if
+        ///     A <see cref="ulong"/> representing the snowflake identifier of the AFK voice channel; <see langword="null" /> if
         ///     none is set.
         /// </returns>
         public ulong? AfkChannelId { get; }
@@ -66,7 +66,7 @@ namespace Discord.Rest
         ///     Gets the ID of this guild's icon.
         /// </summary>
         /// <returns>
-        ///     A string containing the identifier for the splash image; <c>null</c> if none is set.
+        ///     A string containing the identifier for the splash image; <see langword="null" /> if none is set.
         /// </returns>
         public string IconHash { get; }
         /// <summary>
@@ -74,7 +74,7 @@ namespace Discord.Rest
         /// </summary>
         /// <returns>
         ///     The level of requirements.
-        ///     <c>null</c> if this is not mentioned in this entry.
+        ///     <see langword="null" /> if this is not mentioned in this entry.
         /// </returns>
         public VerificationLevel? VerificationLevel { get; }
         /// <summary>
@@ -90,7 +90,7 @@ namespace Discord.Rest
         /// </summary>
         /// <returns>
         ///     The level of MFA requirement.
-        ///     <c>null</c> if this is not mentioned in this entry.
+        ///     <see langword="null" /> if this is not mentioned in this entry.
         /// </returns>
         public MfaLevel? MfaLevel { get; }
         /// <summary>
@@ -105,7 +105,7 @@ namespace Discord.Rest
         /// </summary>
         /// <returns>
         ///     A <see cref="ulong"/> representing the snowflake identifier of the channel where system
-        ///     messages are sent; <c>null</c> if none is set.
+        ///     messages are sent; <see langword="null" /> if none is set.
         /// </returns>
         public ulong? SystemChannelId { get; }
         /// <summary>
@@ -113,15 +113,15 @@ namespace Discord.Rest
         /// </summary>
         /// <returns>
         ///     A <see cref="ulong"/> representing the snowflake identifier of the embedded channel found within the
-        ///     widget settings of this guild; <c>null</c> if none is set.
+        ///     widget settings of this guild; <see langword="null" /> if none is set.
         /// </returns>
         public ulong? EmbedChannelId { get; }
         /// <summary>
         ///     Gets a value that indicates whether this guild is embeddable (i.e. can use widget).
         /// </summary>
         /// <returns>
-        ///     <c>true</c> if this guild can be embedded via widgets; otherwise <c>false</c>.
-        ///     <c>null</c> if this is not mentioned in this entry.
+        ///     <see langword="true" /> if this guild can be embedded via widgets; otherwise <see langword="false" />.
+        ///     <see langword="null" /> if this is not mentioned in this entry.
         /// </returns>
         public bool? IsEmbeddable { get; }
     }

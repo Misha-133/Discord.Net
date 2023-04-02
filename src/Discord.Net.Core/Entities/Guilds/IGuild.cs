@@ -113,7 +113,7 @@ namespace Discord
         ///     This boolean is used to determine if the guild is currently connected to the WebSocket and is ready to be used/accessed.
         /// </remarks>
         /// <returns>
-        ///     <c>true</c> if this guild is currently connected and ready to be used; otherwise <see langword="false"/>.
+        ///     <see langword="true" /> if this guild is currently connected and ready to be used; otherwise <see langword="false"/>.
         /// </returns>
         bool Available { get; }
 
@@ -964,7 +964,7 @@ namespace Discord
         ///         This method removes all users that have not logged on in the provided number of <paramref name="days"/>.
         ///     </para>
         ///     <para>
-        ///         If <paramref name="simulate" /> is <c>true</c>, this method will only return the number of users that
+        ///         If <paramref name="simulate" /> is <see langword="true" />, this method will only return the number of users that
         ///         would be removed without kicking the users.
         ///     </para>
         /// </remarks>
