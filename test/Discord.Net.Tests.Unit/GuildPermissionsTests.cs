@@ -103,6 +103,7 @@ namespace Discord
             AssertFlag(() => new GuildPermissions(viewMonetizationAnalytics: true), GuildPermission.ViewMonetizationAnalytics);
             AssertFlag(() => new GuildPermissions(useSoundboard: true), GuildPermission.UseSoundboard);
             AssertFlag(() => new GuildPermissions(sendVoiceMessages: true), GuildPermission.SendVoiceMessages);
+            AssertFlag(() => new GuildPermissions(useExternalSounds: true), GuildPermission.UseExternalSounds);
         }
 
         /// <summary>
@@ -184,6 +185,7 @@ namespace Discord
             AssertUtil(GuildPermission.ViewMonetizationAnalytics, x => x.ViewMonetizationAnalytics, (p, enable) => p.Modify(viewMonetizationAnalytics: enable));
             AssertUtil(GuildPermission.UseSoundboard, x => x.UseSoundboard, (p, enable) => p.Modify(useSoundboard: enable));
             AssertUtil(GuildPermission.SendVoiceMessages, x => x.SendVoiceMessages, (p, enable) => p.Modify(sendVoiceMessages: enable));
+            AssertUtil(GuildPermission.UseExternalSounds, x => x.UseExternalSounds, (p, enable) => p.Modify(useExternalSounds: enable));
         }
     }
 }
