@@ -272,5 +272,49 @@ namespace Discord
         ///     A task that represents the asynchronous timeout removal operation.
         /// </returns>
         Task RemoveTimeOutAsync(RequestOptions options = null);
+
+        /// <summary>
+        ///     Removes the specified <paramref name="roleIds"/> from this user in the guild. 
+        ///     This method wraps <see cref="ModifyAsync"/> method to speed up the execution. 
+        /// </summary>
+        /// <param name="roleIds">The roles to be removed from the user.</param>
+        /// <param name="options">The options to be used when sending the request.</param>
+        /// <returns>
+        ///     A task that represents the asynchronous role removal operation.
+        /// </returns>
+        Task RemoveRolesFastAsync(IEnumerable<ulong> roleIds, RequestOptions options = null);
+
+        /// <summary>
+        ///     Removes the specified <paramref name="roles"/> from this user in the guild.
+        ///     This method wraps <see cref="ModifyAsync"/> method to speed up the execution.
+        /// </summary>
+        /// <param name="roles">The roles to be removed from the user.</param>
+        /// <param name="options">The options to be used when sending the request.</param>
+        /// <returns>
+        ///     A task that represents the asynchronous role removal operation.
+        /// </returns>
+        Task RemoveRolesFastAsync(IEnumerable<IRole> roles, RequestOptions options = null);
+
+        /// <summary>
+        ///     Adds the specified <paramref name="roleIds"/> to this user in the guild.
+        ///     This method wraps <see cref="ModifyAsync"/> method to speed up the execution.
+        /// </summary>
+        /// <param name="roleIds">The roles to be added to the user.</param>
+        /// <param name="options">The options to be used when sending the request.</param>
+        /// <returns>
+        ///     A task that represents the asynchronous role addition operation.
+        /// </returns>
+        Task AddRolesFastAsync(IEnumerable<ulong> roleIds, RequestOptions options = null);
+
+        /// <summary>
+        ///     Adds the specified <paramref name="roles"/> to this user in the guild.
+        ///     This method wraps <see cref="ModifyAsync"/> method to speed up the execution.
+        /// </summary>
+        /// <param name="roles">The roles to be added to the user.</param>
+        /// <param name="options">The options to be used when sending the request.</param>
+        /// <returns>
+        ///     A task that represents the asynchronous role addition operation.
+        /// </returns>
+        Task AddRolesFastAsync(IEnumerable<IRole> roles, RequestOptions options = null);
     }
 }

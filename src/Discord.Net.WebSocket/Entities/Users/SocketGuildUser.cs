@@ -221,36 +221,63 @@ namespace Discord.WebSocket
         /// <inheritdoc />
         public Task KickAsync(string reason = null, RequestOptions options = null)
             => UserHelper.KickAsync(this, Discord, reason, options);
+
         /// <inheritdoc />
         public Task AddRoleAsync(ulong roleId, RequestOptions options = null)
             => AddRolesAsync(new[] { roleId }, options);
+
         /// <inheritdoc />
         public Task AddRoleAsync(IRole role, RequestOptions options = null)
             => AddRoleAsync(role.Id, options);
+
         /// <inheritdoc />
         public Task AddRolesAsync(IEnumerable<ulong> roleIds, RequestOptions options = null)
             => UserHelper.AddRolesAsync(this, Discord, roleIds, options);
+
         /// <inheritdoc />
         public Task AddRolesAsync(IEnumerable<IRole> roles, RequestOptions options = null)
             => AddRolesAsync(roles.Select(x => x.Id), options);
+
         /// <inheritdoc />
         public Task RemoveRoleAsync(ulong roleId, RequestOptions options = null)
             => RemoveRolesAsync(new[] { roleId }, options);
+
         /// <inheritdoc />
         public Task RemoveRoleAsync(IRole role, RequestOptions options = null)
             => RemoveRoleAsync(role.Id, options);
+
         /// <inheritdoc />
         public Task RemoveRolesAsync(IEnumerable<ulong> roleIds, RequestOptions options = null)
             => UserHelper.RemoveRolesAsync(this, Discord, roleIds, options);
+
         /// <inheritdoc />
         public Task RemoveRolesAsync(IEnumerable<IRole> roles, RequestOptions options = null)
             => RemoveRolesAsync(roles.Select(x => x.Id));
+
+        /// <inheritdoc />
+        public Task AddRolesFastAsync(IEnumerable<ulong> roleIds, RequestOptions options = null)
+            => UserHelper.AddRolesFastAsync(this, Discord, roleIds, options);
+
+        /// <inheritdoc />
+        public Task AddRolesFastAsync(IEnumerable<IRole> roles, RequestOptions options = null)
+            => AddRolesFastAsync(roles.Select(x => x.Id), options);
+
+        /// <inheritdoc />
+        public Task RemoveRolesFastAsync(IEnumerable<ulong> roleIds, RequestOptions options = null)
+            => UserHelper.RemoveRolesFastAsync(this, Discord, roleIds, options);
+
+        /// <inheritdoc />
+        public Task RemoveRolesFastAsync(IEnumerable<IRole> roles, RequestOptions options = null)
+            => RemoveRolesFastAsync(roles.Select(x => x.Id));
+
         /// <inheritdoc />
         public Task SetTimeOutAsync(TimeSpan span, RequestOptions options = null)
             => UserHelper.SetTimeoutAsync(this, Discord, span, options);
+
         /// <inheritdoc />
         public Task RemoveTimeOutAsync(RequestOptions options = null)
             => UserHelper.RemoveTimeOutAsync(this, Discord, options);
+
         /// <inheritdoc />
         public ChannelPermissions GetPermissions(IGuildChannel channel)
             => new ChannelPermissions(Permissions.ResolveChannel(Guild, this, channel, GuildPermissions.RawValue));

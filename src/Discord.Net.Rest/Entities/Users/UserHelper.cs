@@ -79,7 +79,29 @@ namespace Discord.Rest
             return RestDMChannel.Create(client, await client.ApiClient.CreateDMChannelAsync(args, options).ConfigureAwait(false));
         }
 
+        public static async Task AddRoleAsync(IGuildUser user, BaseDiscordClient client, ulong roleId, RequestOptions options)
+        {
+            await client.ApiClient.AddRoleAsync(user.Guild.Id, user.Id, roleId, options).ConfigureAwait(false);
+        }
+
+        public static async Task RemoveRoleAsync(IGuildUser user, BaseDiscordClient client, ulong roleId, RequestOptions options)
+        {
+            await client.ApiClient.RemoveRoleAsync(user.Guild.Id, user.Id, roleId, options).ConfigureAwait(false);
+        }
+
         public static async Task AddRolesAsync(IGuildUser user, BaseDiscordClient client, IEnumerable<ulong> roleIds, RequestOptions options)
+        {
+            foreach (var roleId in roleIds)
+                await client.ApiClient.AddRoleAsync(user.Guild.Id, user.Id, roleId, options).ConfigureAwait(false);
+        }
+
+        public static async Task RemoveRolesAsync(IGuildUser user, BaseDiscordClient client, IEnumerable<ulong> roleIds, RequestOptions options)
+        {
+            foreach (var roleId in roleIds)
+                await client.ApiClient.RemoveRoleAsync(user.Guild.Id, user.Id, roleId, options).ConfigureAwait(false);
+        }
+
+        public static async Task AddRolesFastAsync(IGuildUser user, BaseDiscordClient client, IEnumerable<ulong> roleIds, RequestOptions options)
         {
             await client.ApiClient.ModifyGuildMemberAsync(user.GuildId, user.Id, args: new()
             {
@@ -87,7 +109,7 @@ namespace Discord.Rest
             }, options);
         }
 
-        public static async Task RemoveRolesAsync(IGuildUser user, BaseDiscordClient client, IEnumerable<ulong> roleIds, RequestOptions options)
+        public static async Task RemoveRolesFastAsync(IGuildUser user, BaseDiscordClient client, IEnumerable<ulong> roleIds, RequestOptions options)
         {
             await client.ApiClient.ModifyGuildMemberAsync(user.GuildId, user.Id, args: new()
             {
