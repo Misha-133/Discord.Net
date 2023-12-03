@@ -257,6 +257,6 @@ namespace Discord
         /// </summary>
         public const int MaxEntitlementsPerBatch = 100;
 
-        public string Lol = "Kek3";
+        public string Lol = "Kek4";
     }
 }
