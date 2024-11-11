@@ -37,7 +37,7 @@ namespace Discord.API.Rest
         {
             var d = new Dictionary<string, object>();
 
-            if (Files.Any(x => x.Waveform is not null || x.DurationSeconds is not null))
+            if (Files.Any(x => x.Waveform is not null && x.DurationSeconds is not null))
                 Flags = Flags.GetValueOrDefault(MessageFlags.None) | MessageFlags.VoiceMessage;
 
             var payload = new Dictionary<string, object>();
