@@ -44,6 +44,8 @@ namespace Discord.API.Rest
         {
             var d = new Dictionary<string, object>();
 
+            if (Files.Any(x => x.Waveform is not null && x.DurationSeconds is not null))
+                Flags = Flags.GetValueOrDefault(MessageFlags.None) | MessageFlags.VoiceMessage;
 
             var payload = new Dictionary<string, object>();
             payload["type"] = Type;
@@ -79,7 +81,11 @@ namespace Discord.API.Rest
                 {
                     id = (ulong)n,
                     filename = filename,
-                    description = attachment.Description ?? Optional<string>.Unspecified
+                    description = attachment.Description ?? Optional<string>.Unspecified,
+                    duration_secs = attachment.DurationSeconds ?? Optional<double>.Unspecified,
+                    waveform = attachment.Waveform is null
+                        ? Optional<string>.Unspecified
+                        : Convert.ToBase64String(attachment.Waveform)
                 });
             }
 
