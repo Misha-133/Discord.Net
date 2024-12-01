@@ -77,6 +77,11 @@ namespace Discord
         public string Waveform { get; }
 
         /// <summary>
+        ///     Gets the bytearray representing a sampled waveform. <see langword="null"/> if the attachment is not a voice message.
+        /// </summary>
+        public byte[] WaveformBytes { get; }
+
+        /// <summary>
         ///     Gets flags related to this to this attachment.
         /// </summary>
         public AttachmentFlags Flags { get; }

@@ -251,9 +251,9 @@ namespace Discord.WebSocket
         public override string GetDisplayAvatarUrl(ImageFormat format = ImageFormat.Auto, ushort size = 128)
             => GuildUser.GetGuildAvatarUrl() ?? base.GetDisplayAvatarUrl(format, size);
 
-        internal override SocketGlobalUser GlobalUser { get => GuildUser.GlobalUser; set => GuildUser.GlobalUser = value; }
+        internal override SocketGlobalUser GlobalUser { get => GuildUser?.GlobalUser; set => GuildUser.GlobalUser = value; }
 
-        internal override SocketPresence Presence { get => GuildUser.Presence; set => GuildUser.Presence = value; }
+        internal override SocketPresence Presence { get => GuildUser?.Presence; set => GuildUser.Presence = value; }
 
         /// <summary>
         ///     Gets the guild user of this thread user.

@@ -1,5 +1,6 @@
 using Discord.Rest;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -35,6 +36,8 @@ namespace Discord
         /// <inheritdoc />
         public string Waveform { get; }
         /// <inheritdoc />
+        public byte[] WaveformBytes { get; }
+        /// <inheritdoc />
         public double? Duration { get; }
 
         /// <inheritdoc cref="IAttachment.ClipParticipants" />
@@ -69,6 +72,8 @@ namespace Discord
             Title = title;
             ClipParticipants = clipParticipants;
             ClipCreatedAt = clipCreatedAt;
+            if (waveform is not null)
+                WaveformBytes = Convert.FromBase64String(waveform);
         }
 
         internal static Attachment Create(Model model, BaseDiscordClient discord)

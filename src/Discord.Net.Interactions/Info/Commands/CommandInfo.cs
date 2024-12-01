@@ -113,10 +113,12 @@ namespace Discord.Interactions
         {
             await CommandService._cmdLogger.DebugAsync($"Executing {GetLogString(context)}").ConfigureAwait(false);
 
-            using var scope = services?.CreateScope();
-
+            IServiceScope scope = null;
             if (CommandService._autoServiceScopes)
+            {
+                scope = services?.CreateScope();
                 services = scope?.ServiceProvider ?? EmptyServiceProvider.Instance;
+            }
 
             try
             {
@@ -179,11 +181,13 @@ namespace Discord.Interactions
                         ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
+                scope?.Dispose();
                 return result;
             }
             finally
             {
                 await CommandService._cmdLogger.VerboseAsync($"Executed {GetLogString(context)}").ConfigureAwait(false);
+                scope?.Dispose();
             }
         }
 
