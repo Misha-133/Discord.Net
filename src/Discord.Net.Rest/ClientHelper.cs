@@ -342,8 +342,8 @@ namespace Discord.Rest
                     Description = x.Description,
                     Key = x.Key,
                     Type = x.Type,
-                    NameLocalizations = x.NameLocalizations?.ToDictionary(),
-                    DescriptionLocalizations = x.DescriptionLocalizations?.ToDictionary()
+                    NameLocalizations = x.NameLocalizations?.ToDictionary(x => x.Key, y => y.Value),
+                    DescriptionLocalizations = x.DescriptionLocalizations?.ToDictionary(x => x.Key, y => y.Value)
                 }).ToArray()))
                 .Select(model
                     => new RoleConnectionMetadata(

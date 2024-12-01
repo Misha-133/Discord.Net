@@ -142,14 +142,14 @@ public readonly struct MemberSearchV2QueryProperties
 
     public MemberSearchV2QueryProperties(Dictionary<int, string> andQuery, Dictionary<int, string> orQuery)
     {
-        AndQuery = andQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary();
-        OrQuery = orQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary();
+        AndQuery = andQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary(x => x.Key, y => y.Value);
+        OrQuery = orQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary(x => x.Key, y => y.Value);
     }
 
     public MemberSearchV2QueryProperties(Dictionary<int, long> andQuery, Dictionary<int, long> orQuery)
     {
-        AndQuery = andQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary();
-        OrQuery = orQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary();
+        AndQuery = andQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary(x => x.Key, y => y.Value);
+        OrQuery = orQuery.Select(x => new KeyValuePair<int, object>(x.Key, x.Value)).ToDictionary(x => x.Key, y => y.Value);
     }
 }
 
