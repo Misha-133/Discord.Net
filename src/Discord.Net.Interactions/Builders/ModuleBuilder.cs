@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -461,6 +462,13 @@ namespace Discord.Interactions.Builders
         {
             if (TypeInfo is not null && ModuleClassBuilder.IsValidModuleDefinition(TypeInfo))
             {
+                IServiceScope scope = null;
+                if (interactionService._autoServiceScopes)
+                {
+                    scope = services?.CreateScope();
+                    services = scope?.ServiceProvider ?? EmptyServiceProvider.Instance;
+                }
+
                 var instance = ReflectionUtils<IInteractionModuleBase>.CreateObject(TypeInfo, interactionService, services);
 
                 try
@@ -468,10 +476,13 @@ namespace Discord.Interactions.Builders
                     instance.Construct(this, interactionService);
                     var moduleInfo = new ModuleInfo(this, interactionService, services, parent);
                     instance.OnModuleBuilding(interactionService, moduleInfo);
+
+                    scope?.Dispose();
                     return moduleInfo;
                 }
                 finally
                 {
+                    scope?.Dispose();
                     (instance as IDisposable)?.Dispose();
                 }
             }
