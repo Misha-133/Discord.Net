@@ -202,7 +202,9 @@ namespace Discord.WebSocket
                 var members = model.Resolved.Value.Members.IsSpecified
                     ? model.Resolved.Value.Members.Value.Select(x =>
                     {
-                        x.Value.User = model.Resolved.Value.Users.Value.GetValueOrDefault(x.Key);
+                        x.Value.User = model.Resolved.Value.Users.Value.TryGetValue(x.Key, out var user)
+                            ? user
+                            : null;
 
                         return RestGuildUser.Create(Discord, guild, x.Value);
                     }).ToImmutableArray()
