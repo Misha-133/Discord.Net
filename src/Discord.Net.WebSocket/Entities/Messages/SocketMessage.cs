@@ -279,7 +279,8 @@ namespace Discord.WebSocket
                         var val = value[i];
                         if (val != null)
                         {
-                            var user = Channel.GetUserAsync(val.Id, CacheMode.CacheOnly).GetAwaiter().GetResult() as SocketUser;
+                            // TODO: this is cursed af and should be yeeted
+                            var user = Channel?.GetUserAsync(val.Id, CacheMode.CacheOnly).GetAwaiter().GetResult() as SocketUser;
                             if (user != null)
                                 newMentions.Add(user);
                             else
