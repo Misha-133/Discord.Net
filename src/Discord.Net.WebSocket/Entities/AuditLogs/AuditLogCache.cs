@@ -19,7 +19,7 @@ internal class AuditLogCache
     {
         _size = client.AuditLogCacheSize;
 
-        _entries = new ConcurrentDictionary<ulong, SocketAuditLogEntry>(ConcurrentHashSet.DefaultConcurrencyLevel, (int)(_size * 1.05));
+        _entries = new ConcurrentDictionary<ulong, SocketAuditLogEntry>(ConcurrentHashSet.DefaultConcurrencyLevel, Math.Clamp((int)(_size * 1.05), 0, int.MaxValue)));
         _orderedEntries = new ConcurrentQueue<ulong>();
     }
 
