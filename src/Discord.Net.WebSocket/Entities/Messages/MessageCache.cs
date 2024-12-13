@@ -17,7 +17,12 @@ namespace Discord.WebSocket
         public MessageCache(DiscordSocketClient discord)
         {
             _size = discord.MessageCacheSize;
-            _messages = new ConcurrentDictionary<ulong, SocketMessage>(ConcurrentHashSet.DefaultConcurrencyLevel, Math.Clamp((int)(_size * 1.05), 0, int.MaxValue));
+            var dictSize = _size;
+            if ((long)dictSize * 1.05 > int.MaxValue)
+                dictSize = int.MaxValue;
+            else
+                dictSize = (int)(dictSize * 1.05);
+            _messages = new ConcurrentDictionary<ulong, SocketMessage>(ConcurrentHashSet.DefaultConcurrencyLevel, dictSize);
             _orderedMessages = new ConcurrentQueue<ulong>();
         }
 
