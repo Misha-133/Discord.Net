@@ -18,7 +18,7 @@ namespace Discord.WebSocket
         {
             _size = discord.MessageCacheSize;
             var dictSize = _size;
-            if ((long)dictSize * 1.05 > int.MaxValue)
+            if (dictSize * 1.05 > int.MaxValue)
                 dictSize = int.MaxValue;
             else
                 dictSize = (int)(dictSize * 1.05);
