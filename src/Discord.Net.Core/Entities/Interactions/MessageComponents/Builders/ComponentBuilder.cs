@@ -98,7 +98,7 @@ public class ComponentBuilder
     /// <returns>The current builder.</returns>
     public ComponentBuilder RemoveComponent(string customId)
     {
-        this.ActionRows.ForEach(ar => ar.Components.RemoveAll(c => c.CustomId == customId));
+        this.ActionRows.ForEach(ar => ar.Components.RemoveAll(c => c is IInteractableComponent ic && ic.CustomId == customId));
         return this;
     }
 

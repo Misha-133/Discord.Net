@@ -114,18 +114,18 @@ namespace Discord
         ///     Gets a <typeparamref name="TMessageComponent"/> by the specified <paramref name="customId"/>.
         /// </summary>
         /// <typeparam name="TMessageComponent">The type of the component to get.</typeparam>
-        /// <param name="customId">The <see cref="IMessageComponent.CustomId"/> of the component to get.</param>
+        /// <param name="customId">The <see cref="IInteractableComponent.CustomId"/> of the component to get.</param>
         /// <returns>
         ///     The component of type <typeparamref name="TMessageComponent"/> that was found, <see langword="null"/> otherwise.
         /// </returns>
         public TMessageComponent GetComponent<TMessageComponent>(string customId)
-            where TMessageComponent : class, IMessageComponent
+            where TMessageComponent : class, IInteractableComponent
         {
             Preconditions.NotNull(customId, nameof(customId));
 
             return Components.ActionRows
                 ?.SelectMany(r => r.Components.OfType<TMessageComponent>())
-                .FirstOrDefault(c => c?.CustomId == customId);
+                .FirstOrDefault(c => c is IInteractableComponent ic && ic?.CustomId == customId);
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Discord
         {
             Preconditions.NotNull(customId, nameof(customId));
 
-            Components.ActionRows?.ForEach(r => r.Components.RemoveAll(c => c.CustomId == customId));
+            Components.ActionRows?.ForEach(r => r.Components.RemoveAll(c => c is IInteractableComponent ic && ic.CustomId == customId));
             return this;
         }
 

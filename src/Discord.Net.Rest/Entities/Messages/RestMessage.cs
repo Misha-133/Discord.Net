@@ -191,7 +191,8 @@ namespace Discord.Rest
                                     parsed.CustomId.GetValueOrDefault(),
                                     parsed.Url.GetValueOrDefault(),
                                     parsed.Disabled.GetValueOrDefault(),
-                                    parsed.SkuId.ToNullable());
+                                    parsed.SkuId.ToNullable(),
+                                    parsed.Id.ToNullable());
                             }
                         case ComponentType.SelectMenu or ComponentType.ChannelSelect or ComponentType.RoleSelect or ComponentType.MentionableSelect or ComponentType.UserSelect:
                             {
@@ -213,6 +214,7 @@ namespace Discord.Rest
                                     parsed.MaxValues,
                                     parsed.Disabled,
                                     parsed.Type,
+                                    parsed.Id.ToNullable(),
                                     parsed.ChannelTypes.GetValueOrDefault(),
                                     parsed.DefaultValues.IsSpecified
                                         ? parsed.DefaultValues.Value.Select(x => new SelectMenuDefaultValue(x.Id, x.Type))
@@ -236,15 +238,16 @@ namespace Discord.Rest
                 if (value.Length > 0)
                 {
                     var reactions = ImmutableArray.CreateBuilder<RestReaction>(value.Length);
-                    for (int i = 0; i < value.Length; i++)
-                        reactions.Add(RestReaction.Create(value[i]));
+                    foreach (var t in value)
+                        reactions.Add(RestReaction.Create(t));
+
                     _reactions = reactions.ToImmutable();
                 }
                 else
-                    _reactions = ImmutableArray.Create<RestReaction>();
+                    _reactions = [];
             }
             else
-                _reactions = ImmutableArray.Create<RestReaction>();
+                _reactions = [];
 
             if (model.Interaction.IsSpecified)
             {

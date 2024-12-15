@@ -99,6 +99,8 @@ public class TextInputBuilder
     /// </summary>
     public bool? Required { get; set; }
 
+    public int? Id { get; set; }
+
     /// <summary>
     ///     Gets or sets the default value of the text input.
     /// </summary>
@@ -140,7 +142,7 @@ public class TextInputBuilder
     /// <param name="maxLength">The text input's maximum length.</param>
     /// <param name="required">The text input's required value.</param>
     public TextInputBuilder(string label, string customId, TextInputStyle style = TextInputStyle.Short, string placeholder = null,
-        int? minLength = null, int? maxLength = null, bool? required = null, string value = null)
+        int? minLength = null, int? maxLength = null, bool? required = null, string value = null, int? id = null)
     {
         Label = label;
         Style = style;
@@ -150,6 +152,7 @@ public class TextInputBuilder
         MaxLength = maxLength;
         Required = required;
         Value = value;
+        Id = id;
     }
 
     /// <summary>
@@ -257,6 +260,6 @@ public class TextInputBuilder
         if (Style is TextInputStyle.Short && Value?.Any(x => x == '\n') is true)
             throw new ArgumentException($"Value must not contain new line characters when style is {TextInputStyle.Short}.", nameof(Value));
 
-        return new TextInputComponent(CustomId, Label, Placeholder, MinLength, MaxLength, Style, Required, Value);
+        return new TextInputComponent(CustomId, Label, Placeholder, MinLength, MaxLength, Style, Required, Value, Id);
     }
 }

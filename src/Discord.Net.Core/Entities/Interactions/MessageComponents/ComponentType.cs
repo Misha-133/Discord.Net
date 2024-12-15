@@ -44,5 +44,13 @@ namespace Discord
         ///     A select menu for picking from channels.
         /// </summary>
         ChannelSelect = 8,
+
+        TextDisplay = 10,
+
+        MediaGallery = 12,
+
+        File = 13,
+
+        Separator = 14
     }
 }

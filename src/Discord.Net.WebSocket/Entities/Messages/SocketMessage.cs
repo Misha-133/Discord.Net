@@ -224,7 +224,8 @@ namespace Discord.WebSocket
                                     parsed.CustomId.GetValueOrDefault(),
                                     parsed.Url.GetValueOrDefault(),
                                     parsed.Disabled.GetValueOrDefault(),
-                                    parsed.SkuId.ToNullable());
+                                    parsed.SkuId.ToNullable(),
+                                    parsed.Id.ToNullable());
                             }
                         case ComponentType.SelectMenu:
                             {
@@ -246,6 +247,7 @@ namespace Discord.WebSocket
                                     parsed.MaxValues,
                                     parsed.Disabled,
                                     parsed.Type,
+                                    parsed.Id.ToNullable(),
                                     parsed.ChannelTypes.GetValueOrDefault(),
                                     parsed.DefaultValues.IsSpecified
                                         ? parsed.DefaultValues.Value.Select(x => new SelectMenuDefaultValue(x.Id, x.Type))

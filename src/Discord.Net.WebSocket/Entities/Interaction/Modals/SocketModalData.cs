@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataModel = Discord.API.MessageComponentInteractionData;
-using InterationModel = Discord.API.Interaction;
 using Model = Discord.API.ModalInteractionData;
 
 namespace Discord.WebSocket
@@ -26,7 +23,7 @@ namespace Discord.WebSocket
         {
             CustomId = model.CustomId;
             Components = model.Components
-                .SelectMany(x => x.Components)
+                .SelectMany(x => x.Components.OfType<IInteractableComponent>())
                 .Select(x => new SocketMessageComponentData(x, discord, state, guild, dmUser))
                 .ToArray();
         }
