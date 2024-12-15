@@ -22,7 +22,7 @@ namespace Discord.API.Rest
         public Optional<string> AvatarUrl { get; set; }
         public Optional<Embed[]> Embeds { get; set; }
         public Optional<AllowedMentions> AllowedMentions { get; set; }
-        public Optional<ActionRowComponent[]> MessageComponents { get; set; }
+        public Optional<IMessageComponent[]> MessageComponents { get; set; }
         public Optional<MessageFlags> Flags { get; set; }
         public Optional<string> ThreadName { get; set; }
         public Optional<ulong[]> AppliedTags { get; set; }

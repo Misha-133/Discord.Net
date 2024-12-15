@@ -21,7 +21,7 @@ namespace Discord.API.Rest
         public Optional<bool> IsTTS { get; set; }
         public Optional<Embed[]> Embeds { get; set; }
         public Optional<AllowedMentions> AllowedMentions { get; set; }
-        public Optional<ActionRowComponent[]> MessageComponents { get; set; }
+        public Optional<IMessageComponent[]> MessageComponents { get; set; }
         public Optional<MessageFlags> Flags { get; set; }
         public Optional<CreatePollParams> Poll { get; set; }
 
@@ -66,9 +66,9 @@ namespace Discord.API.Rest
             if (Poll.IsSpecified)
                 data["poll"] = Poll.Value;
 
-            List<object> attachments = new();
+            List<object> attachments = [];
 
-            for (int n = 0; n != Files.Length; n++)
+            for (var n = 0; n != Files.Length; n++)
             {
                 var attachment = Files[n];
 

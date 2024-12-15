@@ -67,13 +67,18 @@ public class ComponentBuilder
     {
         switch (component)
         {
+            case TextDisplayComponent textDisplay:
+                break;
+
             case ButtonComponent button:
                 WithButton(button.Label, button.CustomId, button.Style, button.Emote, button.Url, button.IsDisabled, row);
                 break;
+
             case ActionRowComponent actionRow:
                 foreach (var cmp in actionRow.Components)
                     AddComponent(cmp, row);
                 break;
+
             case SelectMenuComponent menu:
                 WithSelectMenu(menu.CustomId, menu.Options?.Select(x => new SelectMenuOptionBuilder(x.Label, x.Value, x.Description, x.Emote, x.IsDefault)).ToList(), menu.Placeholder, menu.MinValues, menu.MaxValues, menu.IsDisabled, row);
                 break;
@@ -247,10 +252,7 @@ public class ComponentBuilder
 
         if (_actionRows == null)
         {
-            _actionRows = new List<ActionRowBuilder>
-            {
-                new ActionRowBuilder().AddComponent(builtButton)
-            };
+            _actionRows = [new ActionRowBuilder().AddComponent(builtButton)];
         }
         else
         {

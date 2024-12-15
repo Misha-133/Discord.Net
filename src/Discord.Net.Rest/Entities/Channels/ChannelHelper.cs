@@ -320,7 +320,7 @@ namespace Discord.Rest
                 Embeds = embeds.Any() ? embeds.Select(x => x.ToModel()).ToArray() : Optional<API.Embed[]>.Unspecified,
                 AllowedMentions = allowedMentions?.ToModel(),
                 MessageReference = messageReference?.ToModel(),
-                Components = components?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() ?? Optional<API.ActionRowComponent[]>.Unspecified,
+                Components = components?.Components.Select(x => x.ToModel()).ToArray() ?? Optional<IMessageComponent[]>.Unspecified,
                 Stickers = stickers?.Any() ?? false ? stickers.Select(x => x.Id).ToArray() : Optional<ulong[]>.Unspecified,
                 Flags = flags,
                 Poll = poll?.ToModel() ?? Optional<CreatePollParams>.Unspecified
@@ -449,7 +449,7 @@ namespace Discord.Rest
                 Embeds = embeds.Any() ? embeds.Select(x => x.ToModel()).ToArray() : Optional<API.Embed[]>.Unspecified,
                 AllowedMentions = allowedMentions?.ToModel() ?? Optional<API.AllowedMentions>.Unspecified,
                 MessageReference = messageReference?.ToModel() ?? Optional<API.MessageReference>.Unspecified,
-                MessageComponent = components?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() ?? Optional<API.ActionRowComponent[]>.Unspecified,
+                MessageComponent = components?.Components.Select(x => x.ToModel()).ToArray() ?? Optional<IMessageComponent[]>.Unspecified,
                 Stickers = stickers?.Any() ?? false ? stickers.Select(x => x.Id).ToArray() : Optional<ulong[]>.Unspecified,
                 Flags = flags,
                 Poll = poll?.ToModel() ?? Optional<CreatePollParams>.Unspecified

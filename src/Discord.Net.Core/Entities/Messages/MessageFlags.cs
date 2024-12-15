@@ -57,5 +57,7 @@ namespace Discord
         ///     This message is a voice message.
         /// </summary>
         VoiceMessage = 1 << 13,
+
+        UiKitComponents = 1 << 15,
     }
 }

@@ -37,7 +37,7 @@ namespace Discord.API.Rest
         public Optional<MessageFlags> Flags { get; set; }
 
         [JsonProperty("components")]
-        public Optional<API.ActionRowComponent[]> Components { get; set; }
+        public Optional<IMessageComponent[]> Components { get; set; }
 
         [JsonProperty("file")]
         public Optional<MultipartFile> File { get; set; }

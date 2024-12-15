@@ -127,7 +127,7 @@ namespace Discord
         ///     A task that represents an asynchronous send operation for delivering the message.
         /// </returns>
         Task RespondAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false, AllowedMentions allowedMentions = null,
-            MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null, MessageFlags flags = MessageFlags.None);
 
         /// <summary>
         ///     Responds to this interaction with a file attachment.
@@ -149,7 +149,8 @@ namespace Discord
         /// </returns>
 #if NETCOREAPP3_0_OR_GREATER
         async Task RespondWithFileAsync(Stream fileStream, string fileName, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null)
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None)
         {
             using (var file = new FileAttachment(fileStream, fileName))
             {
@@ -158,7 +159,8 @@ namespace Discord
         }
 #else
         Task RespondWithFileAsync(Stream fileStream, string fileName, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null
+            , MessageFlags flags = MessageFlags.None);
 #endif
         /// <summary>
         ///     Responds to this interaction with a file attachment.
@@ -180,7 +182,8 @@ namespace Discord
         /// </returns>
 #if NETCOREAPP3_0_OR_GREATER
         async Task RespondWithFileAsync(string filePath, string fileName = null, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null)
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None)
         {
             using (var file = new FileAttachment(filePath, fileName))
             {
@@ -189,7 +192,8 @@ namespace Discord
         }
 #else
         Task RespondWithFileAsync(string filePath, string fileName = null, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None);
 #endif
         /// <summary>
         ///     Responds to this interaction with a file attachment.
@@ -210,11 +214,13 @@ namespace Discord
         /// </returns>
 #if NETCOREAPP3_0_OR_GREATER
         Task RespondWithFileAsync(FileAttachment attachment, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null)
-            => RespondWithFilesAsync(new FileAttachment[] { attachment }, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None)
+            => RespondWithFilesAsync([attachment], text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll, flags);
 #else
         Task RespondWithFileAsync(FileAttachment attachment, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None);
 #endif
         /// <summary>
         ///     Responds to this interaction with a collection of file attachments.
@@ -234,7 +240,9 @@ namespace Discord
         ///     contains the sent message.
         /// </returns>
         Task RespondWithFilesAsync(IEnumerable<FileAttachment> attachments, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None);
+
         /// <summary>
         ///     Sends a followup message for this interaction.
         /// </summary>
@@ -252,7 +260,9 @@ namespace Discord
         ///     contains the sent message.
         /// </returns>
         Task<IUserMessage> FollowupAsync(string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-             AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+             AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+             MessageFlags flags = MessageFlags.None);
+
         /// <summary>
         ///     Sends a followup message for this interaction.
         /// </summary>
@@ -273,17 +283,19 @@ namespace Discord
         /// </returns>
 #if NETCOREAPP3_0_OR_GREATER
         async Task<IUserMessage> FollowupWithFileAsync(Stream fileStream, string fileName, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null)
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null, MessageFlags flags = MessageFlags.None)
         {
             using (var file = new FileAttachment(fileStream, fileName))
             {
-                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll).ConfigureAwait(false);
+                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll, flags).ConfigureAwait(false);
             }
         }
 #else
         Task<IUserMessage> FollowupWithFileAsync(Stream fileStream, string fileName, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None);
 #endif
+
         /// <summary>
         ///     Sends a followup message for this interaction.
         /// </summary>
@@ -304,16 +316,17 @@ namespace Discord
         /// </returns>
 #if NETCOREAPP3_0_OR_GREATER
         async Task<IUserMessage> FollowupWithFileAsync(string filePath, string fileName = null, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null)
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null,
+            MessageFlags flags = MessageFlags.None)
         {
             using (var file = new FileAttachment(filePath, fileName))
             {
-                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll).ConfigureAwait(false);
+                return await FollowupWithFileAsync(file, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll, flags).ConfigureAwait(false);
             }
         }
 #else
         Task<IUserMessage> FollowupWithFileAsync(string filePath, string fileName = null, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null, MessageFlags flags = MessageFlags.None);
 #endif
         /// <summary>
         ///     Sends a followup message for this interaction.
@@ -334,11 +347,11 @@ namespace Discord
         /// </returns>
 #if NETCOREAPP3_0_OR_GREATER
         Task<IUserMessage> FollowupWithFileAsync(FileAttachment attachment, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null)
-            => FollowupWithFilesAsync(new FileAttachment[] { attachment }, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null, MessageFlags flags = MessageFlags.None)
+            => FollowupWithFilesAsync(new FileAttachment[] { attachment }, text, embeds, isTTS, ephemeral, allowedMentions, components, embed, options, poll, flags);
 #else
         Task<IUserMessage> FollowupWithFileAsync(FileAttachment attachment, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null, MessageFlags flags = MessageFlags.None);
 #endif
         /// <summary>
         ///     Sends a followup message for this interaction.
@@ -358,7 +371,7 @@ namespace Discord
         ///     contains the sent message.
         /// </returns>
         Task<IUserMessage> FollowupWithFilesAsync(IEnumerable<FileAttachment> attachments, string text = null, Embed[] embeds = null, bool isTTS = false, bool ephemeral = false,
-            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null);
+            AllowedMentions allowedMentions = null, MessageComponent components = null, Embed embed = null, RequestOptions options = null, PollProperties poll = null, MessageFlags flags = MessageFlags.None);
         /// <summary>
         ///     Gets the original response for this interaction.
         /// </summary>

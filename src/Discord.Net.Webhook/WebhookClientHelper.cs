@@ -48,7 +48,7 @@ namespace Discord.Webhook
             if (allowedMentions != null)
                 args.AllowedMentions = allowedMentions.ToModel();
             if (components != null)
-                args.Components = components?.Components.Select(x => new API.ActionRowComponent(x)).ToArray();
+                args.Components = components?.Components.Select(x => x.ToModel()).ToArray();
             if (threadName is not null)
                 args.ThreadName = threadName;
             if (appliedTags != null)
@@ -108,14 +108,14 @@ namespace Discord.Webhook
                     AllowedMentions = args.AllowedMentions.IsSpecified
                         ? args.AllowedMentions.Value.ToModel()
                         : Optional.Create<API.AllowedMentions>(),
-                    Components = args.Components.IsSpecified ? args.Components.Value?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() : Optional<API.ActionRowComponent[]>.Unspecified,
+                    Components = args.Components.IsSpecified ? args.Components.Value?.Components.Select(x => x.ToModel()).ToArray() : Optional<IMessageComponent[]>.Unspecified,
                 };
 
                 return client.ApiClient.ModifyWebhookMessageAsync(client.Webhook.Id, messageId, apiArgs, options, threadId);
             }
             else
             {
-                var attachments = args.Attachments.Value?.ToArray() ?? Array.Empty<FileAttachment>();
+                var attachments = args.Attachments.Value?.ToArray() ?? [];
 
                 var apiArgs = new UploadWebhookFileParams(attachments)
                 {
@@ -127,7 +127,7 @@ namespace Discord.Webhook
                     AllowedMentions = args.AllowedMentions.IsSpecified
                         ? args.AllowedMentions.Value.ToModel()
                         : Optional.Create<API.AllowedMentions>(),
-                    MessageComponents = args.Components.IsSpecified ? args.Components.Value?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() : Optional<API.ActionRowComponent[]>.Unspecified,
+                    MessageComponents = args.Components.IsSpecified ? args.Components.Value?.Components.Select(x => x.ToModel()).ToArray() : Optional<IMessageComponent[]>.Unspecified,
                 };
 
                 return client.ApiClient.ModifyWebhookMessageAsync(client.Webhook.Id, messageId, apiArgs, options, threadId);
@@ -204,7 +204,7 @@ namespace Discord.Webhook
                 IsTTS = isTTS,
                 Embeds = embeds.Any() ? embeds.Select(x => x.ToModel()).ToArray() : Optional<API.Embed[]>.Unspecified,
                 AllowedMentions = allowedMentions?.ToModel() ?? Optional<API.AllowedMentions>.Unspecified,
-                MessageComponents = components?.Components.Select(x => new API.ActionRowComponent(x)).ToArray() ?? Optional<API.ActionRowComponent[]>.Unspecified,
+                MessageComponents = components?.Components.Select(x => x.ToModel()).ToArray() ?? Optional<IMessageComponent[]>.Unspecified,
                 Flags = flags,
                 ThreadName = threadName,
                 AppliedTags = appliedTags,
