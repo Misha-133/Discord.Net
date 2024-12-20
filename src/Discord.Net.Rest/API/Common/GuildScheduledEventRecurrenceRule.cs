@@ -8,8 +8,8 @@ public class GuildScheduledEventRecurrenceRule
     [JsonProperty("start")]
     public DateTimeOffset StartAt { get; set; }
 
-    [JsonProperty("stop")]
-    public DateTimeOffset? StopAt { get; set; }
+    [JsonProperty("end")]
+    public DateTimeOffset? EndAt { get; set; }
 
     [JsonProperty("frequency")]
     public RecurrenceFrequency Frequency { get; set; }
@@ -18,13 +18,13 @@ public class GuildScheduledEventRecurrenceRule
     public int Interval { get; set; }
 
     [JsonProperty("by_weekday")]
-    public RecurrenceRuleWeekday? ByWeekday { get; set; }
+    public RecurrenceRuleWeekday[] ByWeekday { get; set; }
 
     [JsonProperty("by_n_weekday")]
-    public GuildScheduledEventRecurrenceRuleByNWeekday ByNWeekday { get; set; }
+    public GuildScheduledEventRecurrenceRuleByNWeekday[] ByNWeekday { get; set; }
 
     [JsonProperty("by_month")]
-    public RecurrenceRuleMonth? ByMonth { get; set; }
+    public RecurrenceRuleMonth[] ByMonth { get; set; }
 
     [JsonProperty("by_month_day")]
     public int[] ByMonthDay { get; set; }
