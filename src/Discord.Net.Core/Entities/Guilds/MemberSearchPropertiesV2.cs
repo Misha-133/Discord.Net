@@ -13,12 +13,12 @@ public class MemberSearchPropertiesV2
     /// <summary>
     ///     Gets or sets the after property for the search.
     /// </summary>
-    public MemberSearchPaginationFilter After { get; set; }
+    public MemberSearchPaginationFilter? After { get; set; }
 
     /// <summary>
     ///     Gets or sets the before property for the search.
     /// </summary>
-    public MemberSearchPaginationFilter Before { get; set; }
+    public MemberSearchPaginationFilter? Before { get; set; }
 
     /// <summary>
     ///     Gets or sets the sort type for the search.
@@ -230,10 +230,10 @@ public struct MemberSearchIntQuery : IMemberSearchQuery
     public IEnumerable<int> OrQuery { get; set; }
 
     /// <inheritdoc />
-    IEnumerable<object> IMemberSearchQuery.AndQuery => AndQuery.Select(x => (object)x);
+    IEnumerable<object> IMemberSearchQuery.AndQuery => AndQuery?.Select(x => (object)x);
 
     /// <inheritdoc />
-    IEnumerable<object> IMemberSearchQuery.OrQuery => OrQuery.Select(x => (object)x);
+    IEnumerable<object> IMemberSearchQuery.OrQuery => OrQuery?.Select(x => (object)x);
 }
 
 
@@ -249,8 +249,8 @@ public struct MemberSearchSnowflakeQuery : IMemberSearchQuery
     public IEnumerable<ulong> OrQuery { get; set; }
 
     /// <inheritdoc />
-    IEnumerable<object> IMemberSearchQuery.AndQuery => AndQuery.Select(x => (object)x);
+    IEnumerable<object> IMemberSearchQuery.AndQuery => AndQuery?.Select(x => (object)x);
 
     /// <inheritdoc />
-    IEnumerable<object> IMemberSearchQuery.OrQuery => OrQuery.Select(x => (object)x);
+    IEnumerable<object> IMemberSearchQuery.OrQuery => OrQuery?.Select(x => (object)x);
 }

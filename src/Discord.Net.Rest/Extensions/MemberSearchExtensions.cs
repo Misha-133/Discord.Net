@@ -7,13 +7,7 @@ internal static class MemberSearchExtensions
     internal static API.Rest.SearchQueryProperties ToModel(this IMemberSearchQuery props)
         => new ()
         {
-            Range = props.Range.HasValue
-                ? new API.Rest.SearchRangeProperties
-                {
-                    GreaterThanOrEqual = props.Range.Value.GreaterThanOrEqual.HasValue ? props.Range.Value.GreaterThanOrEqual.Value : Optional<long>.Unspecified,
-                    LessThanOrEqual = props.Range.Value.LessThanOrEqual.HasValue ? props.Range.Value.LessThanOrEqual.Value : Optional<long>.Unspecified
-                }
-                : Optional<API.Rest.SearchRangeProperties>.Unspecified,
+            Range = props.Range?.ToModel() ?? Optional<API.Rest.SearchRangeProperties>.Unspecified,
             AndQuery = props.AndQuery is not null ? new Optional<IEnumerable<object>>(props.AndQuery) : Optional<IEnumerable<object>>.Unspecified,
             OrQuery = props.OrQuery is not null ? new Optional<IEnumerable<object>>(props.OrQuery) : Optional<IEnumerable<object>>.Unspecified
         };
@@ -39,5 +33,19 @@ internal static class MemberSearchExtensions
             SafetySignals = props.SafetySignals?.ToModel() ?? Optional<API.Rest.SafetySignalsProperties>.Unspecified,
             UserId = props.UserId?.ToModel() ?? Optional<API.Rest.SearchQueryProperties>.Unspecified,
             Usernames = props.Usernames?.ToModel() ?? Optional<API.Rest.SearchQueryProperties>.Unspecified
+        };
+
+    internal static API.Rest.SearchRangeProperties ToModel(this MemberSearchV2Range props)
+        => new()
+        {
+            GreaterThanOrEqual = props.GreaterThanOrEqual ?? Optional<long>.Unspecified,
+            LessThanOrEqual = props.LessThanOrEqual ?? Optional<long>.Unspecified
+        };
+
+    internal static API.Rest.MemberSearchPaginationFilter ToModel(this MemberSearchPaginationFilter props)
+        => new()
+        {
+            UserId = props.UserId,
+            GuildJoinedAt = props.GuildJoinedAt,
         };
 }

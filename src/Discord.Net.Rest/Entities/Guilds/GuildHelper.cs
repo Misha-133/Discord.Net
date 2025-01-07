@@ -777,13 +777,8 @@ namespace Discord.Rest
             var apiArgs = new SearchGuildMembersParamsV2
             {
                 Limit = limit,
-                After = args is null
-                    ? null
-                    : new API.Rest.MemberSearchPaginationFilter
-                    {
-                        UserId = args.After.UserId,
-                        GuildJoinedAt = args.After.GuildJoinedAt
-                    },
+                After = args?.After?.ToModel() ?? Optional<API.Rest.MemberSearchPaginationFilter>.Unspecified,
+                Before = args?.Before?.ToModel() ?? Optional<API.Rest.MemberSearchPaginationFilter>.Unspecified,
                 Sort = args?.Sort ?? Optional<MemberSearchV2SortType>.Unspecified,
                 OrQuery = args?.OrQuery?.ToModel() ?? Optional<API.Rest.MemberSearchFilter>.Unspecified,
                 AndQuery = args?.AndQuery?.ToModel() ?? Optional<API.Rest.MemberSearchFilter>.Unspecified
