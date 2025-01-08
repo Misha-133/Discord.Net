@@ -1793,7 +1793,7 @@ namespace Discord.WebSocket
                     audioClient.Connected += () =>
                     {
                         _ = promise.TrySetResultAsync(_audioClient);
-                        return Task.Delay(0);
+                        return Task.CompletedTask;
                     };
 
                     _audioClient = audioClient;
